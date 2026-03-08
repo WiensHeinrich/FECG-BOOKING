@@ -58,6 +58,7 @@ export default async function AnmeldungPage() {
             eventId={event.id}
             houseTypes={houseTypes}
             availability={availability}
+            reservationValidityDays={event.reservation_validity_days}
           />
         </div>
       </div>

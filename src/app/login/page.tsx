@@ -19,6 +19,10 @@ import { LogIn } from "lucide-react";
 function LoginForm() {
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/admin";
+  const initialError =
+    searchParams.get("error") === "not-authorized"
+      ? "Dieses Konto hat keinen Admin-Zugang."
+      : null;
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -42,9 +46,9 @@ function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {error && (
+        {(error || initialError) && (
           <Alert variant="destructive" className="mb-4">
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription>{error || initialError}</AlertDescription>
           </Alert>
         )}
         <form action={handleSubmit} className="space-y-4">

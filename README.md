@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FECG Booking
 
-## Getting Started
+Buchungssystem fuer die Gemeindefreizeit der FECG Trossingen e.V. auf Basis von Next.js und Supabase.
 
-First, run the development server:
+## Funktionen
+
+- Oeffentliche Start-, Info- und Anmeldeseiten
+- Reservierung von Unterkunftstypen mit Gastdaten
+- Wartelisten-Eintrag fuer ausgebuchte Unterkunftstypen
+- Adminbereich fuer Reservierungen, Warteliste, Hausverwaltung und Event-Einstellungen
+- Supabase-Migrationen fuer Schema, RLS und sichere Public-RPCs
+
+## Technik
+
+- Next.js 16 mit App Router
+- React 19
+- Tailwind CSS 4
+- Supabase Auth, Database und RLS
+- Server Actions fuer Buchungs- und Adminprozesse
+
+## Lokale Entwicklung
+
+1. Abhaengigkeiten installieren:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Umgebungsvariablen anlegen:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Werte in `.env.local` setzen:
 
-## Learn More
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_SITE_URL`
 
-To learn more about Next.js, take a look at the following resources:
+4. Entwicklungsserver starten:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Die Anwendung laeuft danach unter [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+## Datenbank
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Die Supabase-Migrationen liegen in `supabase/migrations/001_create_schema.sql`, `supabase/migrations/002_fix_rls.sql`, `supabase/migrations/003_create_admin_user.sql` und `supabase/migrations/004_secure_public_flows.sql`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Fuer lokale Testdaten gibt es `supabase/seed.sql`.
+
+## Wichtige Hinweise
+
+- Adminzugriffe setzen einen Eintrag in `admin_users` voraus.
+- Die oeffentliche Reservierungsbestaetigung funktioniert ueber einen tokenisierten Link und nicht mehr allein ueber die Reservierungs-ID.
+- `RESEND_API_KEY` und `CRON_SECRET` sind in `.env.example` vorbereitet, aber im aktuellen Stand noch nicht aktiv verdrahtet.

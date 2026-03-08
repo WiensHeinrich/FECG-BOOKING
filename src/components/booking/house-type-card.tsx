@@ -77,7 +77,6 @@ export function HouseTypeCard({
               variant="outline"
               className="w-full"
               onClick={onSelect}
-              disabled={isSoldOut}
             >
               {isSoldOut ? "Auf Warteliste setzen" : "Auswaehlen"}
             </Button>

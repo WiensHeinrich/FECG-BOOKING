@@ -1,6 +1,6 @@
 import { getActiveEventAdmin } from "@/lib/queries/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText } from "lucide-react";
 import type { Document } from "@/lib/types/database";

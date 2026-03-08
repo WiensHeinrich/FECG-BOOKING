@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdminAccess } from "@/lib/auth/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 
@@ -13,6 +14,7 @@ export async function updateHouseType(
     features?: string[];
   }
 ) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { error } = await supabase
@@ -40,6 +42,7 @@ export async function createHouseType(data: {
   features: string[];
   sort_order: number;
 }) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   // 1. Haustyp anlegen
@@ -72,6 +75,7 @@ export async function createHouseType(data: {
 }
 
 export async function deleteHouseType(id: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   // Pruefen ob Reservierungen existieren
@@ -110,6 +114,7 @@ export async function deleteHouseType(id: string) {
 }
 
 export async function addHouse(houseTypeId: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   // Hoechste Hausnummer finden
@@ -149,6 +154,7 @@ export async function addHouse(houseTypeId: string) {
 }
 
 export async function removeHouse(houseId: string, houseTypeId: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   // Pruefen ob Reservierung existiert

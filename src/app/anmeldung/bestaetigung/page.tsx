@@ -4,7 +4,7 @@ import { CheckCircle2, ArrowLeft } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { formatCurrency, formatDateShort } from "@/lib/utils/format";
 
 export const metadata: Metadata = {
@@ -12,51 +12,55 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  searchParams: Promise<{ id?: string }>;
+  searchParams: Promise<{ id?: string; token?: string }>;
 }
 
 export default async function BestaetigungPage({ searchParams }: Props) {
-  const { id } = await searchParams;
+  const { id, token } = await searchParams;
 
-  if (!id) {
+  if (!id || !token) {
     return (
       <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
-        <p className="text-muted-foreground">Keine Reservierungs-ID angegeben.</p>
+        <p className="text-muted-foreground">Ungueltiger Bestaetigungslink.</p>
       </div>
     );
   }
 
-  const supabase = createAdminClient();
+  const supabase = await createClient();
 
-  const { data: reservation } = await supabase
-    .from("reservations")
-    .select(`
-      *,
-      houses!inner (
-        house_number,
-        label,
-        house_types!inner (name)
-      ),
-      events!inner (
-        title,
-        bank_account_holder,
-        bank_iban,
-        bank_bic
-      )
-    `)
-    .eq("id", id)
-    .single();
+  const { data: rows } = await supabase.rpc(
+    "get_public_reservation_confirmation",
+    {
+      p_reservation_id: id,
+      p_access_token: token,
+    }
+  );
+
+  const reservation = rows?.[0] as
+    | {
+        reservation_id: string;
+        contact_first_name: string;
+        contact_last_name: string;
+        total_price: number;
+        expires_at: string;
+        payment_reference: string;
+        house_label: string;
+        house_type_name: string;
+        bank_account_holder: string;
+        bank_iban: string;
+        bank_bic: string | null;
+      }
+    | undefined;
 
   if (!reservation) {
     return (
       <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
-        <p className="text-muted-foreground">Reservierung nicht gefunden.</p>
+        <p className="text-muted-foreground">
+          Reservierung nicht gefunden oder Link nicht mehr gueltig.
+        </p>
       </div>
     );
   }
-
-  const house = reservation.houses as { house_number: number; label: string; house_types: { name: string } };
-  const event = reservation.events as { title: string; bank_account_holder: string; bank_iban: string; bank_bic: string | null };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -66,7 +70,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
           <h1 className="mt-4 text-3xl font-bold">Reservierung erfolgreich!</h1>
           <p className="mt-2 text-muted-foreground">
             Ihre Reservierung wurde erstellt. Bitte ueberweisen Sie den Betrag
-            innerhalb von 14 Tagen.
+            bis spaetestens zum angegebenen Datum.
           </p>
         </div>
 
@@ -76,7 +80,9 @@ export default async function BestaetigungPage({ searchParams }: Props) {
             <div className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Unterkunft</span>
-                <span>{house.house_types.name} - {house.label}</span>
+                <span>
+                  {reservation.house_type_name} - {reservation.house_label}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Kontaktperson</span>
@@ -102,16 +108,16 @@ export default async function BestaetigungPage({ searchParams }: Props) {
             <div className="mt-4 space-y-2 rounded-md bg-muted p-4 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Empfaenger</span>
-                <span>{event.bank_account_holder}</span>
+                <span>{reservation.bank_account_holder}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">IBAN</span>
-                <span className="font-mono">{event.bank_iban}</span>
+                <span className="font-mono">{reservation.bank_iban}</span>
               </div>
-              {event.bank_bic && (
+              {reservation.bank_bic && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">BIC</span>
-                  <span className="font-mono">{event.bank_bic}</span>
+                  <span className="font-mono">{reservation.bank_bic}</span>
                 </div>
               )}
               <div className="flex justify-between">
@@ -130,8 +136,8 @@ export default async function BestaetigungPage({ searchParams }: Props) {
 
             <p className="mt-4 text-xs text-muted-foreground">
               Bitte geben Sie unbedingt den Verwendungszweck an, damit wir Ihre
-              Zahlung zuordnen koennen. Nach Zahlungseingang erhalten Sie eine
-              Bestaetigungs-E-Mail.
+              Zahlung zuordnen koennen. Diese Seite enthaelt alle Angaben fuer
+              die Ueberweisung.
             </p>
           </CardContent>
         </Card>

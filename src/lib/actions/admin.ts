@@ -1,9 +1,11 @@
 "use server";
 
+import { requireAdminAccess } from "@/lib/auth/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 
 export async function confirmPayment(reservationId: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { error } = await supabase
@@ -28,6 +30,7 @@ export async function cancelReservation(
   reservationId: string,
   notes?: string
 ) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { error } = await supabase
@@ -64,6 +67,7 @@ export async function cancelReservation(
 }
 
 export async function extendReservation(reservationId: string, days: number) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { data: reservation } = await supabase
@@ -96,6 +100,7 @@ export async function updateAdminNotes(
   reservationId: string,
   notes: string
 ) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { error } = await supabase
@@ -130,6 +135,7 @@ export async function updateEventSettings(
     bank_reference_prefix?: string;
   }
 ) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { error } = await supabase
@@ -147,6 +153,7 @@ export async function updateEventSettings(
 }
 
 export async function removeFromWaitlist(entryId: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { error } = await supabase

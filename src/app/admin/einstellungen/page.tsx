@@ -12,6 +12,12 @@ import { Save } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { Event } from "@/lib/types/database";
 
+function toDateTimeLocalValue(value: string) {
+  const date = new Date(value);
+  const timezoneOffset = date.getTimezoneOffset() * 60_000;
+  return new Date(date.getTime() - timezoneOffset).toISOString().slice(0, 16);
+}
+
 export default function EinstellungenPage() {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,6 +43,8 @@ export default function EinstellungenPage() {
 
     setSaving(true);
     const form = new FormData(e.currentTarget);
+    const registrationStart = form.get("registration_start") as string;
+    const registrationEnd = form.get("registration_end") as string;
 
     const result = await updateEventSettings(event.id, {
       title: form.get("title") as string,
@@ -45,8 +53,12 @@ export default function EinstellungenPage() {
       location_address: form.get("location_address") as string,
       start_date: form.get("start_date") as string,
       end_date: form.get("end_date") as string,
-      registration_start: form.get("registration_start") as string,
-      registration_end: form.get("registration_end") as string,
+      registration_start: registrationStart
+        ? new Date(registrationStart).toISOString()
+        : undefined,
+      registration_end: registrationEnd
+        ? new Date(registrationEnd).toISOString()
+        : undefined,
       contact_email: form.get("contact_email") as string,
       contact_phone: form.get("contact_phone") as string,
       bank_account_holder: form.get("bank_account_holder") as string,
@@ -113,8 +125,8 @@ export default function EinstellungenPage() {
               <Input
                 id="registration_start"
                 name="registration_start"
-                type="date"
-                defaultValue={event.registration_start}
+                type="datetime-local"
+                defaultValue={toDateTimeLocalValue(event.registration_start)}
               />
             </div>
             <div className="space-y-2">
@@ -122,8 +134,8 @@ export default function EinstellungenPage() {
               <Input
                 id="registration_end"
                 name="registration_end"
-                type="date"
-                defaultValue={event.registration_end}
+                type="datetime-local"
+                defaultValue={toDateTimeLocalValue(event.registration_end)}
               />
             </div>
           </CardContent>

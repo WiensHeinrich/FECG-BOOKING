@@ -1,6 +1,6 @@
 "use server";
 
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { z } from "zod/v4";
 import { redirect } from "next/navigation";
 
@@ -23,35 +23,34 @@ export async function joinWaitlist(formData: WaitlistFormData) {
     return { error: "Ungueltige Eingaben." };
   }
 
+  if (
+    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_URL.includes("dein-projekt") ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  ) {
+    return { error: "Die Warteliste ist in dieser Umgebung nicht verfuegbar." };
+  }
+
   const data = parsed.data;
-  const supabase = createAdminClient();
+  const supabase = await createClient();
 
-  // Naechste Position auf der Warteliste ermitteln
-  const { data: maxPos } = await supabase
-    .from("waitlist")
-    .select("position")
-    .eq("house_type_id", data.house_type_id)
-    .eq("status", "wartend")
-    .order("position", { ascending: false })
-    .limit(1)
-    .single();
-
-  const nextPosition = (maxPos?.position ?? 0) + 1;
-
-  const { error } = await supabase.from("waitlist").insert({
-    event_id: data.event_id,
-    house_type_id: data.house_type_id,
-    contact_first_name: data.contact_first_name,
-    contact_last_name: data.contact_last_name,
-    contact_email: data.contact_email,
-    contact_phone: data.contact_phone ?? null,
-    guest_count: data.guest_count,
-    position: nextPosition,
+  const { data: result, error } = await supabase.rpc("join_public_waitlist", {
+    p_event_id: data.event_id,
+    p_house_type_id: data.house_type_id,
+    p_contact_first_name: data.contact_first_name,
+    p_contact_last_name: data.contact_last_name,
+    p_contact_email: data.contact_email,
+    p_contact_phone: data.contact_phone ?? null,
+    p_guest_count: data.guest_count,
   });
 
   if (error) {
     return { error: "Warteliste-Eintrag fehlgeschlagen." };
   }
 
-  redirect("/anmeldung/warteliste");
+  if (result?.error || !result?.position) {
+    return { error: result?.error || "Warteliste-Eintrag fehlgeschlagen." };
+  }
+
+  redirect(`/anmeldung/warteliste?position=${result.position}`);
 }

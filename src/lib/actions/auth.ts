@@ -19,8 +19,22 @@ export async function login(formData: FormData) {
     return { error: "Ungueltige Zugangsdaten." };
   }
 
+  const { data: isAdmin, error: adminCheckError } = await supabase.rpc(
+    "is_admin"
+  );
+
+  if (adminCheckError || isAdmin !== true) {
+    await supabase.auth.signOut();
+    return { error: "Dieses Konto hat keinen Admin-Zugang." };
+  }
+
   const redirectTo = formData.get("redirect") as string;
-  redirect(redirectTo || "/admin");
+  const safeRedirect =
+    redirectTo?.startsWith("/") && !redirectTo.startsWith("//")
+      ? redirectTo
+      : "/admin";
+
+  redirect(safeRedirect);
 }
 
 export async function logout() {

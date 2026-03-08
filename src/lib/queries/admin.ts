@@ -1,3 +1,4 @@
+import { requireAdminAccess } from "@/lib/auth/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type {
   Reservation,
@@ -10,6 +11,7 @@ import type {
 
 // Dashboard-Statistiken
 export async function getDashboardStats(eventId: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const [reservations, waitlist] = await Promise.all([
@@ -55,6 +57,7 @@ export async function getDashboardStats(eventId: string) {
 
 // Alle Reservierungen mit Details
 export async function getReservations(eventId: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
@@ -85,6 +88,7 @@ export async function getReservations(eventId: string) {
 
 // Einzelne Reservierung
 export async function getReservation(id: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
@@ -117,6 +121,7 @@ export async function getReservation(id: string) {
 
 // Hausbelegung
 export async function getHouseOccupancy(eventId: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { data: houseTypes } = await supabase
@@ -159,6 +164,7 @@ export async function getHouseOccupancy(eventId: string) {
 
 // Warteliste
 export async function getWaitlist(eventId: string) {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
@@ -177,6 +183,7 @@ export async function getWaitlist(eventId: string) {
 
 // Aktives Event fuer Admin
 export async function getActiveEventAdmin() {
+  await requireAdminAccess();
   const supabase = createAdminClient();
 
   const { data } = await supabase

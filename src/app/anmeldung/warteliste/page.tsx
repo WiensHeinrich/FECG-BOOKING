@@ -8,7 +8,13 @@ export const metadata: Metadata = {
   title: "Warteliste",
 };
 
-export default function WaitelistePage() {
+export default async function WaitelistePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ position?: string }>;
+}) {
+  const { position } = await searchParams;
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mx-auto max-w-2xl">
@@ -23,9 +29,10 @@ export default function WaitelistePage() {
         <Card>
           <CardContent className="pt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              Sobald eine Unterkunft des gewuenschten Typs frei wird, werden Sie
-              per E-Mail benachrichtigt. Sie haben dann 48 Stunden Zeit, um die
-              Reservierung abzuschliessen.
+              Ihr Eintrag wurde gespeichert
+              {position ? ` und auf Position ${position} einsortiert` : ""}.
+              Sobald eine passende Unterkunft frei wird, kann sich das
+              Freizeitteam bei Ihnen melden.
             </p>
           </CardContent>
         </Card>

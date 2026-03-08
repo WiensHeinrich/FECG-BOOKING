@@ -28,19 +28,28 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  let isAdmin = false;
+
+  if (user) {
+    const { data } = await supabase.rpc("is_admin");
+    isAdmin = data === true;
+  }
 
   // Admin-Seiten schuetzen
   if (request.nextUrl.pathname.startsWith("/admin")) {
-    if (!user) {
+    if (!user || !isAdmin) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
       url.searchParams.set("redirect", request.nextUrl.pathname);
+      if (user && !isAdmin) {
+        url.searchParams.set("error", "not-authorized");
+      }
       return NextResponse.redirect(url);
     }
   }
 
   // Eingeloggte User von Login-Seite weiterleiten
-  if (request.nextUrl.pathname === "/login" && user) {
+  if (request.nextUrl.pathname === "/login" && user && isAdmin) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     return NextResponse.redirect(url);
