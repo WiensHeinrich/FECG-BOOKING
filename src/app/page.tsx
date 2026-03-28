@@ -39,33 +39,37 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary/10 via-accent/5 to-background py-20 md:py-32">
-        <div className="absolute inset-0 bg-[url('/docs/uebersichtsplan-eckenhof.jpg')] bg-cover bg-center opacity-[0.06]" />
+      <section className="relative overflow-hidden bg-gradient-to-b from-accent/40 via-accent/15 to-background py-24 md:py-36">
+        <div className="absolute inset-0 bg-[url('/docs/uebersichtsplan-eckenhof.jpg')] bg-cover bg-center opacity-[0.05]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         <div className="container relative mx-auto px-4 text-center">
-          <p className="text-sm font-medium uppercase tracking-widest text-primary">
+          <p className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold uppercase tracking-widest text-primary">
             Gemeinsam. Glauben. Erleben.
           </p>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight md:text-6xl">
+          <h1 className="mt-5 text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl">
             {event.title}
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
             {event.description}
           </p>
           {registrationOpen && (
-            <div className="mt-10">
-              <Button asChild size="lg" className="gap-2 px-8 text-base">
+            <div className="mt-10 flex flex-col items-center gap-3">
+              <Button asChild size="lg" className="gap-2 px-10 text-base shadow-lg shadow-primary/25 transition-shadow hover:shadow-xl hover:shadow-primary/30">
                 <Link href="/anmeldung">
                   Jetzt anmelden
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
+              <span className="text-xs text-muted-foreground">
+                {formatDateRange(event.start_date, event.end_date)} &middot; {event.location}
+              </span>
             </div>
           )}
         </div>
       </section>
 
       {/* Highlights */}
-      <section className="container mx-auto px-4 py-12">
+      <section className="container mx-auto -mt-8 px-4 py-12 md:-mt-12">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
             { icon: TreePine, label: "Wanderungen" },
@@ -75,10 +79,12 @@ export default async function HomePage() {
           ].map(({ icon: Icon, label }) => (
             <div
               key={label}
-              className="flex flex-col items-center gap-2 rounded-xl border bg-card p-4 text-center shadow-sm"
+              className="flex flex-col items-center gap-3 rounded-2xl border border-border/60 bg-card p-6 text-center shadow-md transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
             >
-              <Icon className="h-7 w-7 text-primary" />
-              <span className="text-sm font-medium">{label}</span>
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+                <Icon className="h-6 w-6 text-primary" />
+              </div>
+              <span className="text-sm font-semibold">{label}</span>
             </div>
           ))}
         </div>
@@ -87,9 +93,11 @@ export default async function HomePage() {
       {/* Info Cards */}
       <section className="container mx-auto px-4 py-8">
         <div className="grid gap-6 md:grid-cols-3">
-          <Card className="border-l-4 border-l-primary">
+          <Card className="border-none bg-card shadow-md">
             <CardContent className="flex items-start gap-4 pt-6">
-              <CalendarDays className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent">
+                <CalendarDays className="h-5 w-5 text-primary" />
+              </div>
               <div>
                 <h3 className="font-semibold">Wann</h3>
                 <p className="text-sm text-muted-foreground">
@@ -99,9 +107,11 @@ export default async function HomePage() {
             </CardContent>
           </Card>
 
-          <Card className="border-l-4 border-l-primary">
+          <Card className="border-none bg-card shadow-md">
             <CardContent className="flex items-start gap-4 pt-6">
-              <MapPin className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent">
+                <MapPin className="h-5 w-5 text-primary" />
+              </div>
               <div>
                 <h3 className="font-semibold">Wo</h3>
                 <p className="text-sm text-muted-foreground">
@@ -117,7 +127,7 @@ export default async function HomePage() {
                     href={event.location_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-primary underline-offset-4 hover:underline"
+                    className="text-sm font-medium text-primary underline-offset-4 hover:underline"
                   >
                     Auf Karte anzeigen
                   </a>
@@ -126,9 +136,11 @@ export default async function HomePage() {
             </CardContent>
           </Card>
 
-          <Card className="border-l-4 border-l-primary">
+          <Card className="border-none bg-card shadow-md">
             <CardContent className="flex items-start gap-4 pt-6">
-              <Users className="mt-0.5 h-6 w-6 shrink-0 text-primary" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent">
+                <Users className="h-5 w-5 text-primary" />
+              </div>
               <div>
                 <h3 className="font-semibold">Kontakt</h3>
                 <p className="text-sm text-muted-foreground">
@@ -147,12 +159,13 @@ export default async function HomePage() {
 
       {/* Bibelvers */}
       <section className="container mx-auto px-4 py-8">
-        <div className="rounded-xl bg-primary/5 p-8 text-center md:p-12">
-          <blockquote className="mx-auto max-w-xl text-lg italic leading-relaxed text-foreground/80">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-accent/50 via-accent/30 to-secondary/40 p-10 text-center md:p-14">
+          <div className="absolute -right-6 -top-6 text-[8rem] font-serif leading-none text-primary/[0.07] select-none">&bdquo;</div>
+          <blockquote className="relative mx-auto max-w-xl text-xl italic leading-relaxed text-foreground/85 md:text-2xl">
             &bdquo;Wo zwei oder drei versammelt sind in meinem Namen, da bin ich
             mitten unter ihnen.&ldquo;
           </blockquote>
-          <cite className="mt-3 block text-sm font-medium text-muted-foreground">
+          <cite className="mt-4 block text-sm font-semibold tracking-wide text-primary">
             Matthäus 18:20
           </cite>
         </div>
@@ -160,28 +173,31 @@ export default async function HomePage() {
 
       {/* Anmeldung Hinweis */}
       <section className="container mx-auto px-4 pb-16">
-        <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/5">
-          <CardContent className="pt-6">
+        <Card className="overflow-hidden border-none shadow-lg">
+          <CardContent className="relative bg-gradient-to-r from-primary/10 via-accent/20 to-secondary/15 p-8 md:p-10">
             <div className="text-center">
               {registrationOpen ? (
                 <>
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-2xl font-bold">
                     Die Anmeldung ist geöffnet!
                   </h2>
-                  <p className="mt-2 text-muted-foreground">
+                  <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
                     Sichern Sie sich jetzt Ihren Platz. Die Reservierung ist 14
                     Tage gültig und wird nach Zahlungseingang bestätigt.
                   </p>
-                  <Button asChild className="mt-4" variant="outline">
-                    <Link href="/anmeldung">Zur Anmeldung</Link>
+                  <Button asChild className="mt-6 gap-2 px-8 shadow-md shadow-primary/20" size="lg">
+                    <Link href="/anmeldung">
+                      Zur Anmeldung
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
                   </Button>
                 </>
               ) : now < new Date(event.registration_start) ? (
                 <>
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-2xl font-bold">
                     Anmeldung noch nicht geöffnet
                   </h2>
-                  <p className="mt-2 text-muted-foreground">
+                  <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
                     Die Anmeldung startet am{" "}
                     {new Date(event.registration_start).toLocaleDateString(
                       "de-DE",
@@ -192,10 +208,10 @@ export default async function HomePage() {
                 </>
               ) : (
                 <>
-                  <h2 className="text-xl font-semibold">
+                  <h2 className="text-2xl font-bold">
                     Anmeldung geschlossen
                   </h2>
-                  <p className="mt-2 text-muted-foreground">
+                  <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
                     Die Anmeldefrist ist leider abgelaufen. Bei Fragen wenden Sie
                     sich bitte an {event.contact_email}.
                   </p>

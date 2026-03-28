@@ -134,7 +134,7 @@ export default async function InformationenPage() {
             <CardContent className="pt-6">
               <div className="grid gap-6 sm:grid-cols-2">
                 <div>
-                  <p className="font-medium text-green-700">Vorhanden</p>
+                  <p className="font-medium text-primary">Vorhanden</p>
                   <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                     <li>Kaffeemaschine (Filtertüten mitbringen)</li>
                     <li>Wasserkocher</li>
@@ -147,7 +147,7 @@ export default async function InformationenPage() {
                   </ul>
                 </div>
                 <div>
-                  <p className="font-medium text-amber-700">Nicht vorhanden</p>
+                  <p className="font-medium text-muted-foreground">Nicht vorhanden</p>
                   <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                     <li>Backofen (nur Typ C Häuser)</li>
                     <li>Spülmaschine (nur Typ C Häuser)</li>

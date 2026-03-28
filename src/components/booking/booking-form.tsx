@@ -18,9 +18,22 @@ import type { GuestData } from "@/lib/validations/booking";
 
 interface BookingFormProps {
   eventId: string;
+  eventStartDate: string;
   houseTypes: HouseType[];
   availability: Availability[];
   reservationValidityDays: number;
+}
+
+function getAgeAtDate(birthDate: string, targetDate: string): number | null {
+  const birth = new Date(birthDate);
+  const target = new Date(targetDate);
+  if (isNaN(birth.getTime()) || isNaN(target.getTime())) return null;
+  let age = target.getFullYear() - birth.getFullYear();
+  const monthDiff = target.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && target.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age;
 }
 
 const emptyGuest: GuestData = {
@@ -34,6 +47,7 @@ const emptyGuest: GuestData = {
 
 export function BookingForm({
   eventId,
+  eventStartDate,
   houseTypes,
   availability,
   reservationValidityDays,
@@ -304,27 +318,24 @@ export function BookingForm({
                         <Input
                           type="date"
                           value={guest.birth_date ?? ""}
-                          onChange={(e) =>
-                            updateGuest(index, "birth_date", e.target.value)
-                          }
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            updateGuest(index, "birth_date", val);
+                            const age = getAgeAtDate(val, eventStartDate);
+                            updateGuest(index, "is_child", age !== null && age < 14);
+                          }}
                         />
-                      </div>
-                      <div className="flex items-center gap-2 self-end pb-1">
-                        <input
-                          type="checkbox"
-                          id={`is_child_${index}`}
-                          checked={guest.is_child}
-                          onChange={(e) =>
-                            updateGuest(index, "is_child", e.target.checked)
-                          }
-                          className="h-4 w-4 rounded border-input"
-                        />
-                        <Label
-                          htmlFor={`is_child_${index}`}
-                          className="text-sm font-normal"
-                        >
-                          Kind (unter 14 Jahre)
-                        </Label>
+                        {guest.birth_date && (() => {
+                          const age = getAgeAtDate(guest.birth_date, eventStartDate);
+                          if (age === null) return null;
+                          return (
+                            <p className={`mt-1 text-xs ${age < 14 ? "text-amber-700" : "text-muted-foreground"}`}>
+                              {age < 14
+                                ? `Kind — ${age} Jahre zum Freizeitbeginn`
+                                : `${age} Jahre zum Freizeitbeginn`}
+                            </p>
+                          );
+                        })()}
                       </div>
                       <div className="md:col-span-2">
                         <Label>Ernährungshinweise / Allergien</Label>
