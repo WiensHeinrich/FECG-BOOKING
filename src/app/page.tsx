@@ -70,21 +70,38 @@ export default async function HomePage() {
 
       {/* Highlights */}
       <section className="container mx-auto -mt-8 px-4 py-12 md:-mt-12">
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { icon: TreePine, label: "Wanderungen" },
-            { icon: Music, label: "Lobpreis" },
-            { icon: Flame, label: "Lagerfeuer" },
-            { icon: UtensilsCrossed, label: "Gemeinschaft" },
-          ].map(({ icon: Icon, label }) => (
+            {
+              icon: TreePine,
+              label: "Wanderungen",
+              text: `„Die Himmel erzählen die Ehre Gottes, und die Feste verkündigt seiner Hände Werk." (Psalm 19,2) — Gemeinsam entdecken wir Gottes wunderbare Schöpfung auf den Wegen durch den Schwarzwald. Wie die Jünger mit Jesus unterwegs waren, gehen auch wir Seite an Seite und erleben, wie Gespräche in der Natur das Herz berühren.`,
+            },
+            {
+              icon: Music,
+              label: "Lobpreis",
+              text: `„Singt dem Herrn ein neues Lied, denn er tut Wunder." (Psalm 98,1) — Als Paulus und Silas im Gefängnis sangen, erbebten die Mauern. So öffnet auch unser gemeinsamer Lobpreis verschlossene Herzen und bringt uns als Gemeinde näher zu Gott und zueinander.`,
+            },
+            {
+              icon: Flame,
+              label: "Lagerfeuer",
+              text: `„Brannte nicht unser Herz, als er mit uns redete?" (Lukas 24,32) — Am Feuer kommen wir zusammen, wie die ersten Christen es taten. Wir teilen Geschichten, Gedanken und Gottes Wort — und spüren, wie er mitten unter uns ist, wenn die Flammen in den Nachthimmel steigen.`,
+            },
+            {
+              icon: UtensilsCrossed,
+              label: "Gemeinschaft",
+              text: `„Sie waren täglich einmütig beieinander, brachen das Brot in den Häusern und nahmen die Speise mit Freuden." (Apostelgeschichte 2,46) — Gemeinsam essen, lachen und füreinander da sein — das ist gelebter Glaube. In dieser Freizeit erleben wir, was echte Gemeinschaft im Sinne Jesu bedeutet.`,
+            },
+          ].map(({ icon: Icon, label, text }) => (
             <div
               key={label}
-              className="flex flex-col items-center gap-3 rounded-2xl border border-border/60 bg-card p-6 text-center shadow-md transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+              className="flex flex-col items-center gap-4 rounded-2xl border border-border/60 bg-card p-6 text-center shadow-md transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent">
                 <Icon className="h-6 w-6 text-primary" />
               </div>
-              <span className="text-sm font-semibold">{label}</span>
+              <h3 className="text-sm font-semibold">{label}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
             </div>
           ))}
         </div>

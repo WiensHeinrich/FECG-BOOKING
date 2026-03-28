@@ -57,10 +57,8 @@ export function HouseTypeCard({
               className={cn(
                 "text-xs shrink-0 transition-colors duration-300",
                 isSoldOut
-                  ? "bg-muted text-muted-foreground"
-                  : availableCount <= 2
-                    ? "bg-primary/15 text-primary border-primary/25"
-                    : "bg-accent text-accent-foreground border-accent group-hover:bg-primary/15 group-hover:text-primary group-hover:border-primary/25"
+                  ? "bg-muted text-muted-foreground border-border"
+                  : "bg-accent text-accent-foreground border-accent group-hover:bg-primary/15 group-hover:text-primary group-hover:border-primary/25"
               )}
               variant="outline"
             >

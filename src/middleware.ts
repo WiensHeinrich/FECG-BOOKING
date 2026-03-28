@@ -28,30 +28,16 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  let isAdmin = false;
 
-  if (user) {
-    const { data } = await supabase.rpc("is_admin");
-    isAdmin = data === true;
-  }
+  // Middleware prüft nur ob ein User eingeloggt ist.
+  // Der eigentliche Admin-Check passiert in der Login-Action und den Admin-Seiten.
 
   // Admin-Seiten schuetzen
-  if (request.nextUrl.pathname.startsWith("/admin")) {
-    if (!user || !isAdmin) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/login";
-      url.searchParams.set("redirect", request.nextUrl.pathname);
-      if (user && !isAdmin) {
-        url.searchParams.set("error", "not-authorized");
-      }
-      return NextResponse.redirect(url);
-    }
-  }
-
-  // Eingeloggte User von Login-Seite weiterleiten
-  if (request.nextUrl.pathname === "/login" && user && isAdmin) {
+  // Admin-Seiten: mindestens eingeloggt sein
+  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/admin";
+    url.pathname = "/login";
+    url.searchParams.set("redirect", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 

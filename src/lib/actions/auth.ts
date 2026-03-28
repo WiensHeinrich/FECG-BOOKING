@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 
 export async function login(formData: FormData) {
@@ -13,17 +14,22 @@ export async function login(formData: FormData) {
     return { error: "E-Mail und Passwort sind erforderlich." };
   }
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data: signInData, error } = await supabase.auth.signInWithPassword({ email, password });
 
-  if (error) {
+  if (error || !signInData.user) {
     return { error: "Ungültige Zugangsdaten." };
   }
 
-  const { data: isAdmin, error: adminCheckError } = await supabase.rpc(
-    "is_admin"
-  );
+  // Admin-Check über Service Role Client (umgeht RLS)
+  const adminSupabase = createAdminClient();
+  const { data: adminRow } = await adminSupabase
+    .from("admin_users")
+    .select("id")
+    .eq("auth_user_id", signInData.user.id)
+    .eq("is_active", true)
+    .single();
 
-  if (adminCheckError || isAdmin !== true) {
+  if (!adminRow) {
     await supabase.auth.signOut();
     return { error: "Dieses Konto hat keinen Admin-Zugang." };
   }
