@@ -9,8 +9,8 @@ SET
   description = 'Gemeinsam. Glauben. Erleben. — Wir verbringen ein Wochenende im autofreien Feriendorf Eckenhof im Schwarzwald. Mit Gottesdiensten, Gemeinschaft, Wanderungen, Lagerfeuer und vielem mehr. „Wo zwei oder drei versammelt sind in meinem Namen, da bin ich mitten unter ihnen." (Matthäus 18:20)',
   start_date = '2027-06-11',
   end_date = '2027-06-13',
-  registration_start = '2027-03-01T00:00:00Z',
-  registration_end = '2027-06-01T23:59:59Z',
+  registration_start = '2026-03-28T00:00:00Z',
+  registration_end = '2027-06-08T23:59:59Z',
   bank_reference_prefix = 'GF2027'
 WHERE slug = 'gemeindefreizeit-2026';
 
