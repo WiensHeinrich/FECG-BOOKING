@@ -99,7 +99,7 @@ export function HouseTypeCard({
             </div>
           )}
 
-          <div className="mt-4 flex gap-2">
+          <div className="mt-4 space-y-2">
             {isSelected ? (
               <Button variant="default" className="w-full gap-2" disabled>
                 <Check className="h-4 w-4" />
@@ -118,18 +118,17 @@ export function HouseTypeCard({
               </Button>
             )}
             {floorPlan && (
-              <Button
-                variant="outline"
-                size="icon"
-                className="shrink-0"
+              <button
+                type="button"
+                className="flex w-full items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowPreview(true);
                 }}
-                title="Grundriss anzeigen"
               >
-                <Eye className="h-4 w-4" />
-              </Button>
+                <Eye className="h-3.5 w-3.5" />
+                Grundriss ansehen
+              </button>
             )}
           </div>
         </CardContent>
