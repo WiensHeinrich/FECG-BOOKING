@@ -17,15 +17,15 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
+        <Link href="/" className="flex items-center gap-2.5 font-semibold">
           <Image
             src="/logo.png"
-            alt="FECG Logo"
-            width={40}
-            height={28}
-            className="h-7 w-auto"
+            alt="FECG Trossingen"
+            width={160}
+            height={48}
+            className="h-9 w-auto"
           />
-          <span className="text-lg">{siteConfig.name}</span>
+          <span className="text-lg hidden sm:inline">{siteConfig.name}</span>
         </Link>
 
         {/* Desktop Navigation */}
