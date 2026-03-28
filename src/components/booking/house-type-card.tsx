@@ -39,23 +39,28 @@ export function HouseTypeCard({
     <>
       <Card
         className={cn(
-          "group relative cursor-pointer transition-all duration-200 hover:shadow-md hover:-translate-y-0.5",
-          isSelected && "ring-2 ring-primary shadow-md",
+          "group relative flex flex-col cursor-pointer overflow-hidden transition-all duration-300",
+          "hover:shadow-lg hover:-translate-y-1",
+          isSelected && "ring-2 ring-primary shadow-lg",
           isSoldOut && "opacity-70"
         )}
         onClick={onSelect}
       >
-        <CardHeader className="pb-3">
+        {/* Hover-Schimmer-Effekt */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/0 via-accent/0 to-primary/0 transition-all duration-500 group-hover:from-primary/[0.06] group-hover:via-accent/[0.08] group-hover:to-primary/[0.04]" />
+        <div className="pointer-events-none absolute -inset-1 bg-gradient-to-r from-transparent via-white/0 to-transparent transition-all duration-700 group-hover:via-white/[0.12] group-hover:translate-x-full" />
+
+        <CardHeader className="relative pb-3">
           <div className="flex items-start justify-between">
-            <CardTitle className="text-lg">{houseType.name}</CardTitle>
+            <CardTitle className="text-lg transition-colors duration-300 group-hover:text-primary">{houseType.name}</CardTitle>
             <Badge
               className={cn(
-                "text-xs",
+                "text-xs shrink-0 transition-colors duration-300",
                 isSoldOut
                   ? "bg-muted text-muted-foreground"
                   : availableCount <= 2
                     ? "bg-primary/15 text-primary border-primary/25"
-                    : "bg-accent text-accent-foreground border-accent"
+                    : "bg-accent text-accent-foreground border-accent group-hover:bg-primary/15 group-hover:text-primary group-hover:border-primary/25"
               )}
               variant="outline"
             >
@@ -63,7 +68,8 @@ export function HouseTypeCard({
             </Badge>
           </div>
         </CardHeader>
-        <CardContent>
+
+        <CardContent className="relative flex flex-1 flex-col">
           {houseType.description && (
             <p className="text-sm text-muted-foreground leading-relaxed">
               {houseType.description}
@@ -89,7 +95,7 @@ export function HouseTypeCard({
                 <Badge
                   key={feature}
                   variant="outline"
-                  className="text-xs font-normal border-border/60 bg-muted/50"
+                  className="text-xs font-normal border-border/60 bg-muted/50 transition-colors duration-300 group-hover:border-primary/20 group-hover:bg-primary/[0.06]"
                 >
                   {feature}
                 </Badge>
@@ -102,6 +108,9 @@ export function HouseTypeCard({
             </div>
           )}
 
+          {/* Spacer schiebt Buttons nach unten */}
+          <div className="flex-1" />
+
           <div className="mt-4 space-y-2">
             {isSelected ? (
               <Button variant="default" className="w-full gap-2" disabled>
@@ -111,7 +120,7 @@ export function HouseTypeCard({
             ) : (
               <Button
                 variant="outline"
-                className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                className="w-full transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary group-hover:shadow-md group-hover:shadow-primary/20"
                 onClick={(e) => {
                   e.stopPropagation();
                   onSelect();
@@ -120,7 +129,7 @@ export function HouseTypeCard({
                 {isSoldOut ? "Auf Warteliste setzen" : "Auswählen"}
               </Button>
             )}
-            {floorPlan && (
+            {floorPlan ? (
               <button
                 type="button"
                 className="flex w-full items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
@@ -132,6 +141,8 @@ export function HouseTypeCard({
                 <Eye className="h-3.5 w-3.5" />
                 Grundriss ansehen
               </button>
+            ) : (
+              <div className="h-5" />
             )}
           </div>
         </CardContent>
