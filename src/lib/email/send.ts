@@ -15,7 +15,7 @@ export async function sendEmail({
   }
 
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resend!.emails.send({
       from: EMAIL_FROM,
       to,
       subject,
