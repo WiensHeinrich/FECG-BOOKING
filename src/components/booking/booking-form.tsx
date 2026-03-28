@@ -203,16 +203,16 @@ export function BookingForm({
                 : "Die Kontaktperson wird für die Reservierung gespeichert."}
             </p>
             <Card className="mt-4">
-              <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
-                <div>
+              <CardContent className="grid gap-5 pt-6 md:grid-cols-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="contact_first_name">Vorname *</Label>
                   <Input id="contact_first_name" name="contact_first_name" required />
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="contact_last_name">Nachname *</Label>
                   <Input id="contact_last_name" name="contact_last_name" required />
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="contact_email">E-Mail *</Label>
                   <Input
                     id="contact_email"
@@ -221,7 +221,7 @@ export function BookingForm({
                     required
                   />
                 </div>
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="contact_phone">Telefon</Label>
                   <Input id="contact_phone" name="contact_phone" type="tel" />
                 </div>
