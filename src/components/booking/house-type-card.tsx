@@ -37,7 +37,7 @@ export function HouseTypeCard({
           <Badge variant={isSoldOut ? "secondary" : availableCount <= 2 ? "destructive" : "default"}>
             {isSoldOut
               ? "Ausgebucht"
-              : `${availableCount} verfuegbar`}
+              : `${availableCount} verfügbar`}
           </Badge>
         </div>
       </CardHeader>
@@ -70,7 +70,7 @@ export function HouseTypeCard({
           {isSelected ? (
             <Button variant="default" className="w-full gap-2" disabled>
               <Check className="h-4 w-4" />
-              Ausgewaehlt
+              Ausgewählt
             </Button>
           ) : (
             <Button
@@ -78,7 +78,7 @@ export function HouseTypeCard({
               className="w-full"
               onClick={onSelect}
             >
-              {isSoldOut ? "Auf Warteliste setzen" : "Auswaehlen"}
+              {isSoldOut ? "Auf Warteliste setzen" : "Auswählen"}
             </Button>
           )}
         </div>

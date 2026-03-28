@@ -56,7 +56,7 @@ export async function createHouseType(data: {
     return { error: "Haustyp konnte nicht erstellt werden: " + error.message };
   }
 
-  // 2. Einzelne Haeuser anlegen
+  // 2. Einzelne Häuser anlegen
   const houses = Array.from({ length: data.total_quantity }, (_, i) => ({
     house_type_id: houseType.id,
     house_number: i + 1,
@@ -66,7 +66,7 @@ export async function createHouseType(data: {
   const { error: housesError } = await supabase.from("houses").insert(houses);
 
   if (housesError) {
-    return { error: "Haeuser konnten nicht erstellt werden: " + housesError.message };
+    return { error: "Häuser konnten nicht erstellt werden: " + housesError.message };
   }
 
   revalidatePath("/admin/haeuser");
@@ -78,7 +78,7 @@ export async function deleteHouseType(id: string) {
   await requireAdminAccess();
   const supabase = createAdminClient();
 
-  // Pruefen ob Reservierungen existieren
+  // Prüfen ob Reservierungen existieren
   const { data: houses } = await supabase
     .from("houses")
     .select("id")
@@ -94,18 +94,18 @@ export async function deleteHouseType(id: string) {
 
     if (reservations && reservations.length > 0) {
       return {
-        error: "Kann nicht geloescht werden - es gibt aktive Reservierungen fuer diesen Haustyp.",
+        error: "Kann nicht gelöscht werden - es gibt aktive Reservierungen für diesen Haustyp.",
       };
     }
 
-    // Haeuser loeschen
+    // Häuser löschen
     await supabase.from("houses").delete().eq("house_type_id", id);
   }
 
   const { error } = await supabase.from("house_types").delete().eq("id", id);
 
   if (error) {
-    return { error: "Loeschen fehlgeschlagen: " + error.message };
+    return { error: "Löschen fehlgeschlagen: " + error.message };
   }
 
   revalidatePath("/admin/haeuser");
@@ -117,7 +117,7 @@ export async function addHouse(houseTypeId: string) {
   await requireAdminAccess();
   const supabase = createAdminClient();
 
-  // Hoechste Hausnummer finden
+  // Höchste Hausnummer finden
   const { data: existing } = await supabase
     .from("houses")
     .select("house_number")
@@ -134,7 +134,7 @@ export async function addHouse(houseTypeId: string) {
   });
 
   if (error) {
-    return { error: "Haus konnte nicht hinzugefuegt werden." };
+    return { error: "Haus konnte nicht hinzugefügt werden." };
   }
 
   // total_quantity aktualisieren
@@ -157,7 +157,7 @@ export async function removeHouse(houseId: string, houseTypeId: string) {
   await requireAdminAccess();
   const supabase = createAdminClient();
 
-  // Pruefen ob Reservierung existiert
+  // Prüfen ob Reservierung existiert
   const { data: reservation } = await supabase
     .from("reservations")
     .select("id")

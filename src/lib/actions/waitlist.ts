@@ -20,7 +20,7 @@ export async function joinWaitlist(formData: WaitlistFormData) {
   const parsed = waitlistSchema.safeParse(formData);
 
   if (!parsed.success) {
-    return { error: "Ungueltige Eingaben." };
+    return { error: "Ungültige Eingaben." };
   }
 
   if (
@@ -28,7 +28,7 @@ export async function joinWaitlist(formData: WaitlistFormData) {
     process.env.NEXT_PUBLIC_SUPABASE_URL.includes("dein-projekt") ||
     !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   ) {
-    return { error: "Die Warteliste ist in dieser Umgebung nicht verfuegbar." };
+    return { error: "Die Warteliste ist in dieser Umgebung nicht verfügbar." };
   }
 
   const data = parsed.data;

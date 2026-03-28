@@ -20,10 +20,10 @@ export async function confirmPayment(reservationId: string) {
     .eq("id", reservationId);
 
   if (error) {
-    return { error: "Zahlung konnte nicht bestaetigt werden." };
+    return { error: "Zahlung konnte nicht bestätigt werden." };
   }
 
-  // Bestaetigungs-E-Mail senden
+  // Bestätigungs-E-Mail senden
   const { data: reservation } = await supabase
     .from("reservations")
     .select("contact_first_name, contact_email, total_price, house:houses!inner(house_number, house_type:house_types!inner(name))")
@@ -109,7 +109,7 @@ export async function extendReservation(reservationId: string, days: number) {
     .eq("id", reservationId);
 
   if (error) {
-    return { error: "Verlaengerung fehlgeschlagen." };
+    return { error: "Verlängerung fehlgeschlagen." };
   }
 
   revalidatePath("/admin/reservierungen");

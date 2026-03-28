@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s | FECG Gemeindefreizeit",
   },
   description:
-    "Buchungssystem fuer die Gemeindefreizeit der FECG Trossingen e.V. Reservieren Sie Ihr Ferienhaus und melden Sie sich online an.",
+    "Buchungssystem für die Gemeindefreizeit der FECG Trossingen e.V. Reservieren Sie Ihr Ferienhaus und melden Sie sich online an.",
 };
 
 export default function RootLayout({

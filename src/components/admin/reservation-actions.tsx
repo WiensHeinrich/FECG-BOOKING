@@ -60,15 +60,15 @@ export function ReservationActions({
                   handleAction(
                     () => confirmPayment(reservationId),
                     "confirm",
-                    "Zahlung bestaetigt!"
+                    "Zahlung bestätigt!"
                   )
                 }
                 disabled={loading !== null}
               >
                 <CheckCircle className="mr-2 h-4 w-4" />
                 {loading === "confirm"
-                  ? "Wird bestaetigt..."
-                  : "Zahlung bestaetigen"}
+                  ? "Wird bestätigt..."
+                  : "Zahlung bestätigen"}
               </Button>
             )}
             <Button
@@ -77,13 +77,13 @@ export function ReservationActions({
                 handleAction(
                   () => extendReservation(reservationId, 7),
                   "extend",
-                  "Reservierung um 7 Tage verlaengert!"
+                  "Reservierung um 7 Tage verlängert!"
                 )
               }
               disabled={loading !== null}
             >
               <Clock className="mr-2 h-4 w-4" />
-              {loading === "extend" ? "Wird verlaengert..." : "+7 Tage verlaengern"}
+              {loading === "extend" ? "Wird verlängert..." : "+7 Tage verlängern"}
             </Button>
             <Button
               variant="destructive"

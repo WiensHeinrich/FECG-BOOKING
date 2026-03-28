@@ -1,5 +1,5 @@
-// Manuelle Typen bis Supabase CLI verfuegbar ist
-// Spaeter durch `supabase gen types typescript` ersetzen
+// Manuelle Typen bis Supabase CLI verfügbar ist
+// Später durch `supabase gen types typescript` ersetzen
 
 export type ReservationStatus = 'reserviert' | 'bestaetigt' | 'storniert' | 'abgelaufen'
 export type PaymentStatus = 'ausstehend' | 'eingegangen' | 'erstattet'

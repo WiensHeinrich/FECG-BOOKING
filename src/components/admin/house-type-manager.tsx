@@ -126,7 +126,7 @@ function HouseTypeCard({
     const result = await addHouse(ht.id);
     if (result.error) toast.error(result.error);
     else {
-      toast.success("Haus hinzugefuegt!");
+      toast.success("Haus hinzugefügt!");
       router.refresh();
     }
     setLoading(null);
@@ -145,12 +145,12 @@ function HouseTypeCard({
   }
 
   async function handleDelete() {
-    if (!confirm(`Haustyp "${ht.name}" wirklich loeschen? Alle zugehoerigen Haeuser werden ebenfalls geloescht.`)) return;
+    if (!confirm(`Haustyp "${ht.name}" wirklich löschen? Alle zugehörigen Häuser werden ebenfalls gelöscht.`)) return;
     setLoading("delete");
     const result = await deleteHouseType(ht.id);
     if (result.error) toast.error(result.error);
     else {
-      toast.success("Haustyp geloescht!");
+      toast.success("Haustyp gelöscht!");
       router.refresh();
     }
     setLoading(null);
@@ -196,7 +196,7 @@ function HouseTypeCard({
                 <Input name="name" defaultValue={ht.name} required />
               </div>
               <div className="space-y-2">
-                <Label>Max. Gaeste</Label>
+                <Label>Max. Gäste</Label>
                 <Input
                   name="max_guests"
                   type="number"
@@ -239,7 +239,7 @@ function HouseTypeCard({
           <div className="text-sm text-muted-foreground">
             {ht.description && <p className="mb-1">{ht.description}</p>}
             <p>
-              max. {ht.max_guests} Gaeste &middot;{" "}
+              max. {ht.max_guests} Gäste &middot;{" "}
               {new Intl.NumberFormat("de-DE", {
                 style: "currency",
                 currency: "EUR",
@@ -251,7 +251,7 @@ function HouseTypeCard({
           </div>
         )}
 
-        {/* Haeuser-Grid */}
+        {/* Häuser-Grid */}
         <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {ht.houses.map((house) => (
             <div
@@ -306,7 +306,7 @@ function HouseTypeCard({
             </div>
           ))}
 
-          {/* Haus hinzufuegen */}
+          {/* Haus hinzufügen */}
           {editing && (
             <button
               onClick={handleAddHouse}
@@ -314,7 +314,7 @@ function HouseTypeCard({
               className="flex items-center justify-center gap-2 rounded-md border-2 border-dashed border-gray-300 p-3 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-primary"
             >
               <Plus className="h-4 w-4" />
-              Haus hinzufuegen
+              Haus hinzufügen
             </button>
           )}
         </div>
@@ -401,7 +401,7 @@ function NewHouseTypeDialog({
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>Max. Gaeste</Label>
+              <Label>Max. Gäste</Label>
               <Input name="max_guests" type="number" placeholder="6" required />
             </div>
             <div className="space-y-2">
@@ -416,14 +416,14 @@ function NewHouseTypeDialog({
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Anzahl Haeuser</Label>
+            <Label>Anzahl Häuser</Label>
             <Input name="total_quantity" type="number" placeholder="4" required />
           </div>
           <div className="space-y-2">
             <Label>Features (kommagetrennt)</Label>
             <Input
               name="features"
-              placeholder="2 Schlafzimmer, Wohnkueche, Bad mit Dusche"
+              placeholder="2 Schlafzimmer, Wohnküche, Bad mit Dusche"
             />
           </div>
           <div className="space-y-2">

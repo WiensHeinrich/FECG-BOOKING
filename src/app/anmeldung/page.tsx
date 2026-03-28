@@ -6,7 +6,7 @@ import { BookingForm } from "@/components/booking/booking-form";
 
 export const metadata: Metadata = {
   title: "Anmeldung",
-  description: "Melden Sie sich fuer die Gemeindefreizeit an und reservieren Sie Ihr Ferienhaus.",
+  description: "Melden Sie sich für die Gemeindefreizeit an und reservieren Sie Ihr Ferienhaus.",
 };
 
 export default async function AnmeldungPage() {
@@ -29,7 +29,7 @@ export default async function AnmeldungPage() {
     return (
       <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">Anmeldung nicht moeglich</h1>
+          <h1 className="text-2xl font-bold">Anmeldung nicht möglich</h1>
           <p className="mt-2 text-muted-foreground">
             {now < new Date(event.registration_start)
               ? `Die Anmeldung startet am ${new Date(event.registration_start).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" })}.`
@@ -50,7 +50,7 @@ export default async function AnmeldungPage() {
       <div className="mx-auto max-w-4xl">
         <h1 className="text-3xl font-bold">Anmeldung</h1>
         <p className="mt-2 text-muted-foreground">
-          Waehlen Sie Ihre Unterkunft und tragen Sie alle Gaeste ein.
+          Wählen Sie Ihre Unterkunft und tragen Sie alle Gäste ein.
         </p>
 
         <div className="mt-8">

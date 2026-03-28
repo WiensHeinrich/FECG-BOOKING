@@ -16,7 +16,7 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    return { error: "Ungueltige Zugangsdaten." };
+    return { error: "Ungültige Zugangsdaten." };
   }
 
   const { data: isAdmin, error: adminCheckError } = await supabase.rpc(

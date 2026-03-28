@@ -14,7 +14,7 @@ export const bookingFormSchema = z.object({
   house_type_id: z.string().uuid(),
   contact_first_name: z.string().min(1, "Vorname ist erforderlich"),
   contact_last_name: z.string().min(1, "Nachname ist erforderlich"),
-  contact_email: z.email("Bitte gueltige E-Mail-Adresse eingeben"),
+  contact_email: z.email("Bitte gültige E-Mail-Adresse eingeben"),
   contact_phone: z.string().optional(),
   guests: z.array(guestSchema).min(1, "Mindestens ein Gast erforderlich"),
 });

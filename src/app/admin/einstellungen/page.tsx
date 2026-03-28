@@ -224,7 +224,7 @@ export default function EinstellungenPage() {
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="bank_reference_prefix">
-                Verwendungszweck-Praefix
+                Verwendungszweck-Präfix
               </Label>
               <Input
                 id="bank_reference_prefix"

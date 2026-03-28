@@ -67,8 +67,8 @@ export default async function InformationenPage() {
                 <p className="mt-2">
                   Das Feriendorf ist gut ausgeschildert. Bitte beachten: Das Dorf
                   ist <strong>autofrei</strong> — Fahrzeuge sind im Dorf nicht
-                  erlaubt. Parkplaetze befinden sich in der Naehe. Fuer den
-                  Gepaecktransport stehen Bollerwagen zur Verfuegung.
+                  erlaubt. Parkplätze befinden sich in der Nähe. Für den
+                  Gepäcktransport stehen Bollerwagen zur Verfügung.
                 </p>
               </CardContent>
             </Card>
@@ -128,7 +128,7 @@ export default async function InformationenPage() {
         <section className="mt-10">
           <h2 className="flex items-center gap-2 text-2xl font-semibold">
             <Info className="h-6 w-6 text-primary" />
-            Ausstattung der Unterkuenfte
+            Ausstattung der Unterkünfte
           </h2>
           <Card className="mt-4">
             <CardContent className="pt-6">
@@ -138,9 +138,9 @@ export default async function InformationenPage() {
                   <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                     <li>Kaffeemaschine (Filtertüten mitbringen)</li>
                     <li>Wasserkocher</li>
-                    <li>Kuehlschrank (kein Gefrierfach)</li>
+                    <li>Kühlschrank (kein Gefrierfach)</li>
                     <li>Grundgeschirr und Besteck</li>
-                    <li>Bettwaesche inklusive</li>
+                    <li>Bettwäsche inklusive</li>
                     <li>Kinderbett und Hochstuhl (auf Anfrage)</li>
                     <li>WLAN (Passwort: &quot;eckenhof&quot;)</li>
                     <li>Heizung</li>
@@ -149,11 +149,11 @@ export default async function InformationenPage() {
                 <div>
                   <p className="font-medium text-amber-700">Nicht vorhanden</p>
                   <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                    <li>Backofen (nur Typ C Haeuser)</li>
-                    <li>Spuelmaschine (nur Typ C Haeuser)</li>
+                    <li>Backofen (nur Typ C Häuser)</li>
+                    <li>Spülmaschine (nur Typ C Häuser)</li>
                     <li>Gefrierfach</li>
                     <li>Elektrogrill (Gemeinschaftsgrill vorhanden)</li>
-                    <li>TV im Haus (TV-Raum im Hauptgebaeude)</li>
+                    <li>TV im Haus (TV-Raum im Hauptgebäude)</li>
                   </ul>
                 </div>
               </div>
@@ -170,12 +170,12 @@ export default async function InformationenPage() {
           <Card className="mt-4">
             <CardContent className="pt-6">
               <ul className="grid gap-1 text-sm text-muted-foreground sm:grid-cols-2">
-                <li>Spuelmittel und Spueltabs</li>
-                <li>Spueltuether und Putzlappen</li>
-                <li>Muellbeutel</li>
+                <li>Spülmittel und Spültabs</li>
+                <li>Spültücher und Putzlappen</li>
+                <li>Müllbeutel</li>
                 <li>Toilettenpapier</li>
-                <li>Filtertueten fuer die Kaffeemaschine</li>
-                <li>Handtuecher</li>
+                <li>Filtertüten für die Kaffeemaschine</li>
+                <li>Handtücher</li>
                 <li>Sandspielzeug (Sandkasten vorhanden)</li>
                 <li>Eigenes Datenvolumen (WLAN evtl. begrenzt)</li>
               </ul>
@@ -194,9 +194,9 @@ export default async function InformationenPage() {
               <CardContent className="flex items-start gap-3 pt-6">
                 <UtensilsCrossed className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                 <div>
-                  <p className="font-medium">Grosser Grillplatz</p>
+                  <p className="font-medium">Großer Grillplatz</p>
                   <p className="text-sm text-muted-foreground">
-                    Ueberdachter Gemeinschaftsgrill fuer alle Gaeste
+                    Überdachter Gemeinschaftsgrill für alle Gäste
                   </p>
                 </div>
               </CardContent>
@@ -207,8 +207,8 @@ export default async function InformationenPage() {
                 <div>
                   <p className="font-medium">Waschraum</p>
                   <p className="text-sm text-muted-foreground">
-                    Muenzbetriebene Waschmaschine & Trockner (3,50 €/Ladung).
-                    Buegeleisen vorhanden.
+                    Münzbetriebene Waschmaschine & Trockner (3,50 €/Ladung).
+                    Bügeleisen vorhanden.
                   </p>
                 </div>
               </CardContent>
@@ -219,7 +219,7 @@ export default async function InformationenPage() {
                 <div>
                   <p className="font-medium">Spielplatz & Spieleverleih</p>
                   <p className="text-sm text-muted-foreground">
-                    Kinderspielplatz mit Sandkasten. Baelle, Badminton u.v.m. an
+                    Kinderspielplatz mit Sandkasten. Bälle, Badminton u.v.m. an
                     der Rezeption ausleihbar.
                   </p>
                 </div>
@@ -231,7 +231,7 @@ export default async function InformationenPage() {
                 <div>
                   <p className="font-medium">WLAN & TV-Raum</p>
                   <p className="text-sm text-muted-foreground">
-                    WLAN im gesamten Dorf. TV-Raum im Hauptgebaeude (Schluessel
+                    WLAN im gesamten Dorf. TV-Raum im Hauptgebäude (Schlüssel
                     an der Rezeption).
                   </p>
                 </div>
@@ -264,7 +264,7 @@ export default async function InformationenPage() {
                 </li>
               </ul>
               <p className="mt-2">
-                Bei Schwerbehinderung ab 80% entfaellt die Kurtaxe (Nachweis
+                Bei Schwerbehinderung ab 80% entfällt die Kurtaxe (Nachweis
                 erforderlich).
               </p>
             </CardContent>
@@ -281,7 +281,7 @@ export default async function InformationenPage() {
           <div className="mt-4 grid gap-4">
             {[
               {
-                title: "Uebersichtsplan Feriendorf Eckenhof",
+                title: "Übersichtsplan Feriendorf Eckenhof",
                 href: "/docs/uebersichtsplan-eckenhof.jpg",
                 description: "Lageplan des gesamten Feriendorfs",
               },
@@ -302,9 +302,9 @@ export default async function InformationenPage() {
                   "Raumaufteilung Ferienhaus Typ C (8–10 Personen)",
               },
               {
-                title: "Grundriss Gaestehaus",
+                title: "Grundriss Gästehaus",
                 href: "/docs/grundriss-gaestehaus.pdf",
-                description: "Raumaufteilung Gaestehaus G1-10",
+                description: "Raumaufteilung Gästehaus G1-10",
               },
             ].map((doc) => (
               <Card key={doc.href}>

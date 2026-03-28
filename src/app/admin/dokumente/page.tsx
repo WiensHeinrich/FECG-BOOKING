@@ -23,7 +23,7 @@ export default async function DokumentePage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dokumente</h1>
         <p className="text-sm text-muted-foreground">
-          Dokumente koennen aktuell ueber die Supabase-Konsole verwaltet werden.
+          Dokumente können aktuell über die Supabase-Konsole verwaltet werden.
         </p>
       </div>
 
@@ -53,7 +53,7 @@ export default async function DokumentePage() {
                   </div>
                 </div>
                 <Badge variant={doc.is_published ? "default" : "secondary"}>
-                  {doc.is_published ? "Veroeffentlicht" : "Entwurf"}
+                  {doc.is_published ? "Veröffentlicht" : "Entwurf"}
                 </Badge>
               </CardContent>
             </Card>

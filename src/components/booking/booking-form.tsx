@@ -96,14 +96,14 @@ export function BookingForm({
     setError(null);
 
     if (!selectedTypeId || !selectedType) {
-      setError("Bitte waehlen Sie einen Haustyp aus.");
+      setError("Bitte wählen Sie einen Haustyp aus.");
       return;
     }
 
     const requiredMin = Math.max(selectedType.max_guests - 1, 1);
     if (guests.length < requiredMin) {
       setError(
-        `Bitte tragen Sie mindestens ${requiredMin} Gaeste ein. Das ${selectedType.name} ist fuer ${selectedType.max_guests} Personen ausgelegt.`
+        `Bitte tragen Sie mindestens ${requiredMin} Gäste ein. Das ${selectedType.name} ist für ${selectedType.max_guests} Personen ausgelegt.`
       );
       return;
     }
@@ -130,7 +130,7 @@ export function BookingForm({
     setError(null);
 
     if (!selectedTypeId || !selectedType) {
-      setError("Bitte waehlen Sie einen Haustyp aus.");
+      setError("Bitte wählen Sie einen Haustyp aus.");
       return;
     }
 
@@ -154,9 +154,9 @@ export function BookingForm({
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="text-xl font-semibold">1. Unterkunft waehlen</h2>
+        <h2 className="text-xl font-semibold">1. Unterkunft wählen</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Waehlen Sie Ihren gewuenschten Unterkunftstyp aus.
+          Wählen Sie Ihren gewünschten Unterkunftstyp aus.
         </p>
         <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {houseTypes.map((ht) => {
@@ -180,8 +180,8 @@ export function BookingForm({
             <h2 className="text-xl font-semibold">2. Kontaktdaten</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {isSoldOut
-                ? "Wir verwenden diese Angaben fuer Ihren Wartelisteneintrag."
-                : "Die Kontaktperson wird fuer die Reservierung gespeichert."}
+                ? "Wir verwenden diese Angaben für Ihren Wartelisteneintrag."
+                : "Die Kontaktperson wird für die Reservierung gespeichert."}
             </p>
             <Card className="mt-4">
               <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
@@ -216,14 +216,14 @@ export function BookingForm({
             <section>
               <h2 className="text-xl font-semibold">3. Warteliste</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Dieser Unterkunftstyp ist aktuell ausgebucht. Sie koennen sich
-                fuer {selectedType.name} auf die Warteliste setzen lassen.
+                Dieser Unterkunftstyp ist aktuell ausgebucht. Sie können sich
+                für {selectedType.name} auf die Warteliste setzen lassen.
               </p>
 
               <Card className="mt-4">
                 <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
                   <div>
-                    <Label htmlFor="guest_count">Anzahl Gaeste *</Label>
+                    <Label htmlFor="guest_count">Anzahl Gäste *</Label>
                     <Input
                       id="guest_count"
                       name="guest_count"
@@ -243,7 +243,7 @@ export function BookingForm({
                     />
                   </div>
                   <div className="flex items-end text-sm text-muted-foreground">
-                    Maximal {selectedType.max_guests} Personen fuer diesen
+                    Maximal {selectedType.max_guests} Personen für diesen
                     Unterkunftstyp.
                   </div>
                 </CardContent>
@@ -251,9 +251,9 @@ export function BookingForm({
             </section>
           ) : (
             <section>
-              <h2 className="text-xl font-semibold">3. Gaeste eintragen</h2>
+              <h2 className="text-xl font-semibold">3. Gäste eintragen</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Tragen Sie alle Personen ein, die im {selectedType.name} uebernachten
+                Tragen Sie alle Personen ein, die im {selectedType.name} übernachten
                 (mind. {Math.max(selectedType.max_guests - 1, 1)}, max. {selectedType.max_guests + 2} Personen).
               </p>
 
@@ -327,7 +327,7 @@ export function BookingForm({
                         </Label>
                       </div>
                       <div className="md:col-span-2">
-                        <Label>Ernaehrungshinweise / Allergien</Label>
+                        <Label>Ernährungshinweise / Allergien</Label>
                         <Textarea
                           value={guest.dietary_notes ?? ""}
                           onChange={(e) =>
@@ -349,7 +349,7 @@ export function BookingForm({
                     onClick={addGuest}
                   >
                     <Plus className="h-4 w-4" />
-                    Weiteren Gast hinzufuegen
+                    Weiteren Gast hinzufügen
                   </Button>
                 )}
               </div>
@@ -368,7 +368,7 @@ export function BookingForm({
                     <span className="font-medium">{selectedType.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Anzahl Gaeste</span>
+                    <span className="text-muted-foreground">Anzahl Gäste</span>
                     <span className="font-medium">
                       {isSoldOut ? waitlistGuestCount : guests.length}
                     </span>
@@ -387,7 +387,7 @@ export function BookingForm({
                 <p className="mt-4 text-xs text-muted-foreground">
                   {isSoldOut
                     ? "Der Eintrag wird auf der Warteliste gespeichert. Sobald eine passende Unterkunft frei wird, kann das Freizeitteam Sie kontaktieren."
-                    : `Nach dem Absenden werden die Zahlungsdaten direkt auf der Bestaetigungsseite angezeigt. Die Reservierung bleibt ${reservationValidityDays} Tage gueltig.`}
+                    : `Nach dem Absenden werden die Zahlungsdaten direkt auf der Bestätigungsseite angezeigt. Die Reservierung bleibt ${reservationValidityDays} Tage gültig.`}
                 </p>
               </CardContent>
             </Card>

@@ -59,7 +59,7 @@ export default async function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalReservations}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.confirmed} bestaetigt, {stats.pending} offen
+              {stats.confirmed} bestätigt, {stats.pending} offen
             </p>
           </CardContent>
         </Card>
@@ -91,7 +91,7 @@ export default async function AdminDashboard() {
               {formatCurrency(stats.totalRevenue)}
             </div>
             <p className="text-xs text-muted-foreground">
-              {stats.confirmed} bestaetigte Buchungen
+              {stats.confirmed} bestätigte Buchungen
             </p>
           </CardContent>
         </Card>
@@ -149,7 +149,7 @@ export default async function AdminDashboard() {
                       <p className="text-xs text-muted-foreground">
                         {r.house.house_type.name} &middot; Haus{" "}
                         {r.house.house_number} &middot;{" "}
-                        {r.guests.length} Gaeste
+                        {r.guests.length} Gäste
                       </p>
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export default async function AdminDashboard() {
 function StatusBadge({ status }: { status: string }) {
   const variants: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
     reserviert: { label: "Reserviert", variant: "outline" },
-    bestaetigt: { label: "Bestaetigt", variant: "default" },
+    bestaetigt: { label: "Bestätigt", variant: "default" },
     storniert: { label: "Storniert", variant: "destructive" },
     abgelaufen: { label: "Abgelaufen", variant: "secondary" },
   };

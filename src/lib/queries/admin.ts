@@ -181,7 +181,7 @@ export async function getWaitlist(eventId: string) {
   return data as (WaitlistEntry & { house_type: { name: string } })[];
 }
 
-// Aktives Event fuer Admin
+// Aktives Event für Admin
 export async function getActiveEventAdmin() {
   await requireAdminAccess();
   const supabase = createAdminClient();

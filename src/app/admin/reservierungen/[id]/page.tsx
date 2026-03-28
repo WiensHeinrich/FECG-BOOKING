@@ -58,7 +58,7 @@ export default async function ReservationDetailPage({
           <CardContent className="space-y-2 text-sm">
             <Row label="Typ" value={r.house.house_type.name} />
             <Row label="Haus" value={`Nr. ${r.house.house_number}`} />
-            <Row label="Max. Gaeste" value={String(r.house.house_type.max_guests)} />
+            <Row label="Max. Gäste" value={String(r.house.house_type.max_guests)} />
           </CardContent>
         </Card>
 
@@ -72,7 +72,7 @@ export default async function ReservationDetailPage({
             <Row label="Referenz" value={r.payment_reference} />
             <Row label="Status" value={r.payment_status === "eingegangen" ? "Bezahlt" : "Ausstehend"} />
             {r.payment_confirmed_at && (
-              <Row label="Bestaetigt am" value={formatDateTime(r.payment_confirmed_at)} />
+              <Row label="Bestätigt am" value={formatDateTime(r.payment_confirmed_at)} />
             )}
             {r.status === "reserviert" && (
               <Row label="Ablauf" value={formatDateTime(r.expires_at)} />
@@ -80,11 +80,11 @@ export default async function ReservationDetailPage({
           </CardContent>
         </Card>
 
-        {/* Gaeste */}
+        {/* Gäste */}
         <Card>
           <CardHeader>
             <CardTitle className="text-base">
-              Gaeste ({r.guests.length})
+              Gäste ({r.guests.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -150,7 +150,7 @@ function Row({ label, value }: { label: string; value: string }) {
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
     reserviert: { label: "Reserviert", variant: "outline" },
-    bestaetigt: { label: "Bestaetigt", variant: "default" },
+    bestaetigt: { label: "Bestätigt", variant: "default" },
     storniert: { label: "Storniert", variant: "destructive" },
     abgelaufen: { label: "Abgelaufen", variant: "secondary" },
   };

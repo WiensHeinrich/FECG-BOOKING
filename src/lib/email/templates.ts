@@ -1,5 +1,5 @@
 // E-Mail Templates als HTML-Strings
-// Einfach und robust - kein React-Email noetig
+// Einfach und robust - kein React-Email nötig
 
 const baseStyle = `
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -55,7 +55,7 @@ function formatEuro(amount: number) {
   }).format(amount);
 }
 
-// 1. Reservierungsbestaetigung (nach Buchung)
+// 1. Reservierungsbestätigung (nach Buchung)
 export function reservationConfirmationEmail(data: {
   firstName: string;
   lastName: string;
@@ -76,14 +76,14 @@ export function reservationConfirmationEmail(data: {
   });
 
   return {
-    subject: `Reservierung bestaetigt - ${data.houseTypeName}`,
+    subject: `Reservierung bestätigt - ${data.houseTypeName}`,
     html: `<div style="${baseStyle}">
       <div style="${headerStyle}">
         <h1 style="color: #29B6D1; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
       <h2 style="margin-top: 0;">Hallo ${data.firstName},</h2>
-      <p>Ihre Reservierung wurde erfolgreich erstellt! Bitte ueberweisen Sie den Betrag bis zum <strong>${expiryDate}</strong>.</p>
+      <p>Ihre Reservierung wurde erfolgreich erstellt! Bitte überweisen Sie den Betrag bis zum <strong>${expiryDate}</strong>.</p>
 
       <div style="${cardStyle}">
         <h3 style="margin-top: 0; color: #29B6D1;">Ihre Reservierung</h3>
@@ -91,14 +91,14 @@ export function reservationConfirmationEmail(data: {
           ${row("Unterkunft", `${data.houseTypeName} - ${data.houseLabel}`)}
           ${row("Kontaktperson", `${data.firstName} ${data.lastName}`)}
           ${row("Betrag", formatEuro(data.totalPrice))}
-          ${row("Gueltig bis", expiryDate)}
+          ${row("Gültig bis", expiryDate)}
         </table>
       </div>
 
       <div style="${highlightStyle}">
-        <h3 style="margin-top: 0; color: #29B6D1;">Ueberweisungsdaten</h3>
+        <h3 style="margin-top: 0; color: #29B6D1;">Überweisungsdaten</h3>
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Empfaenger", data.bankAccountHolder)}
+          ${row("Empfänger", data.bankAccountHolder)}
           ${row("IBAN", `<span style="font-family: monospace;">${data.bankIban}</span>`)}
           ${data.bankBic ? row("BIC", `<span style="font-family: monospace;">${data.bankBic}</span>`) : ""}
           ${row("Verwendungszweck", `<strong style="font-family: monospace;">${data.paymentReference}</strong>`)}
@@ -107,11 +107,11 @@ export function reservationConfirmationEmail(data: {
       </div>
 
       <p style="font-size: 13px; color: #666;">
-        Bitte geben Sie unbedingt den <strong>Verwendungszweck</strong> an, damit wir Ihre Zahlung zuordnen koennen.
+        Bitte geben Sie unbedingt den <strong>Verwendungszweck</strong> an, damit wir Ihre Zahlung zuordnen können.
       </p>
 
       <p style="font-size: 13px; color: #666;">
-        <a href="${data.confirmationUrl}" style="color: #29B6D1;">Bestaetigungsseite nochmal oeffnen</a>
+        <a href="${data.confirmationUrl}" style="color: #29B6D1;">Bestätigungsseite nochmal öffnen</a>
       </p>
 
       <div style="${footerStyle}">
@@ -121,7 +121,7 @@ export function reservationConfirmationEmail(data: {
   };
 }
 
-// 2. Buchungsbestaetigung (nach Zahlungseingang)
+// 2. Buchungsbestätigung (nach Zahlungseingang)
 export function bookingConfirmedEmail(data: {
   firstName: string;
   houseTypeName: string;
@@ -129,20 +129,20 @@ export function bookingConfirmedEmail(data: {
   totalPrice: number;
 }) {
   return {
-    subject: `Zahlung bestaetigt - Ihre Buchung ist sicher!`,
+    subject: `Zahlung bestätigt - Ihre Buchung ist sicher!`,
     html: `<div style="${baseStyle}">
       <div style="${headerStyle}">
         <h1 style="color: #29B6D1; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
       <h2 style="margin-top: 0;">Hallo ${data.firstName},</h2>
-      <p>Ihre Zahlung ist eingegangen. Ihre Buchung ist damit bestaetigt! 🎉</p>
+      <p>Ihre Zahlung ist eingegangen. Ihre Buchung ist damit bestätigt! 🎉</p>
 
       <div style="${cardStyle}">
         <table style="width: 100%; border-collapse: collapse;">
           ${row("Unterkunft", `${data.houseTypeName} - ${data.houseLabel}`)}
           ${row("Betrag", formatEuro(data.totalPrice))}
-          ${row("Status", '<span style="color: #16a34a; font-weight: bold;">Bestaetigt</span>')}
+          ${row("Status", '<span style="color: #16a34a; font-weight: bold;">Bestätigt</span>')}
         </table>
       </div>
 
@@ -173,19 +173,19 @@ export function paymentReminderEmail(data: {
   });
 
   return {
-    subject: `Erinnerung: Zahlung bis ${expiryDate} faellig`,
+    subject: `Erinnerung: Zahlung bis ${expiryDate} fällig`,
     html: `<div style="${baseStyle}">
       <div style="${headerStyle}">
         <h1 style="color: #29B6D1; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
       <h2 style="margin-top: 0;">Hallo ${data.firstName},</h2>
-      <p>Ihre Reservierung fuer <strong>${data.houseTypeName}</strong> laeuft am <strong>${expiryDate}</strong> ab. Bitte ueberweisen Sie den Betrag rechtzeitig, damit Ihre Buchung nicht verfaellt.</p>
+      <p>Ihre Reservierung für <strong>${data.houseTypeName}</strong> läuft am <strong>${expiryDate}</strong> ab. Bitte überweisen Sie den Betrag rechtzeitig, damit Ihre Buchung nicht verfällt.</p>
 
       <div style="${highlightStyle}">
-        <h3 style="margin-top: 0; color: #29B6D1;">Ueberweisungsdaten</h3>
+        <h3 style="margin-top: 0; color: #29B6D1;">Überweisungsdaten</h3>
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Empfaenger", data.bankAccountHolder)}
+          ${row("Empfänger", data.bankAccountHolder)}
           ${row("IBAN", `<span style="font-family: monospace;">${data.bankIban}</span>`)}
           ${data.bankBic ? row("BIC", `<span style="font-family: monospace;">${data.bankBic}</span>`) : ""}
           ${row("Verwendungszweck", `<strong style="font-family: monospace;">${data.paymentReference}</strong>`)}
@@ -213,8 +213,8 @@ export function reservationExpiredEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">Hallo ${data.firstName},</h2>
-      <p>Leider ist Ihre Reservierung fuer <strong>${data.houseTypeName}</strong> abgelaufen, da keine Zahlung eingegangen ist.</p>
-      <p>Falls noch Unterkuenfte verfuegbar sind, koennen Sie sich gerne erneut anmelden.</p>
+      <p>Leider ist Ihre Reservierung für <strong>${data.houseTypeName}</strong> abgelaufen, da keine Zahlung eingegangen ist.</p>
+      <p>Falls noch Unterkünfte verfügbar sind, können Sie sich gerne erneut anmelden.</p>
 
       <div style="${footerStyle}">
         <p>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>

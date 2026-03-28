@@ -16,7 +16,7 @@ async function sendReservationEmail(
 ) {
   const supabase = createAdminClient();
 
-  // Event- und Haustyp-Daten fuer die E-Mail laden
+  // Event- und Haustyp-Daten für die E-Mail laden
   const [{ data: event }, { data: houseType }] = await Promise.all([
     supabase.from("events").select("bank_account_holder, bank_iban, bank_bic").eq("id", data.event_id).single(),
     supabase.from("house_types").select("name, price_per_house").eq("id", data.house_type_id).single(),
@@ -51,7 +51,7 @@ export async function createReservation(formData: BookingFormData) {
   const parsed = bookingFormSchema.safeParse(formData);
 
   if (!parsed.success) {
-    return { error: "Ungueltige Eingaben. Bitte ueberpruefen Sie Ihre Daten." };
+    return { error: "Ungültige Eingaben. Bitte überprüfen Sie Ihre Daten." };
   }
 
   if (
@@ -59,7 +59,7 @@ export async function createReservation(formData: BookingFormData) {
     process.env.NEXT_PUBLIC_SUPABASE_URL.includes("dein-projekt") ||
     !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   ) {
-    return { error: "Reservierungen sind in dieser Umgebung nicht verfuegbar." };
+    return { error: "Reservierungen sind in dieser Umgebung nicht verfügbar." };
   }
 
   const data = parsed.data;

@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatCurrency, formatDateShort } from "@/lib/utils/format";
 
 export const metadata: Metadata = {
-  title: "Reservierung bestaetigt",
+  title: "Reservierung bestätigt",
 };
 
 interface Props {
@@ -21,7 +21,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
   if (!id || !token) {
     return (
       <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
-        <p className="text-muted-foreground">Ungueltiger Bestaetigungslink.</p>
+        <p className="text-muted-foreground">Ungültiger Bestätigungslink.</p>
       </div>
     );
   }
@@ -56,7 +56,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
     return (
       <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
         <p className="text-muted-foreground">
-          Reservierung nicht gefunden oder Link nicht mehr gueltig.
+          Reservierung nicht gefunden oder Link nicht mehr gültig.
         </p>
       </div>
     );
@@ -69,8 +69,8 @@ export default async function BestaetigungPage({ searchParams }: Props) {
           <CheckCircle2 className="mx-auto h-16 w-16 text-green-600" />
           <h1 className="mt-4 text-3xl font-bold">Reservierung erfolgreich!</h1>
           <p className="mt-2 text-muted-foreground">
-            Ihre Reservierung wurde erstellt. Bitte ueberweisen Sie den Betrag
-            bis spaetestens zum angegebenen Datum.
+            Ihre Reservierung wurde erstellt. Bitte überweisen Sie den Betrag
+            bis spätestens zum angegebenen Datum.
           </p>
         </div>
 
@@ -97,17 +97,17 @@ export default async function BestaetigungPage({ searchParams }: Props) {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Gueltig bis</span>
+                <span className="text-muted-foreground">Gültig bis</span>
                 <span>{formatDateShort(reservation.expires_at)}</span>
               </div>
             </div>
 
             <Separator className="my-4" />
 
-            <h2 className="font-semibold">Ueberweisungsdaten</h2>
+            <h2 className="font-semibold">Überweisungsdaten</h2>
             <div className="mt-4 space-y-2 rounded-md bg-muted p-4 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Empfaenger</span>
+                <span className="text-muted-foreground">Empfänger</span>
                 <span>{reservation.bank_account_holder}</span>
               </div>
               <div className="flex justify-between">
@@ -136,8 +136,8 @@ export default async function BestaetigungPage({ searchParams }: Props) {
 
             <p className="mt-4 text-xs text-muted-foreground">
               Bitte geben Sie unbedingt den Verwendungszweck an, damit wir Ihre
-              Zahlung zuordnen koennen. Diese Seite enthaelt alle Angaben fuer
-              die Ueberweisung.
+              Zahlung zuordnen können. Diese Seite enthält alle Angaben für
+              die Überweisung.
             </p>
           </CardContent>
         </Card>
@@ -146,7 +146,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
           <Button asChild variant="outline" className="gap-2">
             <Link href="/">
               <ArrowLeft className="h-4 w-4" />
-              Zurueck zur Startseite
+              Zurück zur Startseite
             </Link>
           </Button>
         </div>

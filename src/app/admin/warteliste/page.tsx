@@ -31,7 +31,7 @@ export default async function WaitlistPage() {
                 <TableHead>Pos.</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Haustyp</TableHead>
-                <TableHead>Gaeste</TableHead>
+                <TableHead>Gäste</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Angemeldet</TableHead>
                 <TableHead></TableHead>

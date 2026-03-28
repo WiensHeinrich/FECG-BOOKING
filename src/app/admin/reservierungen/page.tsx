@@ -30,7 +30,7 @@ export default async function ReservierungenPage() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Unterkunft</TableHead>
-                <TableHead>Gaeste</TableHead>
+                <TableHead>Gäste</TableHead>
                 <TableHead>Betrag</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Zahlung</TableHead>
@@ -87,7 +87,7 @@ export default async function ReservierungenPage() {
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
     reserviert: { label: "Reserviert", variant: "outline" },
-    bestaetigt: { label: "Bestaetigt", variant: "default" },
+    bestaetigt: { label: "Bestätigt", variant: "default" },
     storniert: { label: "Storniert", variant: "destructive" },
     abgelaufen: { label: "Abgelaufen", variant: "secondary" },
   };

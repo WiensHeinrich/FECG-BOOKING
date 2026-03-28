@@ -41,7 +41,7 @@ export default async function WaitelistePage({
           <Button asChild variant="outline" className="gap-2">
             <Link href="/">
               <ArrowLeft className="h-4 w-4" />
-              Zurueck zur Startseite
+              Zurück zur Startseite
             </Link>
           </Button>
         </div>
