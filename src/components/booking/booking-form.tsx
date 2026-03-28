@@ -19,6 +19,7 @@ import type { GuestData } from "@/lib/validations/booking";
 interface BookingFormProps {
   eventId: string;
   eventStartDate: string;
+  eventEndDate: string;
   houseTypes: HouseType[];
   availability: Availability[];
   reservationValidityDays: number;
@@ -48,10 +49,14 @@ const emptyGuest: GuestData = {
 export function BookingForm({
   eventId,
   eventStartDate,
+  eventEndDate,
   houseTypes,
   availability,
   reservationValidityDays,
 }: BookingFormProps) {
+  const nights = Math.max(1, Math.round(
+    (new Date(eventEndDate).getTime() - new Date(eventStartDate).getTime()) / (1000 * 60 * 60 * 24)
+  ));
   const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null);
   const [guests, setGuests] = useState<GuestData[]>([{ ...emptyGuest }]);
   const [waitlistGuestCount, setWaitlistGuestCount] = useState(1);
@@ -373,33 +378,86 @@ export function BookingForm({
             <h2 className="text-xl font-semibold">Zusammenfassung</h2>
             <Card className="mt-4">
               <CardContent className="pt-6">
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Unterkunft</span>
-                    <span className="font-medium">{selectedType.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Anzahl Gäste</span>
-                    <span className="font-medium">
-                      {isSoldOut ? waitlistGuestCount : guests.length}
-                    </span>
-                  </div>
-                  {!isSoldOut && (
-                    <>
-                      <Separator />
-                      <div className="flex justify-between text-base font-semibold">
-                        <span>Gesamtpreis</span>
-                        <span>{formatCurrency(selectedType.price_per_house)}</span>
-                      </div>
-                    </>
-                  )}
-                </div>
+                {(() => {
+                  const guestAges = (isSoldOut ? [] : guests).map((g) =>
+                    g.birth_date ? getAgeAtDate(g.birth_date, eventStartDate) : null
+                  );
+                  const adults = guestAges.filter((a) => a === null || a >= 18).length;
+                  const children10to17 = guestAges.filter((a) => a !== null && a >= 10 && a < 18).length;
+                  const childrenUnder10 = guestAges.filter((a) => a !== null && a >= 0 && a < 10).length;
 
-                <p className="mt-4 text-xs text-muted-foreground">
-                  {isSoldOut
-                    ? "Der Eintrag wird auf der Warteliste gespeichert. Sobald eine passende Unterkunft frei wird, kann das Freizeitteam Sie kontaktieren."
-                    : `Nach dem Absenden werden die Zahlungsdaten direkt auf der Bestätigungsseite angezeigt. Die Reservierung bleibt ${reservationValidityDays} Tage gültig.`}
-                </p>
+                  const kurtaxeAdults = adults * 1.80 * nights;
+                  const kurtaxeChildren = children10to17 * 0.90 * nights;
+                  const kurtaxeTotal = kurtaxeAdults + kurtaxeChildren;
+
+                  return (
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Unterkunft</span>
+                        <span className="font-medium">{selectedType.name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Anzahl Gäste</span>
+                        <span className="font-medium">
+                          {isSoldOut ? waitlistGuestCount : guests.length}
+                        </span>
+                      </div>
+                      {!isSoldOut && (
+                        <>
+                          <Separator />
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Hauspreis</span>
+                            <span className="font-medium">{formatCurrency(selectedType.price_per_house)}</span>
+                          </div>
+
+                          {/* Kurtaxe Aufschlüsselung */}
+                          <div className="rounded-lg bg-muted/50 p-3 space-y-1.5">
+                            <p className="text-xs font-semibold text-foreground">
+                              Kurtaxe ({nights} {nights === 1 ? "Tag" : "Tage"}, vor Ort zu zahlen)
+                            </p>
+                            {adults > 0 && (
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>{adults}x Erwachsene (1,80 €/Tag)</span>
+                                <span>{formatCurrency(kurtaxeAdults)}</span>
+                              </div>
+                            )}
+                            {children10to17 > 0 && (
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>{children10to17}x Kinder 10–17 J. (0,90 €/Tag)</span>
+                                <span>{formatCurrency(kurtaxeChildren)}</span>
+                              </div>
+                            )}
+                            {childrenUnder10 > 0 && (
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>{childrenUnder10}x Kinder unter 10</span>
+                                <span>frei</span>
+                              </div>
+                            )}
+                            <div className="flex justify-between text-xs font-medium pt-1 border-t border-border/50">
+                              <span>Kurtaxe gesamt</span>
+                              <span>{formatCurrency(kurtaxeTotal)}</span>
+                            </div>
+                          </div>
+
+                          <Separator />
+                          <div className="flex justify-between text-base font-semibold">
+                            <span>Gesamtkosten</span>
+                            <span>{formatCurrency(selectedType.price_per_house + kurtaxeTotal)}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Hauspreis {formatCurrency(selectedType.price_per_house)} (vorab zu überweisen) + Kurtaxe {formatCurrency(kurtaxeTotal)} (vor Ort)
+                          </p>
+                        </>
+                      )}
+
+                      <p className="mt-4 text-xs text-muted-foreground">
+                        {isSoldOut
+                          ? "Der Eintrag wird auf der Warteliste gespeichert. Sobald eine passende Unterkunft frei wird, kann das Freizeitteam Sie kontaktieren."
+                          : `Nach dem Absenden werden die Zahlungsdaten direkt auf der Bestätigungsseite angezeigt. Die Reservierung bleibt ${reservationValidityDays} Tage gültig.`}
+                      </p>
+                    </div>
+                  );
+                })()}
               </CardContent>
             </Card>
           </section>

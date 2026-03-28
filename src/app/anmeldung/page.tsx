@@ -57,6 +57,7 @@ export default async function AnmeldungPage() {
           <BookingForm
             eventId={event.id}
             eventStartDate={event.start_date}
+            eventEndDate={event.end_date}
             houseTypes={houseTypes}
             availability={availability}
             reservationValidityDays={event.reservation_validity_days}

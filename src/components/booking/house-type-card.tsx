@@ -75,9 +75,12 @@ export function HouseTypeCard({
               <Users className="h-4 w-4" />
               max. {houseType.max_guests} Personen
             </span>
-            <span className="text-lg font-semibold text-foreground">
-              {formatCurrency(houseType.price_per_house)}
-            </span>
+            <div className="text-right">
+              <span className="text-lg font-semibold text-foreground">
+                {formatCurrency(houseType.price_per_house)}
+              </span>
+              <p className="text-[11px] text-muted-foreground">zzgl. Kurtaxe</p>
+            </div>
           </div>
 
           {houseType.features.length > 0 && (
