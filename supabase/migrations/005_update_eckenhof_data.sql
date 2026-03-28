@@ -1,33 +1,26 @@
--- Seed-Daten: Gemeindefreizeit 2026 im Feriendorf Eckenhof Schramberg
+-- Migration 005: Echte Daten vom Feriendorf Eckenhof Schramberg einpflegen
+-- Dieses Script aktualisiert das bestehende Event und ersetzt die Platzhalter-Haustypen.
 
-INSERT INTO events (
-  title, slug, description, location, location_address, location_url,
-  start_date, end_date, registration_start, registration_end,
-  reservation_validity_days, bank_account_holder, bank_iban, bank_bic,
-  bank_reference_prefix, contact_email, contact_phone, is_active
-) VALUES (
-  'Gemeindefreizeit 2026',
-  'gemeindefreizeit-2026',
-  'Herzlich willkommen zur Gemeindefreizeit 2026 der FECG Trossingen e.V.! Wir verbringen eine gemeinsame Woche im autofreien Feriendorf Eckenhof im Schwarzwald — mit Gottesdiensten, Gemeinschaft, Wanderungen und vielem mehr.',
-  'Feriendorf Eckenhof Schramberg',
-  'Dr. Helmut-Junghans-Strasse 50, 78713 Schramberg-Sulgen',
-  'https://maps.google.com/?q=Dr.+Helmut-Junghans-Strasse+50,+78713+Schramberg-Sulgen',
-  '2026-08-01',
-  '2026-08-08',
-  '2026-03-01T00:00:00Z',
-  '2026-07-01T23:59:59Z',
-  14,
-  'FECG Trossingen e.V.',
-  'DE89 3704 0044 0532 0130 00',
-  'COBADEFFXXX',
-  'GF2026',
-  'freizeit@fecg-trossingen.de',
-  '+49 7425 12345',
-  true
+-- 1) Event-Daten aktualisieren
+UPDATE events
+SET
+  location = 'Feriendorf Eckenhof Schramberg',
+  location_address = 'Dr. Helmut-Junghans-Strasse 50, 78713 Schramberg-Sulgen',
+  location_url = 'https://maps.google.com/?q=Dr.+Helmut-Junghans-Strasse+50,+78713+Schramberg-Sulgen',
+  description = 'Herzlich willkommen zur Gemeindefreizeit 2026 der FECG Trossingen e.V.! Wir verbringen eine gemeinsame Woche im autofreien Feriendorf Eckenhof im Schwarzwald — mit Gottesdiensten, Gemeinschaft, Wanderungen und vielem mehr.'
+WHERE slug = 'gemeindefreizeit-2026';
+
+-- 2) Alte Haeuser und Haustypen loeschen (Kaskade: houses -> house_types)
+DELETE FROM houses
+WHERE house_type_id IN (
+  SELECT id FROM house_types
+  WHERE event_id = (SELECT id FROM events WHERE slug = 'gemeindefreizeit-2026')
 );
 
--- Haustypen (Preise = Gesamtpreis fuer 7 Naechte)
+DELETE FROM house_types
+WHERE event_id = (SELECT id FROM events WHERE slug = 'gemeindefreizeit-2026');
 
+-- 3) Neue Haustypen einfuegen (Preise = Gesamtpreis fuer 7 Naechte)
 INSERT INTO house_types (event_id, name, slug, description, max_guests, price_per_house, total_quantity, features, sort_order)
 SELECT e.id, 'Ferienhaus Typ A+B', 'ferienhaus-typ-ab',
   'Geraeumiges Ferienhaus fuer Familien mit bis zu 6 Personen. Drei Schlafzimmer, Kueche, Bad mit Dusche und Terrasse.',
@@ -91,48 +84,57 @@ SELECT e.id, 'Wohnung (2 Pers.)', 'wohnung',
   '["1 Zimmer", "Eigenes Bad", "Kueche", "WLAN", "Kaffeemaschine", "Kuehlschrank", "Bettwaesche inkl."]'::JSONB, 9
 FROM events e WHERE e.slug = 'gemeindefreizeit-2026';
 
--- Haeuser erstellen
+-- 4) Haeuser erstellen
 
+-- Ferienhaus Typ A+B: 22 Haeuser
 INSERT INTO houses (house_type_id, house_number, label)
 SELECT ht.id, gs.n, 'Haus ' || gs.n
 FROM house_types ht, generate_series(1, 22) AS gs(n)
 WHERE ht.slug = 'ferienhaus-typ-ab';
 
+-- Ferienhaus Typ C (10 Pers.): 2 Haeuser
 INSERT INTO houses (house_type_id, house_number, label)
 SELECT ht.id, gs.n, 'Haus C' || gs.n
 FROM house_types ht, generate_series(1, 2) AS gs(n)
 WHERE ht.slug = 'ferienhaus-typ-c-10';
 
+-- Ferienhaus Typ C (8 Pers.): 1 Haus
 INSERT INTO houses (house_type_id, house_number, label)
 SELECT ht.id, 1, 'Haus C3'
 FROM house_types ht
 WHERE ht.slug = 'ferienhaus-typ-c-8';
 
+-- Gaestehaus G1-10: 10 Einheiten
 INSERT INTO houses (house_type_id, house_number, label)
 SELECT ht.id, gs.n, 'Gaestehaus G' || gs.n
 FROM house_types ht, generate_series(1, 10) AS gs(n)
 WHERE ht.slug = 'gaestehaus-g1-10';
 
+-- Gaestehaus G11: 1 Einheit
 INSERT INTO houses (house_type_id, house_number, label)
 SELECT ht.id, 1, 'Gaestehaus G11'
 FROM house_types ht
 WHERE ht.slug = 'gaestehaus-g11';
 
+-- Villa I: 1 Einheit
 INSERT INTO houses (house_type_id, house_number, label)
 SELECT ht.id, 1, 'Villa I'
 FROM house_types ht
 WHERE ht.slug = 'villa-i';
 
+-- Villa II: 1 Einheit
 INSERT INTO houses (house_type_id, house_number, label)
 SELECT ht.id, 1, 'Villa II'
 FROM house_types ht
 WHERE ht.slug = 'villa-ii';
 
+-- Villa III: 1 Einheit
 INSERT INTO houses (house_type_id, house_number, label)
 SELECT ht.id, 1, 'Villa III'
 FROM house_types ht
 WHERE ht.slug = 'villa-iii';
 
+-- Wohnung: 1 Einheit
 INSERT INTO houses (house_type_id, house_number, label)
 SELECT ht.id, 1, 'Wohnung'
 FROM house_types ht
