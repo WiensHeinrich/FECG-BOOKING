@@ -53,22 +53,32 @@ export function BookingForm({
   function selectHouseType(houseType: HouseType) {
     setSelectedTypeId(houseType.id);
     setError(null);
+    const min = Math.max(houseType.max_guests - 1, 1);
+    const max = houseType.max_guests + 2;
     setGuests((prev) => {
-      const trimmedGuests = prev.slice(0, houseType.max_guests);
-      return trimmedGuests.length > 0 ? trimmedGuests : [{ ...emptyGuest }];
+      const trimmed = prev.slice(0, max);
+      if (trimmed.length >= min) return trimmed;
+      const padded = [...trimmed];
+      while (padded.length < min) {
+        padded.push({ ...emptyGuest, sort_order: padded.length });
+      }
+      return padded;
     });
     setWaitlistGuestCount((prev) =>
-      Math.min(Math.max(prev, 1), houseType.max_guests)
+      Math.min(Math.max(prev, min), max)
     );
   }
 
+  const maxGuests = selectedType ? selectedType.max_guests + 2 : 1;
+  const minGuests = selectedType ? Math.max(selectedType.max_guests - 1, 1) : 1;
+
   function addGuest() {
-    if (selectedType && guests.length >= selectedType.max_guests) return;
+    if (guests.length >= maxGuests) return;
     setGuests((prev) => [...prev, { ...emptyGuest, sort_order: prev.length }]);
   }
 
   function removeGuest(index: number) {
-    if (guests.length <= 1) return;
+    if (guests.length <= minGuests) return;
     setGuests((prev) => prev.filter((_, i) => i !== index));
   }
 
@@ -85,8 +95,16 @@ export function BookingForm({
   async function handleReservationSubmit(formData: FormData) {
     setError(null);
 
-    if (!selectedTypeId) {
+    if (!selectedTypeId || !selectedType) {
       setError("Bitte waehlen Sie einen Haustyp aus.");
+      return;
+    }
+
+    const requiredMin = Math.max(selectedType.max_guests - 1, 1);
+    if (guests.length < requiredMin) {
+      setError(
+        `Bitte tragen Sie mindestens ${requiredMin} Gaeste ein. Das ${selectedType.name} ist fuer ${selectedType.max_guests} Personen ausgelegt.`
+      );
       return;
     }
 
@@ -236,7 +254,7 @@ export function BookingForm({
               <h2 className="text-xl font-semibold">3. Gaeste eintragen</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 Tragen Sie alle Personen ein, die im {selectedType.name} uebernachten
-                (max. {selectedType.max_guests} Personen).
+                (mind. {Math.max(selectedType.max_guests - 1, 1)}, max. {selectedType.max_guests + 2} Personen).
               </p>
 
               <div className="mt-4 space-y-4">
@@ -323,7 +341,7 @@ export function BookingForm({
                   </Card>
                 ))}
 
-                {guests.length < selectedType.max_guests && (
+                {guests.length < selectedType.max_guests + 2 && (
                   <Button
                     type="button"
                     variant="outline"
