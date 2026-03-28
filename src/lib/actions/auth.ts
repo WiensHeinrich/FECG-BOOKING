@@ -22,7 +22,7 @@ export async function login(formData: FormData) {
 
   // Admin-Check über Service Role Client (umgeht RLS)
   const adminSupabase = createAdminClient();
-  const { data: adminRow } = await adminSupabase
+  const { data: adminRow, error: adminError } = await adminSupabase
     .from("admin_users")
     .select("id")
     .eq("auth_user_id", signInData.user.id)
@@ -31,7 +31,8 @@ export async function login(formData: FormData) {
 
   if (!adminRow) {
     await supabase.auth.signOut();
-    return { error: "Dieses Konto hat keinen Admin-Zugang." };
+    const debugInfo = adminError ? ` (${adminError.message})` : ` (user_id: ${signInData.user.id})`;
+    return { error: `Dieses Konto hat keinen Admin-Zugang.${debugInfo}` };
   }
 
   const redirectTo = formData.get("redirect") as string;
