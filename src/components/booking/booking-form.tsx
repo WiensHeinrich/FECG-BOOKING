@@ -297,8 +297,8 @@ export function BookingForm({
                         )}
                       </div>
                     </CardHeader>
-                    <CardContent className="grid gap-4 md:grid-cols-2">
-                      <div>
+                    <CardContent className="grid gap-5 md:grid-cols-2">
+                      <div className="space-y-1.5">
                         <Label>Vorname *</Label>
                         <Input
                           value={guest.first_name}
@@ -308,7 +308,7 @@ export function BookingForm({
                           required
                         />
                       </div>
-                      <div>
+                      <div className="space-y-1.5">
                         <Label>Nachname *</Label>
                         <Input
                           value={guest.last_name}
@@ -318,7 +318,7 @@ export function BookingForm({
                           required
                         />
                       </div>
-                      <div>
+                      <div className="space-y-1.5">
                         <Label>Geburtsdatum</Label>
                         <Input
                           type="date"
@@ -342,7 +342,7 @@ export function BookingForm({
                           );
                         })()}
                       </div>
-                      <div className="md:col-span-2">
+                      <div className="md:col-span-2 space-y-1.5">
                         <Label>Ernährungshinweise / Allergien</Label>
                         <Textarea
                           value={guest.dietary_notes ?? ""}
