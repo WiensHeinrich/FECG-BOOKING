@@ -9,8 +9,6 @@ import {
   Info,
   Backpack,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { getActiveEvent } from "@/lib/queries/events";
 import { getPublishedDocuments } from "@/lib/queries/documents";
 import { formatFileSize } from "@/lib/utils/format";
@@ -197,58 +195,55 @@ export default async function InformationenPage() {
             Grundrisse & Dokumente
           </h2>
 
-          <div className="mt-4 grid gap-4">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {[
               {
                 title: "Übersichtsplan Feriendorf Eckenhof",
                 href: "/docs/uebersichtsplan-eckenhof.jpg",
                 description: "Lageplan des gesamten Feriendorfs",
+                icon: "🗺️",
               },
               {
                 title: "Grundriss Ferienhaus Typ A",
                 href: "/docs/grundriss-typ-a.pdf",
-                description: "Raumaufteilung Ferienhaus Typ A (6 Personen)",
+                description: "Raumaufteilung Typ A (6 Personen)",
+                icon: "🏡",
               },
               {
                 title: "Grundriss Ferienhaus Typ B",
                 href: "/docs/grundriss-typ-b.pdf",
-                description: "Raumaufteilung Ferienhaus Typ B (6 Personen)",
+                description: "Raumaufteilung Typ B (6 Personen)",
+                icon: "🏡",
               },
               {
                 title: "Grundriss Ferienhaus Typ C",
                 href: "/docs/grundriss-typ-c.pdf",
-                description:
-                  "Raumaufteilung Ferienhaus Typ C (8–10 Personen)",
+                description: "Raumaufteilung Typ C (8–10 Personen)",
+                icon: "🏠",
               },
               {
                 title: "Grundriss Gästehaus",
                 href: "/docs/grundriss-gaestehaus.pdf",
                 description: "Raumaufteilung Gästehaus G1-10",
+                icon: "🏘️",
               },
             ].map((doc) => (
-              <Card key={doc.href}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">{doc.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground">
-                      {doc.description}
-                    </p>
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                    >
-                      <a href={doc.href} download>
-                        <FileDown className="h-4 w-4" />
-                        Herunterladen
-                      </a>
-                    </Button>
+              <a
+                key={doc.href}
+                href={doc.href}
+                download
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-accent/30 via-secondary/40 to-accent/20 p-6 shadow-md transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:shadow-primary/15 hover:from-accent/50 hover:via-secondary/50 hover:to-accent/30"
+              >
+                <div className="absolute -right-4 -top-4 text-6xl opacity-10 transition-all duration-500 group-hover:scale-125 group-hover:opacity-20">{doc.icon}</div>
+                <div className="relative">
+                  <h3 className="text-base font-bold text-foreground/90 transition-all duration-500 group-hover:text-lg">{doc.title}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground transition-all duration-500 group-hover:text-foreground/70">{doc.description}</p>
+                  <div className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-all duration-500 group-hover:gap-2.5">
+                    <FileDown className="h-4 w-4" />
+                    Herunterladen
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </a>
             ))}
           </div>
         </section>
@@ -256,41 +251,33 @@ export default async function InformationenPage() {
         {/* Dynamische Dokumente aus der Datenbank */}
         {documents.length > 0 && (
           <section className="mt-10">
-            <h2 className="text-2xl font-semibold">Weitere Dokumente</h2>
-            <div className="mt-4 grid gap-4">
+            <h2 className="flex items-center gap-2 text-2xl font-semibold">
+              <FileDown className="h-6 w-6 text-primary" />
+              Weitere Dokumente
+            </h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {documents.map((doc) => (
-                <Card key={doc.id}>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base">{doc.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        {doc.description && (
-                          <p className="text-sm text-muted-foreground">
-                            {doc.description}
-                          </p>
-                        )}
-                        {doc.file_size_bytes && (
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            {formatFileSize(doc.file_size_bytes)}
-                          </p>
-                        )}
-                      </div>
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="gap-2"
-                      >
-                        <a href={doc.file_url} download>
-                          <FileDown className="h-4 w-4" />
-                          Herunterladen
-                        </a>
-                      </Button>
+                <a
+                  key={doc.id}
+                  href={doc.file_url}
+                  download
+                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-accent/30 via-secondary/40 to-accent/20 p-6 shadow-md transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:shadow-primary/15 hover:from-accent/50 hover:via-secondary/50 hover:to-accent/30"
+                >
+                  <div className="absolute -right-4 -top-4 text-6xl opacity-10 transition-all duration-500 group-hover:scale-125 group-hover:opacity-20">📄</div>
+                  <div className="relative">
+                    <h3 className="text-base font-bold text-foreground/90 transition-all duration-500 group-hover:text-lg">{doc.title}</h3>
+                    {doc.description && (
+                      <p className="mt-1 text-sm text-muted-foreground transition-all duration-500 group-hover:text-foreground/70">{doc.description}</p>
+                    )}
+                    {doc.file_size_bytes && (
+                      <p className="mt-0.5 text-xs text-muted-foreground">{formatFileSize(doc.file_size_bytes)}</p>
+                    )}
+                    <div className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-all duration-500 group-hover:gap-2.5">
+                      <FileDown className="h-4 w-4" />
+                      Herunterladen
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </a>
               ))}
             </div>
           </section>
