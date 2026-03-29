@@ -182,13 +182,10 @@ export default async function HomePage() {
           ].map(({ title, image, textAlign, content }) => (
             <div
               key={title}
-              className="group relative h-40 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/15"
+              className="group relative transition-all duration-700 ease-out hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/15"
             >
-              {/* Pergament-Bild — zoomt bei Hover, füllt die Karte */}
-              <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
-                style={{ backgroundImage: `url('${image}')` }}
-              />
+              {/* Pergament-Bild */}
+              <img src={image} alt={title} className="w-full" />
               {/* Text in der freien Fläche */}
               <div className={`absolute inset-0 flex flex-col items-center justify-center text-center ${textAlign}`}>
                 <h3 className="text-lg font-bold text-foreground/90">{title}</h3>

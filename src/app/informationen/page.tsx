@@ -50,11 +50,11 @@ export default async function InformationenPage() {
             <MapPin className="h-6 w-6 text-primary" />
             Anreise
           </h2>
-          <div className="group mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/15">
+          <div className="group mt-4 transition-all duration-700 ease-out hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/15">
             <img
               src="/Pictures/Mit%20dem%20Auto.png"
               alt="Mit dem Auto — Dr. Helmut-Junghans-Strasse 50, 78713 Schramberg-Sulgen. Das Feriendorf ist gut ausgeschildert. Das Dorf ist autofrei — Fahrzeuge sind im Dorf nicht erlaubt. Parkplätze befinden sich in der Nähe. Für den Gepäcktransport stehen Bollerwagen zur Verfügung."
-              className="w-full transition-transform duration-700 ease-out group-hover:scale-105"
+              className="w-full"
             />
           </div>
         </section>
@@ -65,11 +65,11 @@ export default async function InformationenPage() {
             <Clock className="h-6 w-6 text-primary" />
             An- und Abreise
           </h2>
-          <div className="group mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/15">
+          <div className="group mt-4 transition-all duration-700 ease-out hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/15">
             <img
               src="/Pictures/An%20Abreise.png"
               alt="An- und Abreise — Anreise: 15:00 – 18:00 Uhr. Abreise: Bis 12:00 Uhr (nach Absprache)."
-              className="w-full transition-transform duration-700 ease-out group-hover:scale-105"
+              className="w-full"
             />
           </div>
         </section>
