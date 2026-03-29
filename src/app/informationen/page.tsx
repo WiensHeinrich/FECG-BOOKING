@@ -190,37 +190,6 @@ export default async function InformationenPage() {
           </div>
         </section>
 
-        {/* Kurtaxe */}
-        <section className="mt-10">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold">
-            <Info className="h-6 w-6 text-primary" />
-            Kurtaxe
-          </h2>
-          <Card className="mt-4">
-            <CardContent className="pt-6 text-sm text-muted-foreground">
-              <p>
-                Die Kurtaxe wird vor Ort erhoben und ist nicht im Hauspreis
-                enthalten:
-              </p>
-              <ul className="mt-2 space-y-1">
-                <li>
-                  <strong>Erwachsene:</strong> 1,80 €/Tag
-                </li>
-                <li>
-                  <strong>Kinder (10–17 Jahre):</strong> 0,90 €/Tag
-                </li>
-                <li>
-                  <strong>Kinder unter 10:</strong> frei
-                </li>
-              </ul>
-              <p className="mt-2">
-                Bei Schwerbehinderung ab 80% entfällt die Kurtaxe (Nachweis
-                erforderlich).
-              </p>
-            </CardContent>
-          </Card>
-        </section>
-
         {/* Grundrisse & Dokumente */}
         <section className="mt-10">
           <h2 className="flex items-center gap-2 text-2xl font-semibold">
