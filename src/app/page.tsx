@@ -133,10 +133,11 @@ export default async function HomePage() {
       <section className="container mx-auto px-4 py-8">
         <div className="grid gap-6 md:grid-cols-3">
           {/* Wann */}
-          <div className="group relative aspect-square overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-              style={{ backgroundImage: "url('/Pictures/Wann.png')" }}
+          <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+            <img
+              src="/Pictures/Wann.png"
+              alt="Wann"
+              className="w-full transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
             />
             <div className="absolute inset-0 bg-black/0 transition-all duration-500 group-hover:bg-black/40" />
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 transition-all duration-500 group-hover:opacity-100">
@@ -148,10 +149,11 @@ export default async function HomePage() {
           </div>
 
           {/* Wo */}
-          <div className="group relative aspect-square overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-              style={{ backgroundImage: "url('/Pictures/Wo.png')" }}
+          <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+            <img
+              src="/Pictures/Wo.png"
+              alt="Wo"
+              className="w-full transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
             />
             <div className="absolute inset-0 bg-black/0 transition-all duration-500 group-hover:bg-black/40" />
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 transition-all duration-500 group-hover:opacity-100">
@@ -174,10 +176,11 @@ export default async function HomePage() {
           </div>
 
           {/* Kontakt */}
-          <div className="group relative aspect-square overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-              style={{ backgroundImage: "url('/Pictures/kontakt.png')" }}
+          <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+            <img
+              src="/Pictures/kontakt.png"
+              alt="Kontakt"
+              className="w-full transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
             />
             <div className="absolute inset-0 bg-black/0 transition-all duration-500 group-hover:bg-black/40" />
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 opacity-0 transition-all duration-500 group-hover:opacity-100">
