@@ -132,61 +132,26 @@ export default async function HomePage() {
       {/* Info Cards — Wann / Wo / Kontakt */}
       <section className="container mx-auto px-4 py-8">
         <div className="grid gap-6 md:grid-cols-3">
-          {/* Wann */}
-          <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div
-              className="h-72 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-              style={{ backgroundImage: "url('/Pictures/Wann.png')" }}
+          <div className="flex items-center justify-center">
+            <img
+              src="/Pictures/Wann.png"
+              alt="Wann"
+              className="aspect-square w-full rounded-2xl object-cover shadow-md transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-primary/15"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
-            <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
-              <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Wann</h3>
-              <p className="mt-1 text-lg font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-xl group-hover:text-white">
-                {formatDateRange(event.start_date, event.end_date)}
-              </p>
-            </div>
           </div>
-
-          {/* Wo */}
-          <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div
-              className="h-72 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-              style={{ backgroundImage: "url('/Pictures/Wo.png')" }}
+          <div className="flex items-center justify-center">
+            <img
+              src="/Pictures/Wo.png"
+              alt="Wo"
+              className="aspect-square w-full rounded-2xl object-cover shadow-md transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-primary/15"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
-            <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
-              <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Wo</h3>
-              <p className="mt-1 text-base font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-lg group-hover:text-white">{event.location}</p>
-              {event.location_address && (
-                <p className="mt-0.5 text-sm text-white/60 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white/80">{event.location_address}</p>
-              )}
-              {event.location_url && (
-                <a
-                  href={event.location_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 inline-block text-sm font-semibold text-white/90 underline underline-offset-4 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white"
-                >
-                  Auf Karte anzeigen
-                </a>
-              )}
-            </div>
           </div>
-
-          {/* Kontakt */}
-          <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div
-              className="h-72 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-              style={{ backgroundImage: "url('/Pictures/kontakt.png')" }}
+          <div className="flex items-center justify-center">
+            <img
+              src="/Pictures/kontakt.png"
+              alt="Kontakt"
+              className="aspect-square w-full rounded-2xl object-cover shadow-md transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-primary/15"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
-            <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
-              <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Kontakt</h3>
-              <p className="mt-1 text-base font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-lg group-hover:text-white">{event.contact_email}</p>
-              {event.contact_phone && (
-                <p className="mt-0.5 text-sm text-white/70 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white/80">{event.contact_phone}</p>
-              )}
-            </div>
           </div>
         </div>
       </section>
