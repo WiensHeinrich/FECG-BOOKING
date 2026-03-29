@@ -99,7 +99,7 @@ export default async function HomePage() {
           ].map(({ icon: Icon, label, text, image }) => (
             <div
               key={label}
-              className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl shadow-md transition-shadow duration-500 hover:shadow-2xl hover:shadow-primary/20 md:h-96"
+              className="group relative h-[28rem] cursor-pointer overflow-hidden rounded-2xl shadow-md transition-shadow duration-500 hover:shadow-2xl hover:shadow-primary/20 md:h-[32rem]"
             >
               {/* Bild — zoomt rein bei Hover */}
               <div
