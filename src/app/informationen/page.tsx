@@ -83,12 +83,39 @@ export default async function InformationenPage() {
             <Info className="h-6 w-6 text-primary" />
             Ausstattung der Unterkünfte
           </h2>
-          <div className="group mt-4 transition-all duration-700 ease-out hover:scale-[1.03]">
-            <img
-              src="/Pictures/Ausstattung%20K%C3%BCche.png"
-              alt="Ausstattung der Küche — Filterkaffeemaschine, Wasserkocher, Kühlschrank, Grundgeschirr und Besteck, Bettwäsche inklusive. Nicht vorhanden: Backofen, Spülmaschine, Gefrierfach, Elektrogrill, TV im Haus."
-              className="w-full"
+          <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+            <div
+              className="h-[28rem] bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110 md:h-[32rem]"
+              style={{ backgroundImage: "url('/Pictures/K%C3%BCche%20blanko.png')" }}
             />
+            <div className="absolute inset-0 bg-black/50 transition-all duration-500 group-hover:bg-black/60" />
+            <div className="absolute inset-0 flex items-center justify-center px-6">
+              <div className="grid w-full max-w-3xl gap-8 sm:grid-cols-2">
+                <div className="text-center sm:text-left">
+                  <h3 className="text-xl font-bold text-white drop-shadow-lg">Vorhanden</h3>
+                  <ul className="mt-3 space-y-1.5 text-sm text-white/90 drop-shadow">
+                    <li>Kaffeemaschine (Filtertüten mitbringen)</li>
+                    <li>Wasserkocher</li>
+                    <li>Kühlschrank (kein Gefrierfach)</li>
+                    <li>Grundgeschirr und Besteck</li>
+                    <li>Bettwäsche inklusive</li>
+                    <li>Kinderbett und Hochstuhl (auf Anfrage)</li>
+                    <li>WLAN (Passwort: &quot;eckenhof&quot;)</li>
+                    <li>Heizung</li>
+                  </ul>
+                </div>
+                <div className="text-center sm:text-left">
+                  <h3 className="text-xl font-bold text-white/70 drop-shadow-lg">Nicht vorhanden</h3>
+                  <ul className="mt-3 space-y-1.5 text-sm text-white/60 drop-shadow">
+                    <li>Backofen (nur Typ C Häuser)</li>
+                    <li>Spülmaschine (nur Typ C Häuser)</li>
+                    <li>Gefrierfach</li>
+                    <li>Elektrogrill (Gemeinschaftsgrill vorhanden)</li>
+                    <li>TV im Haus (TV-Raum im Hauptgebäude)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
