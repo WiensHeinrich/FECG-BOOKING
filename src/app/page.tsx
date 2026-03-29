@@ -136,7 +136,7 @@ export default async function HomePage() {
             {
               title: "Wann",
               image: "/Pictures/Wann.png",
-              textAlign: "pl-[35%]",
+              textAlign: "pl-[30%]",
               content: (
                 <p className="text-sm font-medium text-foreground/80">
                   {formatDateRange(event.start_date, event.end_date)}
@@ -146,7 +146,7 @@ export default async function HomePage() {
             {
               title: "Wo",
               image: "/Pictures/Wo.png",
-              textAlign: "pl-[10%] pr-[5%]",
+              textAlign: "pl-[38%]",
               content: (
                 <>
                   <p className="text-sm font-medium text-foreground/80">{event.location}</p>
@@ -169,7 +169,7 @@ export default async function HomePage() {
             {
               title: "Kontakt",
               image: "/Pictures/kontakt.png",
-              textAlign: "pl-[5%] pr-[5%]",
+              textAlign: "pl-[38%]",
               content: (
                 <>
                   <p className="text-sm font-medium text-foreground/80">{event.contact_email}</p>
