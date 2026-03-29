@@ -125,9 +125,14 @@ export default async function InformationenPage() {
             <Backpack className="h-6 w-6 text-primary" />
             Bitte mitbringen
           </h2>
-          <Card className="mt-4">
-            <CardContent className="pt-6">
-              <ul className="grid gap-1 text-sm text-muted-foreground sm:grid-cols-2">
+          <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+            <div
+              className="h-[28rem] bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110 md:h-[32rem]"
+              style={{ backgroundImage: "url('/Pictures/Bitte%20mitbringen_blanko.png')" }}
+            />
+            <div className="absolute inset-0 bg-black/50 transition-all duration-500 group-hover:bg-black/60" />
+            <div className="absolute inset-0 flex items-center justify-center px-6">
+              <ul className="space-y-2.5 text-center text-base text-white/90 drop-shadow">
                 <li>Spülmittel und Spültabs</li>
                 <li>Spültücher und Putzlappen</li>
                 <li>Müllbeutel</li>
@@ -137,8 +142,8 @@ export default async function InformationenPage() {
                 <li>Sandspielzeug (Sandkasten vorhanden)</li>
                 <li>Eigenes Datenvolumen (WLAN evtl. begrenzt)</li>
               </ul>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </section>
 
         {/* Gemeinschaftseinrichtungen */}
