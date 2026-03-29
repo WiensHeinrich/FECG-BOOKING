@@ -83,35 +83,13 @@ export default async function InformationenPage() {
             <Info className="h-6 w-6 text-primary" />
             Ausstattung der Unterkünfte
           </h2>
-          <Card className="mt-4">
-            <CardContent className="pt-6">
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div>
-                  <p className="font-medium text-primary">Vorhanden</p>
-                  <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                    <li>Kaffeemaschine (Filtertüten mitbringen)</li>
-                    <li>Wasserkocher</li>
-                    <li>Kühlschrank (kein Gefrierfach)</li>
-                    <li>Grundgeschirr und Besteck</li>
-                    <li>Bettwäsche inklusive</li>
-                    <li>Kinderbett und Hochstuhl (auf Anfrage)</li>
-                    <li>WLAN (Passwort: &quot;eckenhof&quot;)</li>
-                    <li>Heizung</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="font-medium text-muted-foreground">Nicht vorhanden</p>
-                  <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                    <li>Backofen (nur Typ C Häuser)</li>
-                    <li>Spülmaschine (nur Typ C Häuser)</li>
-                    <li>Gefrierfach</li>
-                    <li>Elektrogrill (Gemeinschaftsgrill vorhanden)</li>
-                    <li>TV im Haus (TV-Raum im Hauptgebäude)</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="group mt-4 transition-all duration-700 ease-out hover:scale-[1.03]">
+            <img
+              src="/Pictures/Ausstattung%20K%C3%BCche.png"
+              alt="Ausstattung der Küche — Filterkaffeemaschine, Wasserkocher, Kühlschrank, Grundgeschirr und Besteck, Bettwäsche inklusive. Nicht vorhanden: Backofen, Spülmaschine, Gefrierfach, Elektrogrill, TV im Haus."
+              className="w-full"
+            />
+          </div>
         </section>
 
         {/* Mitbringen */}
