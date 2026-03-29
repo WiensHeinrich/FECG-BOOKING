@@ -1,14 +1,5 @@
 import type { Metadata } from "next";
-import {
-  FileDown,
-  Wifi,
-  UtensilsCrossed,
-  ShowerHead,
-  TreePine,
-  Clock,
-  Info,
-  Backpack,
-} from "lucide-react";
+import { FileDown } from "lucide-react";
 import { getActiveEvent } from "@/lib/queries/events";
 import { getPublishedDocuments } from "@/lib/queries/documents";
 import { formatFileSize } from "@/lib/utils/format";
@@ -44,10 +35,7 @@ export default async function InformationenPage() {
 
         {/* An-/Abreise Zeiten */}
         <section className="mt-10">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold">
-            <Clock className="h-6 w-6 text-primary" />
-            An- und Abreise
-          </h2>
+          <h2 className="text-2xl font-semibold">An- und Abreise</h2>
           <div className="mt-4 grid gap-6 md:grid-cols-2">
             {/* Anreise */}
             <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
@@ -78,10 +66,7 @@ export default async function InformationenPage() {
 
         {/* Ausstattung */}
         <section className="mt-10">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold">
-            <Info className="h-6 w-6 text-primary" />
-            Ausstattung der Unterkünfte
-          </h2>
+          <h2 className="text-2xl font-semibold">Ausstattung der Unterkünfte</h2>
           <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
             <div
               className="h-[28rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 md:h-[32rem]"
@@ -120,10 +105,7 @@ export default async function InformationenPage() {
 
         {/* Mitbringen */}
         <section className="mt-10">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold">
-            <Backpack className="h-6 w-6 text-primary" />
-            Bitte mitbringen
-          </h2>
+          <h2 className="text-2xl font-semibold">Bitte mitbringen</h2>
           <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
             <div
               className="h-[28rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 md:h-[32rem]"
@@ -147,10 +129,7 @@ export default async function InformationenPage() {
 
         {/* Gemeinschaftseinrichtungen */}
         <section className="mt-10">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold">
-            <TreePine className="h-6 w-6 text-primary" />
-            Gemeinschaftseinrichtungen
-          </h2>
+          <h2 className="text-2xl font-semibold">Gemeinschaftseinrichtungen</h2>
           <div className="mt-4 grid gap-5 sm:grid-cols-2">
             {[
               {
@@ -191,10 +170,7 @@ export default async function InformationenPage() {
 
         {/* Grundrisse & Dokumente */}
         <section className="mt-10">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold">
-            <FileDown className="h-6 w-6 text-primary" />
-            Grundrisse & Dokumente
-          </h2>
+          <h2 className="text-2xl font-semibold">Grundrisse & Dokumente</h2>
 
           <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
@@ -254,10 +230,7 @@ export default async function InformationenPage() {
         {/* Dynamische Dokumente aus der Datenbank */}
         {documents.length > 0 && (
           <section className="mt-10">
-            <h2 className="flex items-center gap-2 text-2xl font-semibold">
-              <FileDown className="h-6 w-6 text-primary" />
-              Weitere Dokumente
-            </h2>
+            <h2 className="text-2xl font-semibold">Weitere Dokumente</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {documents.map((doc) => (
                 <a
