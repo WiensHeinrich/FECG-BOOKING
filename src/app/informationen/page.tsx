@@ -7,7 +7,6 @@ import {
   TreePine,
   Clock,
   Info,
-  MapPin,
   Backpack,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,34 +42,6 @@ export default async function InformationenPage() {
           Alles Wichtige rund um die {event.title} im Feriendorf Eckenhof
           Schramberg.
         </p>
-
-        {/* Anreise — Mit dem Auto */}
-        <section className="mt-10">
-          <h2 className="flex items-center gap-2 text-2xl font-semibold">
-            <MapPin className="h-6 w-6 text-primary" />
-            Anreise
-          </h2>
-          <div className="group relative mt-4 transition-all duration-700 ease-out hover:scale-[1.03]">
-            <img
-              src="/Pictures/Bilderrolle%20blanko.png"
-              alt=""
-              className="w-full"
-            />
-            <div className="absolute inset-0 flex items-center justify-center px-12 text-center">
-              <div>
-                <h3 className="text-lg font-bold text-foreground/90">Mit dem Auto</h3>
-                <p className="mt-1 text-sm font-medium text-foreground/80">
-                  Dr. Helmut-Junghans-Strasse 50, 78713 Schramberg-Sulgen
-                </p>
-                <p className="mt-2 text-sm text-foreground/70">
-                  Das Feriendorf ist gut ausgeschildert. Bitte beachten: Das Dorf ist{" "}
-                  <strong className="text-foreground/90">autofrei</strong> — Fahrzeuge sind im Dorf nicht erlaubt.
-                  Parkplätze befinden sich in der Nähe. Für den Gepäcktransport stehen Bollerwagen zur Verfügung.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* An-/Abreise Zeiten */}
         <section className="mt-10">
