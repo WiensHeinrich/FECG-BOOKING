@@ -46,9 +46,11 @@ export function HouseTypeCard({
         )}
         onClick={onSelect}
       >
-        {/* Hover-Schimmer-Effekt */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/0 via-accent/0 to-primary/0 transition-all duration-500 group-hover:from-primary/[0.06] group-hover:via-accent/[0.08] group-hover:to-primary/[0.04]" />
-        <div className="pointer-events-none absolute -inset-1 bg-gradient-to-r from-transparent via-white/0 to-transparent transition-all duration-700 group-hover:via-white/[0.12] group-hover:translate-x-full" />
+        {/* Ferienhaus-Hintergrundbild — blass */}
+        <div
+          className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.08] transition-opacity duration-500 group-hover:opacity-[0.15]"
+          style={{ backgroundImage: "url('/Pictures/Ferienhaus.png')" }}
+        />
 
         <CardHeader className="relative pb-3">
           <div className="flex items-start justify-between">
