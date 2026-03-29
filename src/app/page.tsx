@@ -135,28 +135,28 @@ export default async function HomePage() {
           {[
             {
               title: "Wann",
-              bgPos: "0% 50%",
+              image: "/Pictures/Wann.png",
               content: (
-                <p className="text-sm text-foreground/70">
+                <p className="text-sm font-medium text-foreground/80">
                   {formatDateRange(event.start_date, event.end_date)}
                 </p>
               ),
             },
             {
               title: "Wo",
-              bgPos: "50% 50%",
+              image: "/Pictures/Wo.png",
               content: (
                 <>
-                  <p className="text-sm text-foreground/70">{event.location}</p>
+                  <p className="text-sm font-medium text-foreground/80">{event.location}</p>
                   {event.location_address && (
-                    <p className="text-sm text-foreground/70">{event.location_address}</p>
+                    <p className="text-xs text-foreground/60">{event.location_address}</p>
                   )}
                   {event.location_url && (
                     <a
                       href={event.location_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                      className="mt-1 inline-block text-sm font-medium text-primary underline-offset-4 hover:underline"
                     >
                       Auf Karte anzeigen
                     </a>
@@ -166,35 +166,31 @@ export default async function HomePage() {
             },
             {
               title: "Kontakt",
-              bgPos: "100% 50%",
+              image: "/Pictures/kontakt.png",
               content: (
                 <>
-                  <p className="text-sm text-foreground/70">{event.contact_email}</p>
+                  <p className="text-sm font-medium text-foreground/80">{event.contact_email}</p>
                   {event.contact_phone && (
                     <p className="text-sm text-foreground/70">{event.contact_phone}</p>
                   )}
                 </>
               ),
             },
-          ].map(({ title, bgPos, content }) => (
+          ].map(({ title, image, content }) => (
             <div
               key={title}
-              className="group relative h-48 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/15 md:h-56"
+              className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/15"
             >
-              {/* Pergament-Bild als Hintergrund — zoomt bei Hover */}
-              <div
-                className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110"
-                style={{
-                  backgroundImage: "url('/Pictures/Wann%20Wo%20Kontakt.png')",
-                  backgroundSize: "300% 100%",
-                  backgroundPosition: bgPos,
-                  backgroundRepeat: "no-repeat",
-                }}
+              {/* Pergament-Bild — zoomt bei Hover */}
+              <img
+                src={image}
+                alt={title}
+                className="w-full transition-transform duration-700 ease-out group-hover:scale-105"
               />
-              {/* Content über dem Bild */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-                <h3 className="text-lg font-bold text-foreground">{title}</h3>
-                <div className="mt-2">{content}</div>
+              {/* Text in der Mitte der freien Fläche */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <h3 className="text-lg font-bold text-foreground/90">{title}</h3>
+                <div className="mt-1.5">{content}</div>
               </div>
             </div>
           ))}
