@@ -75,43 +75,57 @@ export default async function HomePage() {
             {
               icon: TreePine,
               label: "Wanderungen",
-              text: `„Die Himmel erzählen die Ehre Gottes, und die Feste verkündigt seiner Hände Werk." (Psalm 19,2) — Gemeinsam entdecken wir Gottes wunderbare Schöpfung auf den Wegen durch den Schwarzwald. Wie die Jünger mit Jesus unterwegs waren, gehen auch wir Seite an Seite und erleben, wie Gespräche in der Natur das Herz berühren.`,
-              bg: "from-emerald-400/20 via-teal-300/10 to-green-500/20",
+              text: `„Die Himmel erzählen die Ehre Gottes, und die Feste verkündigt seiner Hände Werk." (Psalm 19,2) — Gemeinsam entdecken wir Gottes wunderbare Schöpfung auf den Wegen durch den Schwarzwald.`,
+              image: "/Pictures/Wanderung.png",
             },
             {
               icon: Music,
               label: "Lobpreis",
-              text: `„Singt dem Herrn ein neues Lied, denn er tut Wunder." (Psalm 98,1) — Als Paulus und Silas im Gefängnis sangen, erbebten die Mauern. So öffnet auch unser gemeinsamer Lobpreis verschlossene Herzen und bringt uns als Gemeinde näher zu Gott und zueinander.`,
-              bg: "from-sky-400/20 via-blue-300/10 to-indigo-500/20",
+              text: `„Singt dem Herrn ein neues Lied, denn er tut Wunder." (Psalm 98,1) — Unser gemeinsamer Lobpreis öffnet verschlossene Herzen und bringt uns als Gemeinde näher zu Gott und zueinander.`,
+              image: "/Pictures/Lobpreis%20und%20Anbetung.png",
             },
             {
               icon: Flame,
               label: "Lagerfeuer",
-              text: `„Brannte nicht unser Herz, als er mit uns redete?" (Lukas 24,32) — Am Feuer kommen wir zusammen, wie die ersten Christen es taten. Wir teilen Geschichten, Gedanken und Gottes Wort — und spüren, wie er mitten unter uns ist, wenn die Flammen in den Nachthimmel steigen.`,
-              bg: "from-orange-400/20 via-amber-300/10 to-red-500/20",
+              text: `„Brannte nicht unser Herz, als er mit uns redete?" (Lukas 24,32) — Am Feuer kommen wir zusammen und spüren, wie Gott mitten unter uns ist.`,
+              image: "/Pictures/Lagerfeuer.png",
             },
             {
               icon: UtensilsCrossed,
               label: "Gemeinschaft",
-              text: `„Sie waren täglich einmütig beieinander, brachen das Brot in den Häusern und nahmen die Speise mit Freuden." (Apostelgeschichte 2,46) — Gemeinsam essen, lachen und füreinander da sein — das ist gelebter Glaube. In dieser Freizeit erleben wir, was echte Gemeinschaft im Sinne Jesu bedeutet.`,
-              bg: "from-violet-400/20 via-purple-300/10 to-fuchsia-500/20",
+              text: `„Sie waren täglich einmütig beieinander und brachen das Brot in den Häusern." (Apg 2,46) — Gemeinsam essen, lachen und füreinander da sein — gelebter Glaube.`,
+              image: "/Pictures/Gemeinschaft.png",
             },
-          ].map(({ icon: Icon, label, text, bg }) => (
+          ].map(({ icon: Icon, label, text, image }) => (
             <div
               key={label}
-              className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15"
+              className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl shadow-md transition-shadow duration-500 hover:shadow-2xl hover:shadow-primary/20 md:h-96"
             >
-              {/* Zoom background gradient — scales up on hover */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${bg} opacity-0 transition-all duration-700 ease-out group-hover:scale-110 group-hover:opacity-100`} />
-              {/* Dark overlay on hover */}
-              <div className="absolute inset-0 bg-foreground/0 transition-all duration-500 group-hover:bg-foreground/[0.03]" />
-              {/* Content */}
-              <div className="relative flex flex-col items-center gap-4 p-6 text-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-accent transition-all duration-500 group-hover:scale-110 group-hover:bg-primary group-hover:shadow-lg group-hover:shadow-primary/30">
-                  <Icon className="h-7 w-7 text-primary transition-colors duration-500 group-hover:text-primary-foreground" />
+              {/* Bild — zoomt rein bei Hover */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+                style={{ backgroundImage: `url('${image}')` }}
+              />
+
+              {/* Dunkler Overlay — wird dunkler bei Hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10 transition-all duration-500 group-hover:from-black/80 group-hover:via-black/50 group-hover:to-black/20" />
+
+              {/* Obere Linie — fährt nach oben bei Hover */}
+              <div className="absolute left-6 right-6 top-1/2 -translate-y-4 border-t border-white/60 transition-all duration-500 ease-out group-hover:top-4 group-hover:translate-y-0" />
+
+              {/* Untere Linie — fährt nach unten bei Hover */}
+              <div className="absolute bottom-1/2 left-6 right-6 translate-y-4 border-t border-white/60 transition-all duration-500 ease-out group-hover:bottom-4 group-hover:translate-y-0" />
+
+              {/* Label — immer zentriert sichtbar */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center transition-all duration-500 group-hover:justify-end group-hover:pb-8">
+                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-500 group-hover:mb-4 group-hover:scale-110 group-hover:bg-white/30">
+                  <Icon className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-base font-bold transition-colors duration-500 group-hover:text-primary">{label}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{text}</p>
+                <h3 className="text-xl font-bold tracking-wide text-white drop-shadow-lg">{label}</h3>
+                {/* Beschreibung — erscheint bei Hover */}
+                <p className="mx-6 mt-0 max-h-0 overflow-hidden text-sm leading-relaxed text-white/0 drop-shadow transition-all duration-500 group-hover:mt-3 group-hover:max-h-40 group-hover:text-white/90">
+                  {text}
+                </p>
               </div>
             </div>
           ))}
