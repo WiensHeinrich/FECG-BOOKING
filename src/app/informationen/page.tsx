@@ -152,54 +152,41 @@ export default async function InformationenPage() {
             <TreePine className="h-6 w-6 text-primary" />
             Gemeinschaftseinrichtungen
           </h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <Card>
-              <CardContent className="flex items-start gap-3 pt-6">
-                <UtensilsCrossed className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <p className="font-medium">Großer Grillplatz</p>
-                  <p className="text-sm text-muted-foreground">
-                    Überdachter Gemeinschaftsgrill für alle Gäste
-                  </p>
+          <div className="mt-4 grid gap-5 sm:grid-cols-2">
+            {[
+              {
+                title: "Großer Grillplatz",
+                text: "Überdachter Gemeinschaftsgrill für alle Gäste",
+                image: "/Pictures/Grill.png",
+              },
+              {
+                title: "Waschraum",
+                text: "Münzbetriebene Waschmaschine & Trockner (3,50 €/Ladung). Bügeleisen vorhanden.",
+                image: "/Pictures/Waschraum.png",
+              },
+              {
+                title: "Spielplatz & Spieleverleih",
+                text: "Kinderspielplatz mit Sandkasten. Bälle, Badminton u.v.m. an der Rezeption ausleihbar.",
+                image: "/Pictures/Spielplatz%20und%20Spieleverleih.png",
+              },
+              {
+                title: "WLAN & TV-Raum",
+                text: "WLAN im gesamten Dorf. TV-Raum im Hauptgebäude (Schlüssel an der Rezeption).",
+                image: "/Pictures/WLAN%20und%20TV-Raum.png",
+              },
+            ].map(({ title, text, image }) => (
+              <div key={title} className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+                <div
+                  className="h-64 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+                  style={{ backgroundImage: `url('${image}')` }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/5 transition-all duration-500 group-hover:from-black/80 group-hover:via-black/40" />
+                <div className="absolute inset-x-0 bottom-0 p-6 text-center">
+                  <h3 className="text-xl font-bold text-white drop-shadow-lg">{title}</h3>
+                  <p className="mt-1 text-sm text-white/80 drop-shadow">{text}</p>
                 </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="flex items-start gap-3 pt-6">
-                <ShowerHead className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <p className="font-medium">Waschraum</p>
-                  <p className="text-sm text-muted-foreground">
-                    Münzbetriebene Waschmaschine & Trockner (3,50 €/Ladung).
-                    Bügeleisen vorhanden.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="flex items-start gap-3 pt-6">
-                <TreePine className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <p className="font-medium">Spielplatz & Spieleverleih</p>
-                  <p className="text-sm text-muted-foreground">
-                    Kinderspielplatz mit Sandkasten. Bälle, Badminton u.v.m. an
-                    der Rezeption ausleihbar.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="flex items-start gap-3 pt-6">
-                <Wifi className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <p className="font-medium">WLAN & TV-Raum</p>
-                  <p className="text-sm text-muted-foreground">
-                    WLAN im gesamten Dorf. TV-Raum im Hauptgebäude (Schlüssel
-                    an der Rezeption).
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            ))}
           </div>
         </section>
 
