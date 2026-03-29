@@ -1,8 +1,5 @@
 import Link from "next/link";
 import {
-  CalendarDays,
-  MapPin,
-  Users,
   ArrowRight,
   TreePine,
   Music,
@@ -132,73 +129,75 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Info Cards */}
+      {/* Info Cards — Pergament-Scroll-Hintergrund */}
       <section className="container mx-auto px-4 py-8">
         <div className="grid gap-6 md:grid-cols-3">
-          <Card className="group relative overflow-hidden border-none bg-card shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/0 to-primary/0 transition-all duration-500 group-hover:from-accent/10 group-hover:to-primary/5" />
-            <CardContent className="relative flex items-start gap-4 pt-6">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent transition-all duration-500 group-hover:scale-110 group-hover:bg-primary group-hover:shadow-md group-hover:shadow-primary/25">
-                <CalendarDays className="h-5 w-5 text-primary transition-colors duration-500 group-hover:text-primary-foreground" />
-              </div>
-              <div>
-                <h3 className="font-semibold transition-colors duration-500 group-hover:text-primary">Wann</h3>
-                <p className="text-sm text-muted-foreground">
+          {[
+            {
+              title: "Wann",
+              bgPos: "0% 50%",
+              content: (
+                <p className="text-sm text-foreground/70">
                   {formatDateRange(event.start_date, event.end_date)}
                 </p>
+              ),
+            },
+            {
+              title: "Wo",
+              bgPos: "50% 50%",
+              content: (
+                <>
+                  <p className="text-sm text-foreground/70">{event.location}</p>
+                  {event.location_address && (
+                    <p className="text-sm text-foreground/70">{event.location_address}</p>
+                  )}
+                  {event.location_url && (
+                    <a
+                      href={event.location_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                    >
+                      Auf Karte anzeigen
+                    </a>
+                  )}
+                </>
+              ),
+            },
+            {
+              title: "Kontakt",
+              bgPos: "100% 50%",
+              content: (
+                <>
+                  <p className="text-sm text-foreground/70">{event.contact_email}</p>
+                  {event.contact_phone && (
+                    <p className="text-sm text-foreground/70">{event.contact_phone}</p>
+                  )}
+                </>
+              ),
+            },
+          ].map(({ title, bgPos, content }) => (
+            <div
+              key={title}
+              className="group relative h-48 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/15 md:h-56"
+            >
+              {/* Pergament-Bild als Hintergrund — zoomt bei Hover */}
+              <div
+                className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110"
+                style={{
+                  backgroundImage: "url('/Pictures/Wann%20Wo%20Kontakt.png')",
+                  backgroundSize: "300% 100%",
+                  backgroundPosition: bgPos,
+                  backgroundRepeat: "no-repeat",
+                }}
+              />
+              {/* Content über dem Bild */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+                <h3 className="text-lg font-bold text-foreground">{title}</h3>
+                <div className="mt-2">{content}</div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="group relative overflow-hidden border-none bg-card shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/0 to-primary/0 transition-all duration-500 group-hover:from-accent/10 group-hover:to-primary/5" />
-            <CardContent className="relative flex items-start gap-4 pt-6">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent transition-all duration-500 group-hover:scale-110 group-hover:bg-primary group-hover:shadow-md group-hover:shadow-primary/25">
-                <MapPin className="h-5 w-5 text-primary transition-colors duration-500 group-hover:text-primary-foreground" />
-              </div>
-              <div>
-                <h3 className="font-semibold transition-colors duration-500 group-hover:text-primary">Wo</h3>
-                <p className="text-sm text-muted-foreground">
-                  {event.location}
-                </p>
-                {event.location_address && (
-                  <p className="text-sm text-muted-foreground">
-                    {event.location_address}
-                  </p>
-                )}
-                {event.location_url && (
-                  <a
-                    href={event.location_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-                  >
-                    Auf Karte anzeigen
-                  </a>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="group relative overflow-hidden border-none bg-card shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/10">
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/0 to-primary/0 transition-all duration-500 group-hover:from-accent/10 group-hover:to-primary/5" />
-            <CardContent className="relative flex items-start gap-4 pt-6">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent transition-all duration-500 group-hover:scale-110 group-hover:bg-primary group-hover:shadow-md group-hover:shadow-primary/25">
-                <Users className="h-5 w-5 text-primary transition-colors duration-500 group-hover:text-primary-foreground" />
-              </div>
-              <div>
-                <h3 className="font-semibold transition-colors duration-500 group-hover:text-primary">Kontakt</h3>
-                <p className="text-sm text-muted-foreground">
-                  {event.contact_email}
-                </p>
-                {event.contact_phone && (
-                  <p className="text-sm text-muted-foreground">
-                    {event.contact_phone}
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          ))}
         </div>
       </section>
 
