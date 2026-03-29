@@ -53,25 +53,25 @@ export default async function InformationenPage() {
             {/* Anreise */}
             <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
               <div
-                className="h-64 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+                className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
                 style={{ backgroundImage: "url('/Pictures/Anreise.png')" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/5 transition-all duration-500 group-hover:from-black/80 group-hover:via-black/40" />
-              <div className="absolute inset-x-0 bottom-0 p-6 text-center">
-                <h3 className="text-xl font-bold text-white drop-shadow-lg">Anreise</h3>
-                <p className="mt-1 text-lg font-semibold text-white/90 drop-shadow">17:00 Uhr</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+                <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Anreise</h3>
+                <p className="mt-1 text-lg font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-xl group-hover:text-white">17:00 Uhr</p>
               </div>
             </div>
             {/* Abreise */}
             <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
               <div
-                className="h-64 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+                className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
                 style={{ backgroundImage: "url('/Pictures/Abreise.png')" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/5 transition-all duration-500 group-hover:from-black/80 group-hover:via-black/40" />
-              <div className="absolute inset-x-0 bottom-0 p-6 text-center">
-                <h3 className="text-xl font-bold text-white drop-shadow-lg">Abreise</h3>
-                <p className="mt-1 text-lg font-semibold text-white/90 drop-shadow">Bis spätestens 12:00 Uhr</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+                <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Abreise</h3>
+                <p className="mt-1 text-lg font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-xl group-hover:text-white">Bis spätestens 12:00 Uhr</p>
               </div>
             </div>
           </div>
@@ -85,10 +85,10 @@ export default async function InformationenPage() {
           </h2>
           <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
             <div
-              className="h-[28rem] bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110 md:h-[32rem]"
+              className="h-[28rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 md:h-[32rem]"
               style={{ backgroundImage: "url('/Pictures/K%C3%BCche%20blanko.png')" }}
             />
-            <div className="absolute inset-0 bg-black/50 transition-all duration-500 group-hover:bg-black/60" />
+            <div className="absolute inset-0 bg-black/40 transition-all duration-500 group-hover:bg-black/65" />
             <div className="absolute inset-0 flex items-center justify-center px-6">
               <div className="grid w-full max-w-2xl gap-10 sm:grid-cols-2">
                 <div className="text-center">
@@ -127,10 +127,10 @@ export default async function InformationenPage() {
           </h2>
           <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
             <div
-              className="h-[28rem] bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110 md:h-[32rem]"
+              className="h-[28rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 md:h-[32rem]"
               style={{ backgroundImage: "url('/Pictures/Bitte%20mitbringen_blanko.png')" }}
             />
-            <div className="absolute inset-0 bg-black/50 transition-all duration-500 group-hover:bg-black/60" />
+            <div className="absolute inset-0 bg-black/40 transition-all duration-500 group-hover:bg-black/65" />
             <div className="absolute inset-0 flex items-center justify-center px-6">
               <ul className="space-y-2.5 text-center text-base text-white/90 drop-shadow">
                 <li>Spülmittel und Spültabs</li>
@@ -177,13 +177,13 @@ export default async function InformationenPage() {
             ].map(({ title, text, image }) => (
               <div key={title} className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
                 <div
-                  className="h-64 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+                  className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
                   style={{ backgroundImage: `url('${image}')` }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/5 transition-all duration-500 group-hover:from-black/80 group-hover:via-black/40" />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-center">
-                  <h3 className="text-xl font-bold text-white drop-shadow-lg">{title}</h3>
-                  <p className="mt-1 text-sm text-white/80 drop-shadow">{text}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
+                <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+                  <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-2xl">{title}</h3>
+                  <p className="mt-1 text-sm text-white/70 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white">{text}</p>
                 </div>
               </div>
             ))}
