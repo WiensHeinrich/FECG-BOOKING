@@ -92,8 +92,8 @@ export default async function InformationenPage() {
             <div className="absolute inset-0 flex items-center justify-center px-6">
               <div className="grid w-full max-w-2xl gap-10 sm:grid-cols-2">
                 <div className="text-center">
-                  <h3 className="text-2xl font-bold text-white drop-shadow-lg">Vorhanden</h3>
-                  <ul className="mt-4 space-y-2 text-base text-white/90 drop-shadow">
+                  <h3 className="text-2xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Vorhanden</h3>
+                  <ul className="mt-4 space-y-2 text-base text-white/90 drop-shadow transition-all duration-500 group-hover:text-lg">
                     <li>Kaffeemaschine (Filtertüten mitbringen)</li>
                     <li>Wasserkocher</li>
                     <li>Kühlschrank (kein Gefrierfach)</li>
@@ -105,8 +105,8 @@ export default async function InformationenPage() {
                   </ul>
                 </div>
                 <div className="text-center">
-                  <h3 className="text-2xl font-bold text-white/70 drop-shadow-lg">Nicht vorhanden</h3>
-                  <ul className="mt-4 space-y-2 text-base text-white/60 drop-shadow">
+                  <h3 className="text-2xl font-bold text-white/70 drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Nicht vorhanden</h3>
+                  <ul className="mt-4 space-y-2 text-base text-white/60 drop-shadow transition-all duration-500 group-hover:text-lg">
                     <li>Backofen (nur Typ C Häuser)</li>
                     <li>Spülmaschine (nur Typ C Häuser)</li>
                     <li>Gefrierfach</li>
@@ -132,7 +132,7 @@ export default async function InformationenPage() {
             />
             <div className="absolute inset-0 bg-black/40 transition-all duration-500 group-hover:bg-black/65" />
             <div className="absolute inset-0 flex items-center justify-center px-6">
-              <ul className="space-y-2.5 text-center text-base text-white/90 drop-shadow">
+              <ul className="space-y-2.5 text-center text-base text-white/90 drop-shadow transition-all duration-500 group-hover:text-lg">
                 <li>Spülmittel und Spültabs</li>
                 <li>Spültücher und Putzlappen</li>
                 <li>Müllbeutel</li>
