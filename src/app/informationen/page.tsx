@@ -49,22 +49,29 @@ export default async function InformationenPage() {
             <Clock className="h-6 w-6 text-primary" />
             An- und Abreise
           </h2>
-          <div className="group relative mt-4 transition-all duration-700 ease-out hover:scale-[1.03]">
-            <img
-              src="/Pictures/Bilderrolle%20blanko.png"
-              alt=""
-              className="w-full"
-            />
-            <div className="absolute inset-0 flex items-center justify-center px-12">
-              <div className="grid w-full max-w-md grid-cols-2 gap-8 text-center">
-                <div>
-                  <p className="text-lg font-bold text-foreground/90">Anreise</p>
-                  <p className="mt-1 text-sm text-foreground/70">15:00 – 18:00 Uhr</p>
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-foreground/90">Abreise</p>
-                  <p className="mt-1 text-sm text-foreground/70">Bis 12:00 Uhr (nach Absprache)</p>
-                </div>
+          <div className="mt-4 grid gap-6 md:grid-cols-2">
+            {/* Anreise */}
+            <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+              <div
+                className="h-64 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+                style={{ backgroundImage: "url('/Pictures/Anreise.png')" }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/5 transition-all duration-500 group-hover:from-black/80 group-hover:via-black/40" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-center">
+                <h3 className="text-xl font-bold text-white drop-shadow-lg">Anreise</h3>
+                <p className="mt-1 text-lg font-semibold text-white/90 drop-shadow">17:00 Uhr</p>
+              </div>
+            </div>
+            {/* Abreise */}
+            <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+              <div
+                className="h-64 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+                style={{ backgroundImage: "url('/Pictures/Abreise.png')" }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/5 transition-all duration-500 group-hover:from-black/80 group-hover:via-black/40" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-center">
+                <h3 className="text-xl font-bold text-white drop-shadow-lg">Abreise</h3>
+                <p className="mt-1 text-lg font-semibold text-white/90 drop-shadow">Bis spätestens 12:00 Uhr</p>
               </div>
             </div>
           </div>
