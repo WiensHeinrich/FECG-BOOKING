@@ -129,64 +129,65 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Info Cards — Pergament-Scroll-Hintergrund */}
+      {/* Info Cards — Wann / Wo / Kontakt */}
       <section className="container mx-auto px-4 py-8">
         <div className="grid gap-6 md:grid-cols-3">
-          {[
-            {
-              title: "Wann",
-              content: (
-                <p className="text-sm font-medium text-foreground/80">
-                  {formatDateRange(event.start_date, event.end_date)}
-                </p>
-              ),
-            },
-            {
-              title: "Wo",
-              content: (
-                <>
-                  <p className="text-sm font-medium text-foreground/80">{event.location}</p>
-                  {event.location_address && (
-                    <p className="text-xs text-foreground/60">{event.location_address}</p>
-                  )}
-                  {event.location_url && (
-                    <a
-                      href={event.location_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 inline-block text-sm font-medium text-primary underline-offset-4 hover:underline"
-                    >
-                      Auf Karte anzeigen
-                    </a>
-                  )}
-                </>
-              ),
-            },
-            {
-              title: "Kontakt",
-              content: (
-                <>
-                  <p className="text-sm font-medium text-foreground/80">{event.contact_email}</p>
-                  {event.contact_phone && (
-                    <p className="text-sm text-foreground/70">{event.contact_phone}</p>
-                  )}
-                </>
-              ),
-            },
-          ].map(({ title, content }) => (
+          {/* Wann */}
+          <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
             <div
-              key={title}
-              className="group relative transition-all duration-700 ease-out hover:scale-[1.03]"
-            >
-              {/* Einheitliche Blanko-Pergamentrolle */}
-              <img src="/Pictures/Bilderrolle%20blanko%2020x15.png" alt="" className="w-full" />
-              {/* Text zentriert auf der Rolle */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                <h3 className="text-lg font-bold text-foreground/90">{title}</h3>
-                <div className="mt-1.5">{content}</div>
-              </div>
+              className="h-72 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
+              style={{ backgroundImage: "url('/Pictures/Wann.png')" }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
+            <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+              <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Wann</h3>
+              <p className="mt-1 text-lg font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-xl group-hover:text-white">
+                {formatDateRange(event.start_date, event.end_date)}
+              </p>
             </div>
-          ))}
+          </div>
+
+          {/* Wo */}
+          <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+            <div
+              className="h-72 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
+              style={{ backgroundImage: "url('/Pictures/Wo.png')" }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
+            <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+              <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Wo</h3>
+              <p className="mt-1 text-base font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-lg group-hover:text-white">{event.location}</p>
+              {event.location_address && (
+                <p className="mt-0.5 text-sm text-white/60 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white/80">{event.location_address}</p>
+              )}
+              {event.location_url && (
+                <a
+                  href={event.location_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block text-sm font-semibold text-white/90 underline underline-offset-4 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white"
+                >
+                  Auf Karte anzeigen
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Kontakt */}
+          <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+            <div
+              className="h-72 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
+              style={{ backgroundImage: "url('/Pictures/kontakt.png')" }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
+            <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+              <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Kontakt</h3>
+              <p className="mt-1 text-base font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-lg group-hover:text-white">{event.contact_email}</p>
+              {event.contact_phone && (
+                <p className="mt-0.5 text-sm text-white/70 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white/80">{event.contact_phone}</p>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
