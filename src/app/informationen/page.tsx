@@ -65,24 +65,13 @@ export default async function InformationenPage() {
             <Clock className="h-6 w-6 text-primary" />
             An- und Abreise
           </h2>
-          <Card className="mt-4">
-            <CardContent className="pt-6">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <p className="font-medium">Anreise</p>
-                  <p className="text-sm text-muted-foreground">
-                    15:00 – 18:00 Uhr
-                  </p>
-                </div>
-                <div>
-                  <p className="font-medium">Abreise</p>
-                  <p className="text-sm text-muted-foreground">
-                    Bis 12:00 Uhr (nach Absprache)
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="group mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/15">
+            <img
+              src="/Pictures/An%20Abreise.png"
+              alt="An- und Abreise — Anreise: 15:00 – 18:00 Uhr. Abreise: Bis 12:00 Uhr (nach Absprache)."
+              className="w-full transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+          </div>
         </section>
 
         {/* Ausstattung */}
