@@ -12,6 +12,7 @@ import {
 import { getActiveEvent } from "@/lib/queries/events";
 import { getPublishedDocuments } from "@/lib/queries/documents";
 import { formatFileSize } from "@/lib/utils/format";
+import { ImagePreview } from "@/components/ui/image-preview";
 
 export const metadata: Metadata = {
   title: "Informationen",
@@ -228,26 +229,24 @@ export default async function InformationenPage() {
                 image: "/Pictures/Villa%202%20und%203.png",
               },
             ].map(({ title, text, href, image }) => (
-              <a
-                key={title}
-                href={href}
-                download={href !== "#"}
-                className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15"
-              >
-                <div
-                  className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-                  style={{ backgroundImage: `url('${image}')` }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
-                  <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-2xl">{title}</h3>
-                  <p className="mt-1 text-sm text-white/70 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white">{text}</p>
-                  <div className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-white/80 transition-all duration-500 group-hover:text-white">
-                    <FileDown className="h-4 w-4" />
-                    Herunterladen
+              <div key={title} className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
+                <ImagePreview src={image} alt={title} />
+                <a href={href} download={href !== "#"} className="block">
+                  <div
+                    className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
+                    style={{ backgroundImage: `url('${image}')` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
+                  <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+                    <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-2xl">{title}</h3>
+                    <p className="mt-1 text-sm text-white/70 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white">{text}</p>
+                    <div className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-white/80 transition-all duration-500 group-hover:text-white">
+                      <FileDown className="h-4 w-4" />
+                      Herunterladen
+                    </div>
                   </div>
-                </div>
-              </a>
+                </a>
+              </div>
             ))}
           </div>
         </section>
