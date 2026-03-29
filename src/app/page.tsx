@@ -135,8 +135,6 @@ export default async function HomePage() {
           {[
             {
               title: "Wann",
-              image: "/Pictures/Wann.png",
-              textAlign: "pl-[30%]",
               content: (
                 <p className="text-sm font-medium text-foreground/80">
                   {formatDateRange(event.start_date, event.end_date)}
@@ -145,8 +143,6 @@ export default async function HomePage() {
             },
             {
               title: "Wo",
-              image: "/Pictures/Wo.png",
-              textAlign: "pl-[38%]",
               content: (
                 <>
                   <p className="text-sm font-medium text-foreground/80">{event.location}</p>
@@ -168,8 +164,6 @@ export default async function HomePage() {
             },
             {
               title: "Kontakt",
-              image: "/Pictures/kontakt.png",
-              textAlign: "pl-[38%]",
               content: (
                 <>
                   <p className="text-sm font-medium text-foreground/80">{event.contact_email}</p>
@@ -179,15 +173,15 @@ export default async function HomePage() {
                 </>
               ),
             },
-          ].map(({ title, image, textAlign, content }) => (
+          ].map(({ title, content }) => (
             <div
               key={title}
-              className="group relative transition-all duration-700 ease-out hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/15"
+              className="group relative transition-all duration-700 ease-out hover:scale-[1.03]"
             >
-              {/* Pergament-Bild */}
-              <img src={image} alt={title} className="w-full" />
-              {/* Text in der freien Fläche */}
-              <div className={`absolute inset-0 flex flex-col items-center justify-center text-center ${textAlign}`}>
+              {/* Einheitliche Blanko-Pergamentrolle */}
+              <img src="/Pictures/Bilderrolle%20blanko%2020x15.png" alt="" className="w-full" />
+              {/* Text zentriert auf der Rolle */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                 <h3 className="text-lg font-bold text-foreground/90">{title}</h3>
                 <div className="mt-1.5">{content}</div>
               </div>
