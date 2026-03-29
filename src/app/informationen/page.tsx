@@ -195,50 +195,54 @@ export default async function InformationenPage() {
             Grundrisse & Dokumente
           </h2>
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
               {
-                title: "Übersichtsplan Feriendorf Eckenhof",
+                title: "Übersichtsplan",
+                text: "Lageplan des gesamten Feriendorfs",
                 href: "/docs/uebersichtsplan-eckenhof.jpg",
-                description: "Lageplan des gesamten Feriendorfs",
-                icon: "🗺️",
+                image: "/docs/uebersichtsplan-eckenhof.jpg",
               },
               {
-                title: "Grundriss Ferienhaus Typ A",
+                title: "Grundriss Typ A + B",
+                text: "Raumaufteilung Ferienhaus Typ A & B (6 Personen)",
                 href: "/docs/grundriss-typ-a.pdf",
-                description: "Raumaufteilung Typ A (6 Personen)",
-                icon: "🏡",
+                image: "/Pictures/Grundriss%20Typ%20A%2BB.png",
               },
               {
-                title: "Grundriss Ferienhaus Typ B",
-                href: "/docs/grundriss-typ-b.pdf",
-                description: "Raumaufteilung Typ B (6 Personen)",
-                icon: "🏡",
-              },
-              {
-                title: "Grundriss Ferienhaus Typ C",
+                title: "Grundriss Typ C",
+                text: "Raumaufteilung Ferienhaus Typ C (8–10 Personen)",
                 href: "/docs/grundriss-typ-c.pdf",
-                description: "Raumaufteilung Typ C (8–10 Personen)",
-                icon: "🏠",
+                image: "/Pictures/Grundriss%20Typ%20C.png",
               },
               {
                 title: "Grundriss Gästehaus",
+                text: "Raumaufteilung Gästehaus G1-10",
                 href: "/docs/grundriss-gaestehaus.pdf",
-                description: "Raumaufteilung Gästehaus G1-10",
-                icon: "🏘️",
+                image: "/Pictures/Grundriss%20G%C3%A4stehaus.png",
               },
-            ].map((doc) => (
+              {
+                title: "Villa 2 und 3",
+                text: "Raumaufteilung Villa Typ 2 & 3",
+                href: "#",
+                image: "/Pictures/Villa%202%20und%203.png",
+              },
+            ].map(({ title, text, href, image }) => (
               <a
-                key={doc.href}
-                href={doc.href}
-                download
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-accent/30 via-secondary/40 to-accent/20 p-6 shadow-md transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:shadow-primary/15 hover:from-accent/50 hover:via-secondary/50 hover:to-accent/30"
+                key={title}
+                href={href}
+                download={href !== "#"}
+                className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15"
               >
-                <div className="absolute -right-4 -top-4 text-6xl opacity-10 transition-all duration-500 group-hover:scale-125 group-hover:opacity-20">{doc.icon}</div>
-                <div className="relative">
-                  <h3 className="text-base font-bold text-foreground/90 transition-all duration-500 group-hover:text-lg">{doc.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground transition-all duration-500 group-hover:text-foreground/70">{doc.description}</p>
-                  <div className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-all duration-500 group-hover:gap-2.5">
+                <div
+                  className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
+                  style={{ backgroundImage: `url('${image}')` }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
+                <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+                  <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-2xl">{title}</h3>
+                  <p className="mt-1 text-sm text-white/70 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white">{text}</p>
+                  <div className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-white/80 transition-all duration-500 group-hover:text-white">
                     <FileDown className="h-4 w-4" />
                     Herunterladen
                   </div>
