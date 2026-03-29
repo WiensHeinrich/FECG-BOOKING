@@ -50,12 +50,25 @@ export default async function InformationenPage() {
             <MapPin className="h-6 w-6 text-primary" />
             Anreise
           </h2>
-          <div className="group mt-4 transition-all duration-700 ease-out hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/15">
+          <div className="group relative mt-4 transition-all duration-700 ease-out hover:scale-[1.03]">
             <img
-              src="/Pictures/Mit%20dem%20Auto.png"
-              alt="Mit dem Auto — Dr. Helmut-Junghans-Strasse 50, 78713 Schramberg-Sulgen. Das Feriendorf ist gut ausgeschildert. Das Dorf ist autofrei — Fahrzeuge sind im Dorf nicht erlaubt. Parkplätze befinden sich in der Nähe. Für den Gepäcktransport stehen Bollerwagen zur Verfügung."
+              src="/Pictures/Bilderrolle%20blanko.png"
+              alt=""
               className="w-full"
             />
+            <div className="absolute inset-0 flex items-center justify-center px-12 text-center">
+              <div>
+                <h3 className="text-lg font-bold text-foreground/90">Mit dem Auto</h3>
+                <p className="mt-1 text-sm font-medium text-foreground/80">
+                  Dr. Helmut-Junghans-Strasse 50, 78713 Schramberg-Sulgen
+                </p>
+                <p className="mt-2 text-sm text-foreground/70">
+                  Das Feriendorf ist gut ausgeschildert. Bitte beachten: Das Dorf ist{" "}
+                  <strong className="text-foreground/90">autofrei</strong> — Fahrzeuge sind im Dorf nicht erlaubt.
+                  Parkplätze befinden sich in der Nähe. Für den Gepäcktransport stehen Bollerwagen zur Verfügung.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -65,12 +78,24 @@ export default async function InformationenPage() {
             <Clock className="h-6 w-6 text-primary" />
             An- und Abreise
           </h2>
-          <div className="group mt-4 transition-all duration-700 ease-out hover:scale-[1.03] hover:shadow-xl hover:shadow-primary/15">
+          <div className="group relative mt-4 transition-all duration-700 ease-out hover:scale-[1.03]">
             <img
-              src="/Pictures/An%20Abreise.png"
-              alt="An- und Abreise — Anreise: 15:00 – 18:00 Uhr. Abreise: Bis 12:00 Uhr (nach Absprache)."
+              src="/Pictures/Bilderrolle%20blanko.png"
+              alt=""
               className="w-full"
             />
+            <div className="absolute inset-0 flex items-center justify-center px-12">
+              <div className="grid w-full max-w-md grid-cols-2 gap-8 text-center">
+                <div>
+                  <p className="text-lg font-bold text-foreground/90">Anreise</p>
+                  <p className="mt-1 text-sm text-foreground/70">15:00 – 18:00 Uhr</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-foreground/90">Abreise</p>
+                  <p className="mt-1 text-sm text-foreground/70">Bis 12:00 Uhr (nach Absprache)</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
