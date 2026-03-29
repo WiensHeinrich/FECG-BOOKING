@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import {
   FileDown,
-  Car,
   Wifi,
   UtensilsCrossed,
   ShowerHead,
@@ -51,28 +50,12 @@ export default async function InformationenPage() {
             <MapPin className="h-6 w-6 text-primary" />
             Anreise
           </h2>
-          <div className="group relative mt-4 h-56 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/15 md:h-64">
-            {/* Pergament-Bild — zoomt bei Hover */}
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
-              style={{ backgroundImage: "url('/Pictures/Mit%20dem%20Auto.png')" }}
+          <div className="group mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-xl hover:shadow-primary/15">
+            <img
+              src="/Pictures/Mit%20dem%20Auto.png"
+              alt="Mit dem Auto — Dr. Helmut-Junghans-Strasse 50, 78713 Schramberg-Sulgen. Das Feriendorf ist gut ausgeschildert. Das Dorf ist autofrei — Fahrzeuge sind im Dorf nicht erlaubt. Parkplätze befinden sich in der Nähe. Für den Gepäcktransport stehen Bollerwagen zur Verfügung."
+              className="w-full transition-transform duration-700 ease-out group-hover:scale-105"
             />
-            {/* Text über dem Bild */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-              <div className="flex items-center gap-2">
-                <Car className="h-5 w-5 text-foreground/70" />
-                <h3 className="text-lg font-bold text-foreground">Mit dem Auto</h3>
-              </div>
-              <p className="mt-3 text-sm font-medium text-foreground/80">
-                Dr. Helmut-Junghans-Strasse 50, 78713 Schramberg-Sulgen
-              </p>
-              <p className="mt-2 max-w-xl text-sm text-foreground/70">
-                Das Feriendorf ist gut ausgeschildert. Bitte beachten: Das Dorf
-                ist <strong className="text-foreground/90">autofrei</strong> — Fahrzeuge sind im Dorf nicht
-                erlaubt. Parkplätze befinden sich in der Nähe. Für den
-                Gepäcktransport stehen Bollerwagen zur Verfügung.
-              </p>
-            </div>
           </div>
         </section>
 
