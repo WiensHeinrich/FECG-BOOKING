@@ -56,7 +56,7 @@ async function sendReservationEmail(
     houseTypeName: houseType.name,
     totalPrice: houseType.price_per_house,
     paymentReference: result.payment_reference,
-    guests: data.guests,
+    guests: data.guests.length,
   });
   await sendEmail({ to: ADMIN_EMAIL, ...adminEmail });
 }
