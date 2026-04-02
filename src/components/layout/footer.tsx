@@ -9,10 +9,10 @@ export function Footer() {
           <p>
             Bei Fragen:{" "}
             <a
-              href="mailto:freizeit@fecg-trossingen.de"
+              href="mailto:kontakt@fecg-trossingen-gemeindefreizeit.de"
               className="font-medium text-foreground underline-offset-4 hover:underline"
             >
-              freizeit@fecg-trossingen.de
+              kontakt@fecg-trossingen-gemeindefreizeit.de
             </a>
           </p>
         </div>
