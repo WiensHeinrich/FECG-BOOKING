@@ -121,6 +121,46 @@ export function reservationConfirmationEmail(data: {
   };
 }
 
+// 1b. Admin-Benachrichtigung bei neuer Reservierung
+export function adminNewReservationEmail(data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  houseTypeName: string;
+  totalPrice: number;
+  paymentReference: string;
+  guests: number;
+}) {
+  return {
+    subject: `Neue Reservierung: ${data.firstName} ${data.lastName} - ${data.houseTypeName}`,
+    html: `<div style="${baseStyle}">
+      <div style="${headerStyle}">
+        <h1 style="color: #6B8F4E; margin: 0; font-size: 24px;">Neue Reservierung eingegangen</h1>
+      </div>
+
+      <p>Es wurde eine neue Reservierung erstellt:</p>
+
+      <div style="${cardStyle}">
+        <h3 style="margin-top: 0; color: #6B8F4E;">Reservierungsdetails</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          ${row("Name", `${data.firstName} ${data.lastName}`)}
+          ${row("E-Mail", data.email)}
+          ${data.phone ? row("Telefon", data.phone) : ""}
+          ${row("Unterkunft", data.houseTypeName)}
+          ${row("Personen", String(data.guests))}
+          ${row("Betrag", formatEuro(data.totalPrice))}
+          ${row("Verwendungszweck", `<strong style="font-family: monospace;">${data.paymentReference}</strong>`)}
+        </table>
+      </div>
+
+      <div style="${footerStyle}">
+        <p>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
+      </div>
+    </div>`,
+  };
+}
+
 // 2. Buchungsbestätigung (nach Zahlungseingang)
 export function bookingConfirmedEmail(data: {
   firstName: string;

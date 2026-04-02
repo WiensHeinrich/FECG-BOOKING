@@ -7,7 +7,8 @@ import {
 } from "@/lib/validations/booking";
 import { redirect } from "next/navigation";
 import { sendEmail } from "@/lib/email/send";
-import { reservationConfirmationEmail } from "@/lib/email/templates";
+import { reservationConfirmationEmail, adminNewReservationEmail } from "@/lib/email/templates";
+import { ADMIN_EMAIL } from "@/lib/email/resend";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 async function sendReservationEmail(
@@ -45,6 +46,19 @@ async function sendReservationEmail(
   });
 
   await sendEmail({ to: data.contact_email, ...email });
+
+  // Admin-Benachrichtigung
+  const adminEmail = adminNewReservationEmail({
+    firstName: data.contact_first_name,
+    lastName: data.contact_last_name,
+    email: data.contact_email,
+    phone: data.contact_phone ?? null,
+    houseTypeName: houseType.name,
+    totalPrice: houseType.price_per_house,
+    paymentReference: result.payment_reference,
+    guests: data.guests,
+  });
+  await sendEmail({ to: ADMIN_EMAIL, ...adminEmail });
 }
 
 export async function createReservation(formData: BookingFormData) {
