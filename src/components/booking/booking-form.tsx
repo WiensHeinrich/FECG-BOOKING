@@ -543,16 +543,16 @@ export function BookingForm({
                   <p>Die festgelegte Nachtruhe muss eingehalten werden.</p>
 
                   <h4 className="font-bold text-foreground">&sect;4 Unterkünfte</h4>
-                  <p>Das Betreten eines gegengeschlechtlichen Zimmers jeglicher Art ist nur nach vorheriger Erlaubnis durch die Jugendleiter gestattet. Die Unterkünfte sind pfleglich zu behandeln und bei Abreise sauber und ordentlich zu hinterlassen.</p>
+                  <p>Die Unterkünfte sind pfleglich zu behandeln und bei Abreise sauber und ordentlich zu hinterlassen.</p>
 
                   <h4 className="font-bold text-foreground">&sect;5 Kleidung</h4>
-                  <p>Es ist generell auf besonders freizügige Kleidung zu verzichten.</p>
+                  <p>Auf freizügige oder unanständige Kleidung ist zu verzichten.</p>
 
                   <h4 className="font-bold text-foreground">&sect;6 Ausflüge und Aktivitäten</h4>
                   <p>Besichtigungen und Ausflüge werden in definierten Kleingruppen erfolgen. Es ist nicht gestattet, sich ohne Zustimmung der Freizeitleitung von der Gruppe zu entfernen.</p>
 
-                  <h4 className="font-bold text-foreground">&sect;7 Drogen und Rauschmittel</h4>
-                  <p>Das Konsumieren und Mitführen von Drogen und Rauschmitteln ist ausnahmslos verboten. Rauchen ist in allen Gebäuden untersagt.</p>
+                  <h4 className="font-bold text-foreground">&sect;7 Alkohol, Drogen und Rauschmittel</h4>
+                  <p>Jeglicher Alkoholkonsum ist verboten. Das Konsumieren und Mitführen von Drogen und Rauschmitteln ist ausnahmslos verboten. Rauchen ist in allen Gebäuden untersagt.</p>
 
                   <h4 className="font-bold text-foreground">&sect;8 Waffen</h4>
                   <p>Es ist verboten, Waffen mitzunehmen. Was als Waffe gilt, liegt in der Entscheidungsmacht der Freizeitleitung.</p>
