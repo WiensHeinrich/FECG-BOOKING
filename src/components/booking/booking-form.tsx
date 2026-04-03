@@ -464,7 +464,7 @@ export function BookingForm({
                             <span>{formatCurrency(selectedType.price_per_house + kurtaxeTotal)}</span>
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            Hauspreis {formatCurrency(selectedType.price_per_house)} (vorab zu überweisen) + Kurtaxe {formatCurrency(kurtaxeTotal)} (vor Ort)
+                            Hauspreis {formatCurrency(selectedType.price_per_house)} + Kurtaxe {formatCurrency(kurtaxeTotal)} — der Gesamtbetrag von {formatCurrency(selectedType.price_per_house + kurtaxeTotal)} ist vorab zu überweisen.
                           </p>
                         </>
                       )}
