@@ -11,6 +11,7 @@ import {
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 import Link from "next/link";
 import { FileDown } from "lucide-react";
+import { DeleteReservationButton } from "@/components/admin/delete-reservation-button";
 
 export default async function ReservierungenPage() {
   const event = await getActiveEventAdmin();
@@ -48,6 +49,7 @@ export default async function ReservierungenPage() {
                 <TableHead>Status</TableHead>
                 <TableHead>Zahlung</TableHead>
                 <TableHead>Ablauf</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -86,6 +88,12 @@ export default async function ReservierungenPage() {
                     {r.status === "reserviert"
                       ? formatDate(r.expires_at)
                       : "–"}
+                  </TableCell>
+                  <TableCell>
+                    <DeleteReservationButton
+                      reservationId={r.id}
+                      name={`${r.contact_first_name} ${r.contact_last_name}`}
+                    />
                   </TableCell>
                 </TableRow>
               ))}

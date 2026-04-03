@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, ArrowLeft } from "lucide-react";
+import { CheckCircle2, ArrowLeft, User, Users } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -11,8 +11,32 @@ export const metadata: Metadata = {
   title: "Reservierung bestätigt",
 };
 
+interface GuestInfo {
+  first_name: string;
+  last_name: string;
+  birth_date: string | null;
+  is_child: boolean;
+  gender: string | null;
+  dietary_notes: string | null;
+}
+
 interface Props {
   searchParams: Promise<{ id?: string; token?: string }>;
+}
+
+function formatGender(gender: string | null) {
+  if (gender === "maennlich") return "Männlich";
+  if (gender === "weiblich") return "Weiblich";
+  return "–";
+}
+
+function formatBirthDate(date: string | null) {
+  if (!date) return "–";
+  return new Date(date).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }
 
 export default async function BestaetigungPage({ searchParams }: Props) {
@@ -41,6 +65,9 @@ export default async function BestaetigungPage({ searchParams }: Props) {
         reservation_id: string;
         contact_first_name: string;
         contact_last_name: string;
+        contact_email: string;
+        contact_phone: string | null;
+        contact_gender: string | null;
         total_price: number;
         expires_at: string;
         payment_reference: string;
@@ -49,6 +76,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
         bank_account_holder: string;
         bank_iban: string;
         bank_bic: string | null;
+        guests_json: GuestInfo[];
       }
     | undefined;
 
@@ -61,6 +89,8 @@ export default async function BestaetigungPage({ searchParams }: Props) {
       </div>
     );
   }
+
+  const guests: GuestInfo[] = reservation.guests_json || [];
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -76,18 +106,13 @@ export default async function BestaetigungPage({ searchParams }: Props) {
 
         <Card>
           <CardContent className="pt-6">
+            {/* Reservierungsdetails */}
             <h2 className="font-semibold">Reservierungsdetails</h2>
             <div className="mt-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Unterkunft</span>
-                <span>
-                  {reservation.house_type_name} - {reservation.house_label}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Kontaktperson</span>
-                <span>
-                  {reservation.contact_first_name} {reservation.contact_last_name}
+                <span className="font-medium">
+                  {reservation.house_type_name} – {reservation.house_label}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -104,6 +129,78 @@ export default async function BestaetigungPage({ searchParams }: Props) {
 
             <Separator className="my-4" />
 
+            {/* Kontaktperson */}
+            <h2 className="flex items-center gap-2 font-semibold">
+              <User className="h-4 w-4 text-primary" />
+              Kontaktperson
+            </h2>
+            <div className="mt-3 space-y-1.5 rounded-md bg-primary/5 p-4 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Name</span>
+                <span className="font-medium">
+                  {reservation.contact_first_name} {reservation.contact_last_name}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">E-Mail</span>
+                <span>{reservation.contact_email}</span>
+              </div>
+              {reservation.contact_phone && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Telefon</span>
+                  <span>{reservation.contact_phone}</span>
+                </div>
+              )}
+              {reservation.contact_gender && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Geschlecht</span>
+                  <span>{formatGender(reservation.contact_gender)}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Gästeliste */}
+            {guests.length > 0 && (
+              <>
+                <Separator className="my-4" />
+                <h2 className="flex items-center gap-2 font-semibold">
+                  <Users className="h-4 w-4 text-primary" />
+                  Angemeldete Gäste ({guests.length})
+                </h2>
+                <div className="mt-3 space-y-3">
+                  {guests.map((guest, index) => (
+                    <div
+                      key={index}
+                      className="rounded-md border bg-card p-3 text-sm"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium">
+                          {index + 1}. {guest.first_name} {guest.last_name}
+                        </span>
+                        {guest.is_child && (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                            Kind
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-1.5 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                        <span>Geburtsdatum: {formatBirthDate(guest.birth_date)}</span>
+                        <span>Geschlecht: {formatGender(guest.gender)}</span>
+                        {guest.dietary_notes && (
+                          <span className="col-span-2">
+                            Hinweise: {guest.dietary_notes}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            <Separator className="my-4" />
+
+            {/* Überweisungsdaten */}
             <h2 className="font-semibold">Überweisungsdaten</h2>
             <div className="mt-4 space-y-2 rounded-md bg-muted p-4 text-sm">
               <div className="flex justify-between">
@@ -135,9 +232,8 @@ export default async function BestaetigungPage({ searchParams }: Props) {
             </div>
 
             <p className="mt-4 text-xs text-muted-foreground">
-              Bitte geben Sie unbedingt den Verwendungszweck an, damit wir Ihre
-              Zahlung zuordnen können. Diese Seite enthält alle Angaben für
-              die Überweisung.
+              Bitte geben Sie unbedingt den <strong>Verwendungszweck</strong> an, damit wir Ihre
+              Zahlung zuordnen können.
             </p>
           </CardContent>
         </Card>

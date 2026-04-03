@@ -86,6 +86,33 @@ export async function cancelReservation(
   return { success: true };
 }
 
+export async function deleteReservation(reservationId: string) {
+  await requireAdminAccess();
+  const supabase = createAdminClient();
+
+  // Zuerst Gäste löschen (cascade sollte das machen, aber sicherheitshalber)
+  await supabase
+    .from("guests")
+    .delete()
+    .eq("reservation_id", reservationId);
+
+  // Reservierung komplett löschen
+  const { error } = await supabase
+    .from("reservations")
+    .delete()
+    .eq("id", reservationId);
+
+  if (error) {
+    return { error: "Reservierung konnte nicht gelöscht werden." };
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/reservierungen");
+  revalidatePath("/admin/haeuser");
+  revalidatePath("/anmeldung");
+  return { success: true };
+}
+
 export async function extendReservation(reservationId: string, days: number) {
   await requireAdminAccess();
   const supabase = createAdminClient();

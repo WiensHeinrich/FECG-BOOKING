@@ -42,6 +42,7 @@ const emptyGuest: GuestData = {
   last_name: "",
   birth_date: "",
   is_child: false,
+  gender: undefined,
   dietary_notes: "",
   sort_order: 0,
 };
@@ -154,6 +155,7 @@ export function BookingForm({
       contact_last_name: formData.get("contact_last_name") as string,
       contact_email: formData.get("contact_email") as string,
       contact_phone: (formData.get("contact_phone") as string) || undefined,
+      contact_gender: (formData.get("contact_gender") as string) || undefined,
       guests: guests.map((g, i) => ({ ...g, sort_order: i })),
     };
 
@@ -244,6 +246,19 @@ export function BookingForm({
                 <div className="space-y-1.5">
                   <Label htmlFor="contact_phone">Telefon</Label>
                   <Input id="contact_phone" name="contact_phone" type="tel" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Geschlecht *</Label>
+                  <div className="flex gap-4 pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="contact_gender" value="maennlich" required className="h-4 w-4 accent-primary" />
+                      <span className="text-sm">Männlich</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="contact_gender" value="weiblich" className="h-4 w-4 accent-primary" />
+                      <span className="text-sm">Weiblich</span>
+                    </label>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -339,6 +354,32 @@ export function BookingForm({
                         />
                       </div>
                       <div className="space-y-1.5">
+                        <Label>Geschlecht *</Label>
+                        <div className="flex gap-4 pt-1">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="radio"
+                              name={`guest_gender_${index}`}
+                              checked={guest.gender === "maennlich"}
+                              onChange={() => updateGuest(index, "gender", "maennlich")}
+                              required
+                              className="h-4 w-4 accent-primary"
+                            />
+                            <span className="text-sm">Männlich</span>
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="radio"
+                              name={`guest_gender_${index}`}
+                              checked={guest.gender === "weiblich"}
+                              onChange={() => updateGuest(index, "gender", "weiblich")}
+                              className="h-4 w-4 accent-primary"
+                            />
+                            <span className="text-sm">Weiblich</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
                         <Label>Geburtsdatum</Label>
                         <Input
                           type="date"
@@ -363,13 +404,13 @@ export function BookingForm({
                         })()}
                       </div>
                       <div className="md:col-span-2 space-y-1.5">
-                        <Label>Ernährungshinweise / Allergien</Label>
+                        <Label>Hinweise / Bemerkungen</Label>
                         <Textarea
                           value={guest.dietary_notes ?? ""}
                           onChange={(e) =>
                             updateGuest(index, "dietary_notes", e.target.value)
                           }
-                          placeholder="z.B. vegetarisch, Laktoseintoleranz..."
+                          placeholder="z.B. Kinderbett wird benötigt, vegetarisch, Allergien..."
                           rows={2}
                         />
                       </div>

@@ -65,6 +65,7 @@ export interface Reservation {
   contact_last_name: string
   contact_email: string
   contact_phone: string | null
+  contact_gender: 'maennlich' | 'weiblich' | null
   status: ReservationStatus
   payment_status: PaymentStatus
   total_price: number
@@ -86,6 +87,7 @@ export interface Guest {
   last_name: string
   birth_date: string | null
   is_child: boolean
+  gender: 'maennlich' | 'weiblich' | null
   dietary_notes: string | null
   sort_order: number
   created_at: string

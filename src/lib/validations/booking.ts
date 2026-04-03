@@ -5,6 +5,7 @@ export const guestSchema = z.object({
   last_name: z.string().min(1, "Nachname ist erforderlich"),
   birth_date: z.string().optional(),
   is_child: z.boolean().default(false),
+  gender: z.enum(["maennlich", "weiblich"]).optional(),
   dietary_notes: z.string().optional(),
   sort_order: z.number().default(0),
 });
@@ -16,6 +17,7 @@ export const bookingFormSchema = z.object({
   contact_last_name: z.string().min(1, "Nachname ist erforderlich"),
   contact_email: z.email("Bitte gültige E-Mail-Adresse eingeben"),
   contact_phone: z.string().optional(),
+  contact_gender: z.enum(["maennlich", "weiblich"]).optional(),
   guests: z.array(guestSchema).min(1, "Mindestens ein Gast erforderlich"),
 });
 

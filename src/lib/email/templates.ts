@@ -41,6 +41,14 @@ const footerStyle = `
   font-size: 12px;
 `;
 
+const guestCardStyle = `
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 8px 0;
+`;
+
 function row(label: string, value: string) {
   return `<tr>
     <td style="padding: 6px 0; color: #666;">${label}</td>
@@ -55,10 +63,58 @@ function formatEuro(amount: number) {
   }).format(amount);
 }
 
+function formatGender(gender: string | undefined | null) {
+  if (gender === "maennlich") return "Männlich";
+  if (gender === "weiblich") return "Weiblich";
+  return "–";
+}
+
+function formatBirthDate(date: string | undefined | null) {
+  if (!date) return "–";
+  return new Date(date).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+}
+
+export interface GuestEmailData {
+  first_name: string;
+  last_name: string;
+  birth_date?: string | null;
+  is_child?: boolean;
+  gender?: string | null;
+  dietary_notes?: string | null;
+}
+
+function renderGuestList(guests: GuestEmailData[]) {
+  if (!guests || guests.length === 0) return "";
+
+  return `
+    <div style="${cardStyle}">
+      <h3 style="margin-top: 0; color: #6B8F4E;">Angemeldete Gäste (${guests.length})</h3>
+      ${guests
+        .map(
+          (g, i) => `
+        <div style="${guestCardStyle}">
+          <strong>${i + 1}. ${g.first_name} ${g.last_name}</strong>
+          ${g.is_child ? ' <span style="background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 11px;">Kind</span>' : ""}
+          <div style="margin-top: 4px; font-size: 13px; color: #666;">
+            Geb.: ${formatBirthDate(g.birth_date)} · Geschlecht: ${formatGender(g.gender)}${g.dietary_notes ? ` · Hinweise: ${g.dietary_notes}` : ""}
+          </div>
+        </div>`
+        )
+        .join("")}
+    </div>`;
+}
+
 // 1. Reservierungsbestätigung (nach Buchung)
 export function reservationConfirmationEmail(data: {
   firstName: string;
   lastName: string;
+  contactEmail: string;
+  contactPhone: string | null;
+  contactGender: string | null;
   houseTypeName: string;
   houseLabel: string;
   totalPrice: number;
@@ -68,6 +124,7 @@ export function reservationConfirmationEmail(data: {
   bankIban: string;
   bankBic: string | null;
   confirmationUrl: string;
+  guests: GuestEmailData[];
 }) {
   const expiryDate = new Date(data.expiresAt).toLocaleDateString("de-DE", {
     day: "2-digit",
@@ -89,11 +146,22 @@ export function reservationConfirmationEmail(data: {
         <h3 style="margin-top: 0; color: #6B8F4E;">Ihre Reservierung</h3>
         <table style="width: 100%; border-collapse: collapse;">
           ${row("Unterkunft", `${data.houseTypeName} - ${data.houseLabel}`)}
-          ${row("Kontaktperson", `${data.firstName} ${data.lastName}`)}
           ${row("Betrag", formatEuro(data.totalPrice))}
           ${row("Gültig bis", expiryDate)}
         </table>
       </div>
+
+      <div style="${cardStyle}">
+        <h3 style="margin-top: 0; color: #6B8F4E;">Kontaktperson</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          ${row("Name", `${data.firstName} ${data.lastName}`)}
+          ${row("E-Mail", data.contactEmail)}
+          ${data.contactPhone ? row("Telefon", data.contactPhone) : ""}
+          ${data.contactGender ? row("Geschlecht", formatGender(data.contactGender)) : ""}
+        </table>
+      </div>
+
+      ${renderGuestList(data.guests)}
 
       <div style="${highlightStyle}">
         <h3 style="margin-top: 0; color: #6B8F4E;">Überweisungsdaten</h3>
@@ -127,10 +195,11 @@ export function adminNewReservationEmail(data: {
   lastName: string;
   email: string;
   phone: string | null;
+  contactGender: string | null;
   houseTypeName: string;
   totalPrice: number;
   paymentReference: string;
-  guests: number;
+  guests: GuestEmailData[];
 }) {
   return {
     subject: `Neue Reservierung: ${data.firstName} ${data.lastName} - ${data.houseTypeName}`,
@@ -142,17 +211,19 @@ export function adminNewReservationEmail(data: {
       <p>Es wurde eine neue Reservierung erstellt:</p>
 
       <div style="${cardStyle}">
-        <h3 style="margin-top: 0; color: #6B8F4E;">Reservierungsdetails</h3>
+        <h3 style="margin-top: 0; color: #6B8F4E;">Kontaktperson</h3>
         <table style="width: 100%; border-collapse: collapse;">
           ${row("Name", `${data.firstName} ${data.lastName}`)}
           ${row("E-Mail", data.email)}
           ${data.phone ? row("Telefon", data.phone) : ""}
+          ${data.contactGender ? row("Geschlecht", formatGender(data.contactGender)) : ""}
           ${row("Unterkunft", data.houseTypeName)}
-          ${row("Personen", String(data.guests))}
           ${row("Betrag", formatEuro(data.totalPrice))}
           ${row("Verwendungszweck", `<strong style="font-family: monospace;">${data.paymentReference}</strong>`)}
         </table>
       </div>
+
+      ${renderGuestList(data.guests)}
 
       <div style="${footerStyle}">
         <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>

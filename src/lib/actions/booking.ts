@@ -31,9 +31,21 @@ async function sendReservationEmail(
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const confirmationUrl = `${siteUrl}/anmeldung/bestaetigung?id=${result.id}&token=${encodeURIComponent(result.confirmation_token)}`;
 
+  const guestData = data.guests.map((g) => ({
+    first_name: g.first_name,
+    last_name: g.last_name,
+    birth_date: g.birth_date || null,
+    is_child: g.is_child,
+    gender: g.gender || null,
+    dietary_notes: g.dietary_notes || null,
+  }));
+
   const email = reservationConfirmationEmail({
     firstName: data.contact_first_name,
     lastName: data.contact_last_name,
+    contactEmail: data.contact_email,
+    contactPhone: data.contact_phone ?? null,
+    contactGender: data.contact_gender ?? null,
     houseTypeName: houseType.name,
     houseLabel: `Haus`,
     totalPrice: houseType.price_per_house,
@@ -43,6 +55,7 @@ async function sendReservationEmail(
     bankIban: event.bank_iban,
     bankBic: event.bank_bic,
     confirmationUrl,
+    guests: guestData,
   });
 
   await sendEmail({ to: data.contact_email, ...email });
@@ -53,10 +66,11 @@ async function sendReservationEmail(
     lastName: data.contact_last_name,
     email: data.contact_email,
     phone: data.contact_phone ?? null,
+    contactGender: data.contact_gender ?? null,
     houseTypeName: houseType.name,
     totalPrice: houseType.price_per_house,
     paymentReference: result.payment_reference,
-    guests: data.guests.length,
+    guests: guestData,
   });
   await sendEmail({ to: ADMIN_EMAIL, ...adminEmail });
 }
@@ -88,6 +102,7 @@ export async function createReservation(formData: BookingFormData) {
       p_contact_last_name: data.contact_last_name,
       p_contact_email: data.contact_email,
       p_contact_phone: data.contact_phone ?? null,
+      p_contact_gender: data.contact_gender ?? null,
       p_guests: data.guests,
     }
   );
