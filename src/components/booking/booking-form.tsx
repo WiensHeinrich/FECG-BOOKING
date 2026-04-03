@@ -155,7 +155,7 @@ export function BookingForm({
       contact_last_name: formData.get("contact_last_name") as string,
       contact_email: formData.get("contact_email") as string,
       contact_phone: (formData.get("contact_phone") as string) || undefined,
-      contact_gender: (formData.get("contact_gender") as string) || undefined,
+      contact_gender: (formData.get("contact_gender") as "maennlich" | "weiblich") || undefined,
       guests: guests.map((g, i) => ({ ...g, sort_order: i })),
     };
 
@@ -183,7 +183,7 @@ export function BookingForm({
         contact_last_name: formData.get("contact_last_name") as string,
         contact_email: formData.get("contact_email") as string,
         contact_phone: (formData.get("contact_phone") as string) || undefined,
-        contact_gender: (formData.get("contact_gender") as string) || undefined,
+        contact_gender: (formData.get("contact_gender") as "maennlich" | "weiblich") || undefined,
         guest_count: guests.length,
         guests: guests.map((g, i) => ({ ...g, sort_order: i })),
       });
