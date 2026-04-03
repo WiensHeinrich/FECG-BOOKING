@@ -6,6 +6,11 @@ ALTER TABLE guests ADD COLUMN IF NOT EXISTS gender TEXT CHECK (gender IN ('maenn
 -- Geschlecht-Spalte zur reservations-Tabelle (für Kontaktperson)
 ALTER TABLE reservations ADD COLUMN IF NOT EXISTS contact_gender TEXT CHECK (contact_gender IN ('maennlich', 'weiblich'));
 
+-- Alte Funktionen droppen (Signatur hat sich geändert)
+DROP FUNCTION IF EXISTS create_public_reservation(uuid, uuid, text, text, text, text, jsonb);
+DROP FUNCTION IF EXISTS get_public_reservation_confirmation(uuid, text);
+DROP FUNCTION IF EXISTS join_public_waitlist(uuid, uuid, text, text, text, text, integer);
+
 -- RPC-Funktion aktualisieren, um gender zu speichern
 CREATE OR REPLACE FUNCTION create_public_reservation(
   p_event_id UUID,
