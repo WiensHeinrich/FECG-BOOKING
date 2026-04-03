@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 import Link from "next/link";
+import { FileDown } from "lucide-react";
 
 export default async function ReservierungenPage() {
   const event = await getActiveEventAdmin();
@@ -19,7 +20,19 @@ export default async function ReservierungenPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Reservierungen</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Reservierungen</h1>
+        {reservations.length > 0 && (
+          <a
+            href="/api/admin/export-pdf"
+            target="_blank"
+            className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90"
+          >
+            <FileDown className="h-4 w-4" />
+            Zahlungsübersicht (PDF)
+          </a>
+        )}
+      </div>
 
       {reservations.length === 0 ? (
         <p className="text-muted-foreground">Noch keine Reservierungen.</p>

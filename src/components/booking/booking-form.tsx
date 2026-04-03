@@ -67,15 +67,16 @@ export function BookingForm({
   const contactSectionRef = useRef<HTMLElement>(null);
   const [shouldScroll, setShouldScroll] = useState(false);
 
-  // Scroll zu Kontaktdaten nach Auswahl
+  // Sanfter Scroll zur Kontaktsektion nach Auswahl — nicht ganz nach oben,
+  // damit die ausgewählte Unterkunft noch sichtbar bleibt
   useEffect(() => {
     if (shouldScroll && selectedTypeId && contactSectionRef.current) {
-      // Kleines Delay damit das DOM gerendert ist
       setTimeout(() => {
-        contactSectionRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+        const el = contactSectionRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const offset = window.scrollY + rect.top - 120; // 120px Abstand oben
+        window.scrollTo({ top: offset, behavior: "smooth" });
       }, 100);
       setShouldScroll(false);
     }
