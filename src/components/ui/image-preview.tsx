@@ -15,7 +15,7 @@ export function ImagePreview({ src, alt }: { src: string; alt: string }) {
           e.stopPropagation();
           setOpen(true);
         }}
-        className="absolute right-3 top-3 z-10 rounded-full bg-black/50 p-2.5 text-white/80 opacity-0 backdrop-blur-sm transition-all duration-300 hover:bg-black/70 hover:text-white group-hover:opacity-100"
+        className="absolute right-3 top-3 z-10 rounded-full bg-black/50 p-2.5 text-white/80 opacity-100 backdrop-blur-sm transition-all duration-300 hover:bg-black/70 hover:text-white md:opacity-0 md:group-hover:opacity-100"
         aria-label={`${alt} vergrößern`}
       >
         <Eye className="h-5 w-5" />

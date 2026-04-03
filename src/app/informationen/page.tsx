@@ -69,7 +69,7 @@ export default async function InformationenPage() {
           <h2 className="text-2xl font-semibold">Ausstattung der Unterkünfte</h2>
           <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
             <div
-              className="h-[28rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 md:h-[32rem]"
+              className="h-[36rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 sm:h-[28rem] md:h-[32rem]"
               style={{ backgroundImage: "url('/Pictures/K%C3%BCche%20blanko.png')" }}
             />
             <div className="absolute inset-0 bg-black/40 transition-all duration-500 group-hover:bg-black/65" />
@@ -108,7 +108,7 @@ export default async function InformationenPage() {
           <h2 className="text-2xl font-semibold">Bitte mitbringen</h2>
           <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
             <div
-              className="h-[28rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 md:h-[32rem]"
+              className="h-[36rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 sm:h-[28rem] md:h-[32rem]"
               style={{ backgroundImage: "url('/Pictures/Bitte%20mitbringen_blanko.png')" }}
             />
             <div className="absolute inset-0 bg-black/40 transition-all duration-500 group-hover:bg-black/65" />
