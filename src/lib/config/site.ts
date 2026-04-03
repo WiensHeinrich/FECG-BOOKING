@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: 'FECG Gemeindefreizeit',
+  name: 'FECG Trossingen Gemeindefreizeit 2027',
   church: 'FECG Trossingen e.V.',
   description: 'Buchungssystem für die Gemeindefreizeit der FECG Trossingen e.V.',
   navigation: [

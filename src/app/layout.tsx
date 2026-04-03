@@ -13,7 +13,7 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: {
     default: "Gemeindefreizeit | FECG Trossingen e.V.",
-    template: "%s | FECG Gemeindefreizeit",
+    template: "%s | FECG Trossingen Gemeindefreizeit 2027",
   },
   description:
     "Buchungssystem für die Gemeindefreizeit der FECG Trossingen e.V. Reservieren Sie Ihr Ferienhaus und melden Sie sich online an.",

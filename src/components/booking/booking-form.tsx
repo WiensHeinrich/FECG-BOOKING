@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Plus, Trash2, AlertCircle } from "lucide-react";
+import { Loader2, Plus, Trash2, AlertCircle, X, FileDown } from "lucide-react";
 import { HouseTypeCard } from "./house-type-card";
 import { createReservation } from "@/lib/actions/booking";
 import { joinWaitlist } from "@/lib/actions/waitlist";
@@ -62,6 +62,8 @@ export function BookingForm({
   const [waitlistGuestCount, setWaitlistGuestCount] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [rulesAccepted, setRulesAccepted] = useState(false);
+  const [showRules, setShowRules] = useState(false);
 
   const selectedType = houseTypes.find((ht) => ht.id === selectedTypeId);
   const selectedAvailability = availability.find(
@@ -469,8 +471,34 @@ export function BookingForm({
             </Alert>
           )}
 
-          <div className="mt-6">
-            <Button type="submit" size="lg" className="w-full" disabled={isPending}>
+          {/* Regeln akzeptieren */}
+          <div className="mt-6 flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="rules-accepted"
+              checked={rulesAccepted}
+              onChange={(e) => setRulesAccepted(e.target.checked)}
+              className="mt-1 h-5 w-5 shrink-0 cursor-pointer rounded border-border accent-primary"
+            />
+            <label htmlFor="rules-accepted" className="text-sm text-muted-foreground cursor-pointer">
+              Hiermit akzeptiere ich die{" "}
+              <button
+                type="button"
+                onClick={() => setShowRules(true)}
+                className="font-semibold text-primary underline underline-offset-4 hover:text-primary/80"
+              >
+                Regeln der Gemeindefreizeit
+              </button>.
+            </label>
+          </div>
+
+          <div className="mt-4">
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={isPending || !rulesAccepted}
+            >
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -485,6 +513,65 @@ export function BookingForm({
               )}
             </Button>
           </div>
+
+          {/* Regeln-Modal */}
+          {showRules && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+              onClick={() => setShowRules(false)}
+            >
+              <div
+                className="relative flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl bg-card shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between border-b px-6 py-4">
+                  <h3 className="text-lg font-semibold">Regeln der Gemeindefreizeit</h3>
+                  <Button variant="ghost" size="icon" onClick={() => setShowRules(false)}>
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+                <div className="flex-1 overflow-y-auto px-6 py-4 text-sm leading-relaxed text-foreground/80 space-y-4">
+                  <h4 className="font-bold text-foreground">1. Allgemeines</h4>
+                  <p>Die Gemeindefreizeit dient der Erholung, Gemeinschaft und geistlichen Erbauung. Wir bitten alle Teilnehmer, sich respektvoll und rücksichtsvoll zu verhalten.</p>
+
+                  <h4 className="font-bold text-foreground">2. An- und Abreise</h4>
+                  <p>Die Anreise erfolgt am ersten Tag ab 17:00 Uhr. Die Abreise muss bis 10:00 Uhr am letzten Tag erfolgen. Die Unterkünfte sind bei Abreise sauber und ordentlich zu hinterlassen.</p>
+
+                  <h4 className="font-bold text-foreground">3. Unterkünfte</h4>
+                  <p>Die Unterkünfte sind pfleglich zu behandeln. Bei Schäden ist die Freizeitleitung umgehend zu informieren. Rauchen ist in allen Gebäuden untersagt.</p>
+
+                  <h4 className="font-bold text-foreground">4. Nachtruhe</h4>
+                  <p>Ab 22:00 Uhr bitten wir um Nachtruhe in den Unterkünften und auf dem gesamten Gelände, aus Rücksicht auf andere Gäste und Familien mit Kindern.</p>
+
+                  <h4 className="font-bold text-foreground">5. Kinder und Jugendliche</h4>
+                  <p>Kinder unter 12 Jahren müssen von einem Erziehungsberechtigten begleitet werden. Die Aufsichtspflicht liegt bei den Eltern bzw. Erziehungsberechtigten.</p>
+
+                  <h4 className="font-bold text-foreground">6. Gemeinschaftseinrichtungen</h4>
+                  <p>Alle Gemeinschaftseinrichtungen (Küche, Waschraum, Spielplatz) sind nach Benutzung sauber zu hinterlassen. Bitte achten Sie auf Ordnung.</p>
+
+                  <h4 className="font-bold text-foreground">7. Zahlung</h4>
+                  <p>Die Zahlung des Hausbeitrags erfolgt per Überweisung innerhalb von 14 Tagen nach Reservierung. Die Kurtaxe wird vor Ort bezahlt.</p>
+
+                  <h4 className="font-bold text-foreground">8. Stornierung</h4>
+                  <p>Eine kostenlose Stornierung ist bis 4 Wochen vor Beginn der Freizeit möglich. Danach werden 50% des Hausbeitrags fällig. Bei Nichterscheinen wird der volle Betrag berechnet.</p>
+
+                  <h4 className="font-bold text-foreground">9. Haftung</h4>
+                  <p>Die Teilnahme an der Gemeindefreizeit erfolgt auf eigene Verantwortung. Die FECG Trossingen e.V. haftet nicht für persönliche Gegenstände oder Unfälle außerhalb der organisierten Programmpunkte.</p>
+                </div>
+                <div className="flex justify-end gap-2 border-t px-6 py-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setRulesAccepted(true);
+                      setShowRules(false);
+                    }}
+                  >
+                    Gelesen & Akzeptieren
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </form>
       )}
     </div>
