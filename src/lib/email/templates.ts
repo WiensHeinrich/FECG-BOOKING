@@ -82,7 +82,7 @@ export function reservationConfirmationEmail(data: {
         <h1 style="color: #6B8F4E; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
-      <h2 style="margin-top: 0;">Hallo ${data.firstName},</h2>
+      <h2 style="margin-top: 0;">Liebe/r ${data.firstName},</h2>
       <p>Ihre Reservierung wurde erfolgreich erstellt! Bitte überweisen Sie den Betrag bis zum <strong>${expiryDate}</strong>.</p>
 
       <div style="${cardStyle}">
@@ -115,7 +115,7 @@ export function reservationConfirmationEmail(data: {
       </p>
 
       <div style="${footerStyle}">
-        <p>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
+        <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
       </div>
     </div>`,
   };
@@ -155,7 +155,7 @@ export function adminNewReservationEmail(data: {
       </div>
 
       <div style="${footerStyle}">
-        <p>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
+        <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
       </div>
     </div>`,
   };
@@ -175,7 +175,7 @@ export function bookingConfirmedEmail(data: {
         <h1 style="color: #6B8F4E; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
-      <h2 style="margin-top: 0;">Hallo ${data.firstName},</h2>
+      <h2 style="margin-top: 0;">Liebe/r ${data.firstName},</h2>
       <p>Ihre Zahlung ist eingegangen. Ihre Buchung ist damit bestätigt! 🎉</p>
 
       <div style="${cardStyle}">
@@ -189,7 +189,7 @@ export function bookingConfirmedEmail(data: {
       <p>Wir freuen uns auf eine wunderbare gemeinsame Zeit!</p>
 
       <div style="${footerStyle}">
-        <p>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
+        <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
       </div>
     </div>`,
   };
@@ -219,7 +219,7 @@ export function paymentReminderEmail(data: {
         <h1 style="color: #6B8F4E; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
-      <h2 style="margin-top: 0;">Hallo ${data.firstName},</h2>
+      <h2 style="margin-top: 0;">Liebe/r ${data.firstName},</h2>
       <p>Ihre Reservierung für <strong>${data.houseTypeName}</strong> läuft am <strong>${expiryDate}</strong> ab. Bitte überweisen Sie den Betrag rechtzeitig, damit Ihre Buchung nicht verfällt.</p>
 
       <div style="${highlightStyle}">
@@ -234,7 +234,7 @@ export function paymentReminderEmail(data: {
       </div>
 
       <div style="${footerStyle}">
-        <p>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
+        <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
       </div>
     </div>`,
   };
@@ -252,12 +252,12 @@ export function reservationExpiredEmail(data: {
         <h1 style="color: #6B8F4E; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
-      <h2 style="margin-top: 0;">Hallo ${data.firstName},</h2>
+      <h2 style="margin-top: 0;">Liebe/r ${data.firstName},</h2>
       <p>Leider ist Ihre Reservierung für <strong>${data.houseTypeName}</strong> abgelaufen, da keine Zahlung eingegangen ist.</p>
       <p>Falls noch Unterkünfte verfügbar sind, können Sie sich gerne erneut anmelden.</p>
 
       <div style="${footerStyle}">
-        <p>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
+        <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
       </div>
     </div>`,
   };
