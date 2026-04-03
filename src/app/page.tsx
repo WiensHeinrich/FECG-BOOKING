@@ -134,13 +134,13 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-3xl gap-6 md:grid-cols-3">
           {/* Wann */}
           <div className="group relative aspect-square overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div className="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50">
+            <div className="absolute inset-0 transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50">
               <img src="/Pictures/Wann.png" alt="Wann" className="h-full w-full object-cover" />
             </div>
-            <div className="absolute inset-0 bg-black/0 transition-all duration-500 group-hover:bg-black/40" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 opacity-0 transition-all duration-500 group-hover:opacity-100">
-              <h3 className="text-2xl font-bold text-white drop-shadow-lg">Wann</h3>
-              <p className="mt-1 text-base font-semibold text-white/90 drop-shadow">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-all duration-500 group-hover:from-black/60 group-hover:via-black/40 group-hover:to-black/30" />
+            <div className="absolute inset-x-0 bottom-0 p-4 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+              <h3 className="text-lg font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-2xl">Wann</h3>
+              <p className="mt-0.5 text-sm font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white">
                 {formatDateRange(event.start_date, event.end_date)}
               </p>
             </div>
@@ -148,22 +148,22 @@ export default async function HomePage() {
 
           {/* Wo */}
           <div className="group relative aspect-square overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div className="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50">
+            <div className="absolute inset-0 transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50">
               <img src="/Pictures/Wo.png" alt="Wo" className="h-full w-full object-cover" />
             </div>
-            <div className="absolute inset-0 bg-black/0 transition-all duration-500 group-hover:bg-black/40" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 opacity-0 transition-all duration-500 group-hover:opacity-100">
-              <h3 className="text-2xl font-bold text-white drop-shadow-lg">Wo</h3>
-              <p className="mt-1 text-base font-semibold text-white/90 drop-shadow">{event.location}</p>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-all duration-500 group-hover:from-black/60 group-hover:via-black/40 group-hover:to-black/30" />
+            <div className="absolute inset-x-0 bottom-0 p-4 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+              <h3 className="text-lg font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-2xl">Wo</h3>
+              <p className="mt-0.5 text-sm font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white">{event.location}</p>
               {event.location_address && (
-                <p className="mt-0.5 text-sm text-white/80 drop-shadow">{event.location_address}</p>
+                <p className="text-xs text-white/60 drop-shadow transition-all duration-500 group-hover:text-sm group-hover:text-white/80">{event.location_address}</p>
               )}
               {event.location_url && (
                 <a
                   href={event.location_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-1 inline-block text-sm font-semibold text-white underline underline-offset-4 drop-shadow"
+                  className="mt-0.5 inline-block text-xs font-semibold text-white/70 underline underline-offset-4 drop-shadow transition-all duration-500 group-hover:text-sm group-hover:text-white"
                 >
                   Auf Karte anzeigen
                 </a>
@@ -173,15 +173,15 @@ export default async function HomePage() {
 
           {/* Kontakt */}
           <div className="group relative aspect-square overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div className="absolute inset-0 flex items-center justify-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50">
+            <div className="absolute inset-0 transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50">
               <img src="/Pictures/kontakt.png" alt="Kontakt" className="h-full w-full object-cover" />
             </div>
-            <div className="absolute inset-0 bg-black/0 transition-all duration-500 group-hover:bg-black/40" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 opacity-0 transition-all duration-500 group-hover:opacity-100">
-              <h3 className="text-2xl font-bold text-white drop-shadow-lg">Kontakt</h3>
-              <p className="mt-1 text-base font-semibold text-white/90 drop-shadow">{event.contact_email}</p>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent transition-all duration-500 group-hover:from-black/60 group-hover:via-black/40 group-hover:to-black/30" />
+            <div className="absolute inset-x-0 bottom-0 p-4 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
+              <h3 className="text-lg font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-2xl">Kontakt</h3>
+              <p className="mt-0.5 text-sm font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white">{event.contact_email}</p>
               {event.contact_phone && (
-                <p className="mt-0.5 text-sm text-white/80 drop-shadow">{event.contact_phone}</p>
+                <p className="text-xs text-white/60 drop-shadow transition-all duration-500 group-hover:text-sm group-hover:text-white/80">{event.contact_phone}</p>
               )}
             </div>
           </div>
