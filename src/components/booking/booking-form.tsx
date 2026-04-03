@@ -531,32 +531,49 @@ export function BookingForm({
                   </Button>
                 </div>
                 <div className="flex-1 overflow-y-auto px-6 py-4 text-sm leading-relaxed text-foreground/80 space-y-4">
-                  <h4 className="font-bold text-foreground">1. Allgemeines</h4>
-                  <p>Die Gemeindefreizeit dient der Erholung, Gemeinschaft und geistlichen Erbauung. Wir bitten alle Teilnehmer, sich respektvoll und rücksichtsvoll zu verhalten.</p>
+                  <p className="font-semibold text-foreground">Die Teilnahmebedingungen zur Gemeindefreizeit sind für jeden Teilnehmer verbindlich. Mit der Anmeldung erklären sich die Teilnehmer mit den folgenden Regeln einverstanden.</p>
 
-                  <h4 className="font-bold text-foreground">2. An- und Abreise</h4>
-                  <p>Die Anreise erfolgt am ersten Tag ab 17:00 Uhr. Die Abreise muss bis 10:00 Uhr am letzten Tag erfolgen. Die Unterkünfte sind bei Abreise sauber und ordentlich zu hinterlassen.</p>
+                  <h4 className="font-bold text-foreground">&sect;1 Freizeitleitung</h4>
+                  <p>Die Freizeitleitung besteht aus den Jugendleitern und ggf. weitere bestimmte Leiter. Den Anweisungen der Freizeitleitung ist in jedem Fall Folge zu leisten.</p>
 
-                  <h4 className="font-bold text-foreground">3. Unterkünfte</h4>
-                  <p>Die Unterkünfte sind pfleglich zu behandeln. Bei Schäden ist die Freizeitleitung umgehend zu informieren. Rauchen ist in allen Gebäuden untersagt.</p>
+                  <h4 className="font-bold text-foreground">&sect;2 Haftung</h4>
+                  <p>Für verlorene Gegenstände wird keinerlei Haftung übernommen. Die Teilnahme an der Gemeindefreizeit erfolgt auf eigene Verantwortung.</p>
 
-                  <h4 className="font-bold text-foreground">4. Nachtruhe</h4>
-                  <p>Ab 22:00 Uhr bitten wir um Nachtruhe in den Unterkünften und auf dem gesamten Gelände, aus Rücksicht auf andere Gäste und Familien mit Kindern.</p>
+                  <h4 className="font-bold text-foreground">&sect;3 Nachtruhe</h4>
+                  <p>Die festgelegte Nachtruhe muss eingehalten werden.</p>
 
-                  <h4 className="font-bold text-foreground">5. Kinder und Jugendliche</h4>
+                  <h4 className="font-bold text-foreground">&sect;4 Unterkünfte</h4>
+                  <p>Das Betreten eines gegengeschlechtlichen Zimmers jeglicher Art ist nur nach vorheriger Erlaubnis durch die Jugendleiter gestattet. Die Unterkünfte sind pfleglich zu behandeln und bei Abreise sauber und ordentlich zu hinterlassen.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;5 Kleidung</h4>
+                  <p>Es ist generell auf besonders freizügige Kleidung zu verzichten.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;6 Ausflüge und Aktivitäten</h4>
+                  <p>Besichtigungen und Ausflüge werden in definierten Kleingruppen erfolgen. Es ist nicht gestattet, sich ohne Zustimmung der Freizeitleitung von der Gruppe zu entfernen.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;7 Drogen und Rauschmittel</h4>
+                  <p>Das Konsumieren und Mitführen von Drogen und Rauschmitteln ist ausnahmslos verboten. Rauchen ist in allen Gebäuden untersagt.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;8 Waffen</h4>
+                  <p>Es ist verboten, Waffen mitzunehmen. Was als Waffe gilt, liegt in der Entscheidungsmacht der Freizeitleitung.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;9 Verbotene Aktivitäten</h4>
+                  <p>Der Besuch von Kinos, Spielstätten, Diskotheken etc. ist strengstens untersagt.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;10 Ordnung und Ausschluss</h4>
+                  <p>Teilnehmer, die sich nicht an die Ordnung halten, werden zurechtgewiesen. Bei mehrfachen oder groben Zuwiderhandlungen haben die Leiter das Recht, Teilnehmer von der Freizeit auszuschließen. Die Folgekosten für die evtl. Rückreise müssen die Teilnehmer selbst tragen. Die Erstattung der Reisekosten ist nicht möglich.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;11 Regeländerungen</h4>
+                  <p>Nur durch die Erlaubnis der Freizeitleitung dürfen die Regeln geändert werden. Hierbei handelt es sich jedoch nicht um grundlegende Regeln.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;12 Zahlung</h4>
+                  <p>Die Zahlung des Hausbeitrags erfolgt per Überweisung innerhalb von 14 Tagen nach Reservierung.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;13 Stornierung</h4>
+                  <p>Eine Stornierung ist grundsätzlich nicht möglich. Sollte ein Teilnehmer nicht mehr teilnehmen können, muss er eigenständig für Ersatz sorgen. Alternativ kann die Freizeitleitung kontaktiert werden — wir werden gemeinsam versuchen, einen Ersatz zu finden.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;14 Kinder und Jugendliche</h4>
                   <p>Kinder unter 12 Jahren müssen von einem Erziehungsberechtigten begleitet werden. Die Aufsichtspflicht liegt bei den Eltern bzw. Erziehungsberechtigten.</p>
-
-                  <h4 className="font-bold text-foreground">6. Gemeinschaftseinrichtungen</h4>
-                  <p>Alle Gemeinschaftseinrichtungen (Küche, Waschraum, Spielplatz) sind nach Benutzung sauber zu hinterlassen. Bitte achten Sie auf Ordnung.</p>
-
-                  <h4 className="font-bold text-foreground">7. Zahlung</h4>
-                  <p>Die Zahlung des Hausbeitrags erfolgt per Überweisung innerhalb von 14 Tagen nach Reservierung. Die Kurtaxe wird vor Ort bezahlt.</p>
-
-                  <h4 className="font-bold text-foreground">8. Stornierung</h4>
-                  <p>Eine kostenlose Stornierung ist bis 4 Wochen vor Beginn der Freizeit möglich. Danach werden 50% des Hausbeitrags fällig. Bei Nichterscheinen wird der volle Betrag berechnet.</p>
-
-                  <h4 className="font-bold text-foreground">9. Haftung</h4>
-                  <p>Die Teilnahme an der Gemeindefreizeit erfolgt auf eigene Verantwortung. Die FECG Trossingen e.V. haftet nicht für persönliche Gegenstände oder Unfälle außerhalb der organisierten Programmpunkte.</p>
                 </div>
                 <div className="flex justify-end gap-2 border-t px-6 py-4">
                   <Button
