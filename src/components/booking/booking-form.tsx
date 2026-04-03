@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,6 +64,22 @@ export function BookingForm({
   const [isPending, startTransition] = useTransition();
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [showRules, setShowRules] = useState(false);
+  const contactSectionRef = useRef<HTMLElement>(null);
+  const [shouldScroll, setShouldScroll] = useState(false);
+
+  // Scroll zu Kontaktdaten nach Auswahl
+  useEffect(() => {
+    if (shouldScroll && selectedTypeId && contactSectionRef.current) {
+      // Kleines Delay damit das DOM gerendert ist
+      setTimeout(() => {
+        contactSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+      setShouldScroll(false);
+    }
+  }, [shouldScroll, selectedTypeId]);
 
   const selectedType = houseTypes.find((ht) => ht.id === selectedTypeId);
   const selectedAvailability = availability.find(
@@ -74,6 +90,7 @@ export function BookingForm({
   function selectHouseType(houseType: HouseType) {
     setSelectedTypeId(houseType.id);
     setError(null);
+    setShouldScroll(true);
     const min = Math.max(houseType.max_guests - 1, 1);
     const max = houseType.max_guests + 2;
     setGuests((prev) => {
@@ -197,7 +214,7 @@ export function BookingForm({
 
       {selectedType && selectedAvailability && (
         <form action={isSoldOut ? handleWaitlistSubmit : handleReservationSubmit}>
-          <section>
+          <section ref={contactSectionRef}>
             <h2 className="text-xl font-semibold">2. Kontaktdaten</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {isSoldOut
