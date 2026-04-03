@@ -208,3 +208,125 @@ AS $$
     AND r.confirmation_token_hash = encode(digest(p_access_token, 'sha256'), 'hex')
   LIMIT 1;
 $$;
+
+-- Warteliste: Gästedaten als JSON speichern + Geschlecht Kontaktperson
+ALTER TABLE waitlist ADD COLUMN IF NOT EXISTS guests_json JSONB DEFAULT '[]'::JSONB;
+ALTER TABLE waitlist ADD COLUMN IF NOT EXISTS contact_gender TEXT CHECK (contact_gender IN ('maennlich', 'weiblich'));
+
+-- Waitlist-RPC aktualisieren um Gäste + Geschlecht zu speichern
+CREATE OR REPLACE FUNCTION join_public_waitlist(
+  p_event_id UUID,
+  p_house_type_id UUID,
+  p_contact_first_name TEXT,
+  p_contact_last_name TEXT,
+  p_contact_email TEXT,
+  p_contact_phone TEXT,
+  p_guest_count INTEGER,
+  p_contact_gender TEXT DEFAULT NULL,
+  p_guests JSONB DEFAULT '[]'::JSONB
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions
+AS $$
+DECLARE
+  v_event events%ROWTYPE;
+  v_house_type house_types%ROWTYPE;
+  v_next_position INTEGER;
+  v_available_house_count INTEGER;
+BEGIN
+  SELECT *
+  INTO v_event
+  FROM events
+  WHERE id = p_event_id
+    AND is_active = true;
+
+  IF v_event IS NULL THEN
+    RETURN jsonb_build_object('error', 'Event nicht gefunden.');
+  END IF;
+
+  IF now() < v_event.registration_start OR now() > v_event.registration_end THEN
+    RETURN jsonb_build_object('error', 'Die Anmeldung ist aktuell geschlossen.');
+  END IF;
+
+  SELECT *
+  INTO v_house_type
+  FROM house_types
+  WHERE id = p_house_type_id
+    AND event_id = p_event_id;
+
+  IF v_house_type IS NULL THEN
+    RETURN jsonb_build_object('error', 'Haustyp nicht gefunden.');
+  END IF;
+
+  SELECT COUNT(*)
+  INTO v_available_house_count
+  FROM houses h
+  WHERE h.house_type_id = p_house_type_id
+    AND h.is_available = true
+    AND NOT EXISTS (
+      SELECT 1
+      FROM reservations r
+      WHERE r.house_id = h.id
+        AND r.status IN ('reserviert', 'bestaetigt')
+    );
+
+  IF v_available_house_count > 0 THEN
+    RETURN jsonb_build_object(
+      'error',
+      'Es sind noch freie Unterkuenfte verfuegbar. Bitte reservieren Sie direkt.'
+    );
+  END IF;
+
+  IF EXISTS (
+    SELECT 1
+    FROM waitlist w
+    WHERE w.event_id = p_event_id
+      AND w.house_type_id = p_house_type_id
+      AND lower(w.contact_email) = lower(p_contact_email)
+      AND w.status = 'wartend'
+  ) THEN
+    RETURN jsonb_build_object(
+      'error',
+      'Fuer diese E-Mail-Adresse besteht bereits ein offener Wartelisteneintrag.'
+    );
+  END IF;
+
+  PERFORM pg_advisory_xact_lock(hashtext(p_house_type_id::TEXT));
+
+  SELECT COALESCE(MAX(position), 0) + 1
+  INTO v_next_position
+  FROM waitlist
+  WHERE house_type_id = p_house_type_id
+    AND status = 'wartend';
+
+  INSERT INTO waitlist (
+    event_id,
+    house_type_id,
+    contact_first_name,
+    contact_last_name,
+    contact_email,
+    contact_phone,
+    contact_gender,
+    guest_count,
+    guests_json,
+    position
+  ) VALUES (
+    p_event_id,
+    p_house_type_id,
+    p_contact_first_name,
+    p_contact_last_name,
+    lower(p_contact_email),
+    NULLIF(BTRIM(p_contact_phone), ''),
+    NULLIF(BTRIM(p_contact_gender), ''),
+    p_guest_count,
+    p_guests,
+    v_next_position
+  );
+
+  RETURN jsonb_build_object(
+    'position', v_next_position
+  );
+END;
+$$;

@@ -183,7 +183,9 @@ export function BookingForm({
         contact_last_name: formData.get("contact_last_name") as string,
         contact_email: formData.get("contact_email") as string,
         contact_phone: (formData.get("contact_phone") as string) || undefined,
-        guest_count: Math.min(waitlistGuestCount, selectedType.max_guests),
+        contact_gender: (formData.get("contact_gender") as string) || undefined,
+        guest_count: guests.length,
+        guests: guests.map((g, i) => ({ ...g, sort_order: i })),
       });
 
       if (result?.error) {
@@ -266,50 +268,14 @@ export function BookingForm({
 
           <Separator className="my-8" />
 
-          {isSoldOut ? (
-            <section>
-              <h2 className="text-xl font-semibold">3. Warteliste</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Dieser Unterkunftstyp ist aktuell ausgebucht. Sie können sich
-                für {selectedType.name} auf die Warteliste setzen lassen.
-              </p>
-
-              <Card className="mt-4">
-                <CardContent className="grid gap-4 pt-6 md:grid-cols-2">
-                  <div>
-                    <Label htmlFor="guest_count">Anzahl Gäste *</Label>
-                    <Input
-                      id="guest_count"
-                      name="guest_count"
-                      type="number"
-                      min={1}
-                      max={selectedType.max_guests}
-                      value={waitlistGuestCount}
-                      onChange={(e) =>
-                        setWaitlistGuestCount(
-                          Math.min(
-                            Math.max(Number(e.target.value) || 1, 1),
-                            selectedType.max_guests
-                          )
-                        )
-                      }
-                      required
-                    />
-                  </div>
-                  <div className="flex items-end text-sm text-muted-foreground">
-                    Maximal {selectedType.max_guests} Personen für diesen
-                    Unterkunftstyp.
-                  </div>
-                </CardContent>
-              </Card>
-            </section>
-          ) : (
-            <section>
-              <h2 className="text-xl font-semibold">3. Gäste eintragen</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Tragen Sie alle Personen ein, die im {selectedType.name} übernachten
-                (mind. {Math.max(selectedType.max_guests - 1, 1)}, max. {selectedType.max_guests + 2} Personen).
-              </p>
+          <section>
+            <h2 className="text-xl font-semibold">3. Gäste eintragen{isSoldOut ? " (Warteliste)" : ""}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {isSoldOut
+                ? `Dieser Unterkunftstyp ist aktuell ausgebucht. Tragen Sie trotzdem alle Gäste ein — so können wir Ihre Anmeldung direkt übernehmen, sobald eine Unterkunft frei wird.`
+                : `Tragen Sie alle Personen ein, die im ${selectedType.name} übernachten (mind. ${Math.max(selectedType.max_guests - 1, 1)}, max. ${selectedType.max_guests + 2} Personen).`
+              }
+            </p>
 
               <div className="mt-4 space-y-4">
                 {guests.map((guest, index) => (
@@ -430,8 +396,7 @@ export function BookingForm({
                   </Button>
                 )}
               </div>
-            </section>
-          )}
+          </section>
 
           <Separator className="my-8" />
 
@@ -440,7 +405,7 @@ export function BookingForm({
             <Card className="mt-4">
               <CardContent className="pt-6">
                 {(() => {
-                  const guestAges = (isSoldOut ? [] : guests).map((g) =>
+                  const guestAges = guests.map((g) =>
                     g.birth_date ? getAgeAtDate(g.birth_date, eventStartDate) : null
                   );
                   const adults = guestAges.filter((a) => a === null || a >= 18).length;
@@ -459,9 +424,7 @@ export function BookingForm({
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Anzahl Gäste</span>
-                        <span className="font-medium">
-                          {isSoldOut ? waitlistGuestCount : guests.length}
-                        </span>
+                        <span className="font-medium">{guests.length}</span>
                       </div>
                       {!isSoldOut && (
                         <>

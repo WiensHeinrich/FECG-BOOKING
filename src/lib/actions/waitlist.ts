@@ -4,6 +4,16 @@ import { createClient } from "@/lib/supabase/server";
 import { z } from "zod/v4";
 import { redirect } from "next/navigation";
 
+const guestSchema = z.object({
+  first_name: z.string().min(1),
+  last_name: z.string().min(1),
+  birth_date: z.string().optional(),
+  is_child: z.boolean().default(false),
+  gender: z.enum(["maennlich", "weiblich"]).optional(),
+  dietary_notes: z.string().optional(),
+  sort_order: z.number().default(0),
+});
+
 const waitlistSchema = z.object({
   event_id: z.string().uuid(),
   house_type_id: z.string().uuid(),
@@ -11,7 +21,9 @@ const waitlistSchema = z.object({
   contact_last_name: z.string().min(1),
   contact_email: z.email(),
   contact_phone: z.string().optional(),
+  contact_gender: z.enum(["maennlich", "weiblich"]).optional(),
   guest_count: z.number().min(1).max(10),
+  guests: z.array(guestSchema).optional(),
 });
 
 export type WaitlistFormData = z.infer<typeof waitlistSchema>;
@@ -42,6 +54,8 @@ export async function joinWaitlist(formData: WaitlistFormData) {
     p_contact_email: data.contact_email,
     p_contact_phone: data.contact_phone ?? null,
     p_guest_count: data.guest_count,
+    p_contact_gender: data.contact_gender ?? null,
+    p_guests: data.guests ?? [],
   });
 
   if (error) {

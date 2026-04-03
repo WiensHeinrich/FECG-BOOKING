@@ -21,7 +21,14 @@ export function formatDateRange(start: string | Date, end: string | Date): strin
 }
 
 export function formatDateTime(date: string | Date): string {
-  return format(new Date(date), "dd.MM.yyyy HH:mm", { locale: de });
+  return new Date(date).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Berlin",
+  });
 }
 
 export function formatTimeUntil(date: string | Date): string {
