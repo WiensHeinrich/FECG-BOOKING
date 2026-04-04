@@ -678,19 +678,22 @@ export function BookingForm({
                   <h4 className="font-bold text-foreground">&sect;9 Verbotene Aktivitäten</h4>
                   <p>Der Besuch von Kinos, Spielstätten, Diskotheken etc. ist strengstens untersagt.</p>
 
-                  <h4 className="font-bold text-foreground">&sect;10 Ordnung und Ausschluss</h4>
+                  <h4 className="font-bold text-foreground">&sect;10 Besuche</h4>
+                  <p>Tagesbesuche oder Besuche von außenstehenden Personen sind nicht gestattet, da die Planbarkeit der Freizeit (Verpflegung, Unterkünfte, Programm) dadurch nicht mehr gewährleistet werden kann. Sollte in begründeten Ausnahmefällen dennoch jemand kommen müssen, ist dies zwingend im Voraus mit der Freizeitleitung abzustimmen.</p>
+
+                  <h4 className="font-bold text-foreground">&sect;11 Ordnung und Ausschluss</h4>
                   <p>Teilnehmer, die sich nicht an die Ordnung halten, werden zurechtgewiesen. Bei mehrfachen oder groben Zuwiderhandlungen haben die Leiter das Recht, Teilnehmer von der Freizeit auszuschließen. Die Folgekosten für die evtl. Rückreise müssen die Teilnehmer selbst tragen. Die Erstattung der Reisekosten ist nicht möglich.</p>
 
-                  <h4 className="font-bold text-foreground">&sect;11 Regeländerungen</h4>
+                  <h4 className="font-bold text-foreground">&sect;12 Regeländerungen</h4>
                   <p>Nur durch die Erlaubnis der Freizeitleitung dürfen die Regeln geändert werden. Hierbei handelt es sich jedoch nicht um grundlegende Regeln.</p>
 
-                  <h4 className="font-bold text-foreground">&sect;12 Zahlung</h4>
+                  <h4 className="font-bold text-foreground">&sect;13 Zahlung</h4>
                   <p>Die Zahlung des Hausbeitrags erfolgt per Überweisung innerhalb von 14 Tagen nach Reservierung.</p>
 
-                  <h4 className="font-bold text-foreground">&sect;13 Stornierung</h4>
+                  <h4 className="font-bold text-foreground">&sect;14 Stornierung</h4>
                   <p>Eine Stornierung ist grundsätzlich nicht möglich. Sollte ein Teilnehmer nicht mehr teilnehmen können, muss er eigenständig für Ersatz sorgen. Alternativ kann die Freizeitleitung kontaktiert werden — wir werden gemeinsam versuchen, einen Ersatz zu finden.</p>
 
-                  <h4 className="font-bold text-foreground">&sect;14 Kinder und Jugendliche</h4>
+                  <h4 className="font-bold text-foreground">&sect;15 Kinder und Jugendliche</h4>
                   <p>Kinder unter 12 Jahren müssen von einem Erziehungsberechtigten begleitet werden. Die Aufsichtspflicht liegt bei den Eltern bzw. Erziehungsberechtigten.</p>
                 </div>
                 <div className="flex justify-end gap-2 border-t px-6 py-4">
