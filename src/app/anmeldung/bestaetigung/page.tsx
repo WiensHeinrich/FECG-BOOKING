@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, ArrowLeft, User, Users } from "lucide-react";
+import { CheckCircle2, ArrowLeft, User, Users, XCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency, formatDateShort } from "@/lib/utils/format";
+import { PublicCancelButton } from "@/components/booking/public-cancel-button";
 
 export const metadata: Metadata = {
   title: "Reservierung bestätigt",
@@ -76,6 +77,8 @@ export default async function BestaetigungPage({ searchParams }: Props) {
         bank_account_holder: string;
         bank_iban: string;
         bank_bic: string | null;
+        status: string;
+        payment_status: string;
         guests_json: GuestInfo[];
       }
     | undefined;
@@ -96,12 +99,32 @@ export default async function BestaetigungPage({ searchParams }: Props) {
     <div className="container mx-auto px-4 py-12">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 text-center">
-          <CheckCircle2 className="mx-auto h-16 w-16 text-[#00ADD6]" />
-          <h1 className="mt-4 text-3xl font-bold">Reservierung erfolgreich!</h1>
-          <p className="mt-2 text-muted-foreground">
-            Ihre Reservierung wurde erstellt. Bitte überweisen Sie den Betrag
-            bis spätestens zum angegebenen Datum.
-          </p>
+          {reservation.status === "storniert" ? (
+            <>
+              <XCircle className="mx-auto h-16 w-16 text-red-500" />
+              <h1 className="mt-4 text-3xl font-bold">Reservierung storniert</h1>
+              <p className="mt-2 text-muted-foreground">
+                Diese Reservierung wurde storniert.
+              </p>
+            </>
+          ) : reservation.status === "bestaetigt" ? (
+            <>
+              <CheckCircle2 className="mx-auto h-16 w-16 text-[#00ADD6]" />
+              <h1 className="mt-4 text-3xl font-bold">Buchung bestätigt!</h1>
+              <p className="mt-2 text-muted-foreground">
+                Ihre Zahlung ist eingegangen. Wir freuen uns auf Sie!
+              </p>
+            </>
+          ) : (
+            <>
+              <CheckCircle2 className="mx-auto h-16 w-16 text-[#00ADD6]" />
+              <h1 className="mt-4 text-3xl font-bold">Reservierung erfolgreich!</h1>
+              <p className="mt-2 text-muted-foreground">
+                Ihre Reservierung wurde erstellt. Bitte überweisen Sie den Betrag
+                bis spätestens zum angegebenen Datum.
+              </p>
+            </>
+          )}
         </div>
 
         <Card>
@@ -235,6 +258,17 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               Bitte geben Sie unbedingt den <strong>Verwendungszweck</strong> an, damit wir Ihre
               Zahlung zuordnen können.
             </p>
+
+            {/* Stornierungsmöglichkeit für den Gast */}
+            {reservation.status === "reserviert" && (
+              <>
+                <Separator className="my-4" />
+                <PublicCancelButton
+                  reservationId={reservation.reservation_id}
+                  token={token!}
+                />
+              </>
+            )}
           </CardContent>
         </Card>
 

@@ -190,6 +190,8 @@ export function reservationConfirmationEmail(data: {
 
       <p style="font-size: 13px; color: #666;">
         <a href="${data.confirmationUrl}" style="color: #00ADD6;">Bestätigungsseite nochmal öffnen</a>
+        &nbsp;&middot;&nbsp;
+        <a href="${data.confirmationUrl}" style="color: #999;">Reservierung stornieren</a>
       </p>
 
       <div style="${footerStyle}">
