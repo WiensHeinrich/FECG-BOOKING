@@ -35,7 +35,6 @@ DECLARE
   v_payment_reference TEXT;
   v_expires_at TIMESTAMPTZ;
   v_confirmation_token TEXT;
-  v_guest RECORD;
 BEGIN
   SELECT * INTO v_event
   FROM events
@@ -108,32 +107,23 @@ BEGIN
     encode(digest(v_confirmation_token, 'sha256'), 'hex')
   );
 
-  FOR v_guest IN SELECT * FROM jsonb_array_elements(p_guests)
-  LOOP
-    INSERT INTO guests (
-      reservation_id,
-      first_name,
-      last_name,
-      birth_date,
-      is_child,
-      gender,
-      dietary_notes,
-      sort_order
-    ) VALUES (
-      v_reservation_id,
-      v_guest->>'first_name',
-      v_guest->>'last_name',
-      CASE
-        WHEN v_guest->>'birth_date' IS NOT NULL AND v_guest->>'birth_date' <> ''
-          THEN (v_guest->>'birth_date')::DATE
-        ELSE NULL
-      END,
-      COALESCE((v_guest->>'is_child')::BOOLEAN, false),
-      NULLIF(v_guest->>'gender', ''),
-      NULLIF(v_guest->>'dietary_notes', ''),
-      COALESCE((v_guest->>'sort_order')::INTEGER, 0)
-    );
-  END LOOP;
+  INSERT INTO guests (
+    reservation_id, first_name, last_name, birth_date, is_child, gender, dietary_notes, sort_order
+  )
+  SELECT
+    v_reservation_id,
+    elem->>'first_name',
+    elem->>'last_name',
+    CASE
+      WHEN elem->>'birth_date' IS NOT NULL AND elem->>'birth_date' <> ''
+        THEN (elem->>'birth_date')::DATE
+      ELSE NULL
+    END,
+    COALESCE((elem->>'is_child')::BOOLEAN, false),
+    NULLIF(elem->>'gender', ''),
+    NULLIF(elem->>'dietary_notes', ''),
+    COALESCE((elem->>'sort_order')::INTEGER, 0)
+  FROM jsonb_array_elements(p_guests) AS elem;
 
   RETURN jsonb_build_object(
     'id', v_reservation_id,
