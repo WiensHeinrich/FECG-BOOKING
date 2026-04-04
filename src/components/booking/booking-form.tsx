@@ -353,9 +353,8 @@ export function BookingForm({
                           {index === 0 && (
                             <Button
                               type="button"
-                              variant="outline"
                               size="sm"
-                              className="h-8 gap-1.5 text-xs"
+                              className="h-8 gap-1.5 text-xs bg-green-600 text-white hover:bg-green-700"
                               onClick={() => {
                                 setGuests((prev) =>
                                   prev.map((g, i) =>
@@ -378,7 +377,7 @@ export function BookingForm({
                               }}
                             >
                               <UserCheck className="h-3.5 w-3.5" />
-                              Aus Kontaktperson
+                              Aus Kontaktperson übernehmen
                             </Button>
                           )}
                           {guests.length > 1 && (
