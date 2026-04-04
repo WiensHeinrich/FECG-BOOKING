@@ -99,13 +99,19 @@ export async function deleteReservation(reservationId: string) {
     .eq("id", reservationId)
     .single();
 
-  // 2. Gäste löschen
+  // 2. Warteliste-Referenz aufheben (converted_reservation_id)
+  await supabase
+    .from("waitlist")
+    .update({ converted_reservation_id: null })
+    .eq("converted_reservation_id", reservationId);
+
+  // 3. Gäste löschen
   await supabase
     .from("guests")
     .delete()
     .eq("reservation_id", reservationId);
 
-  // 3. Reservierung löschen
+  // 5. Reservierung löschen
   const { error } = await supabase
     .from("reservations")
     .delete()
@@ -116,7 +122,7 @@ export async function deleteReservation(reservationId: string) {
     return { error: "Reservierung konnte nicht gelöscht werden." };
   }
 
-  // 4. Haus wieder freigeben
+  // 6. Haus wieder freigeben
   if (reservation?.house_id) {
     await supabase
       .from("houses")
