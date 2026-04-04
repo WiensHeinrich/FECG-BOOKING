@@ -149,6 +149,15 @@ export function BookingForm({
       return;
     }
 
+    // Kontaktperson muss mindestens 18 Jahre alt sein
+    if (contact.birth_date) {
+      const contactAge = getAgeAtDate(contact.birth_date, eventStartDate);
+      if (contactAge !== null && contactAge < 18) {
+        setError("Die Kontaktperson muss mindestens 18 Jahre alt sein.");
+        return;
+      }
+    }
+
     const requiredMin = Math.max(selectedType.max_guests - 1, 1);
     if (guests.length < requiredMin) {
       setError(
@@ -308,11 +317,16 @@ export function BookingForm({
                   {contact.birth_date && (() => {
                     const age = getAgeAtDate(contact.birth_date, eventStartDate);
                     if (age === null) return null;
+                    if (age < 18) {
+                      return (
+                        <p className="mt-1 text-xs text-red-600 font-medium">
+                          Die Kontaktperson muss mindestens 18 Jahre alt sein ({age} Jahre zum Freizeitbeginn).
+                        </p>
+                      );
+                    }
                     return (
-                      <p className={`mt-1 text-xs ${age < 14 ? "text-amber-700" : "text-muted-foreground"}`}>
-                        {age < 14
-                          ? `Kind — ${age} Jahre zum Freizeitbeginn`
-                          : `${age} Jahre zum Freizeitbeginn`}
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {age} Jahre zum Freizeitbeginn
                       </p>
                     );
                   })()}
