@@ -92,25 +92,42 @@ export async function deleteReservation(reservationId: string) {
   await requireAdminAccess();
   const supabase = createAdminClient();
 
-  // Zuerst Gäste löschen (cascade sollte das machen, aber sicherheitshalber)
+  // 1. Haus-ID laden, damit wir es danach freigeben können
+  const { data: reservation } = await supabase
+    .from("reservations")
+    .select("house_id")
+    .eq("id", reservationId)
+    .single();
+
+  // 2. Gäste löschen
   await supabase
     .from("guests")
     .delete()
     .eq("reservation_id", reservationId);
 
-  // Reservierung komplett löschen
+  // 3. Reservierung löschen
   const { error } = await supabase
     .from("reservations")
     .delete()
     .eq("id", reservationId);
 
   if (error) {
+    console.error("Delete reservation error:", error);
     return { error: "Reservierung konnte nicht gelöscht werden." };
+  }
+
+  // 4. Haus wieder freigeben
+  if (reservation?.house_id) {
+    await supabase
+      .from("houses")
+      .update({ is_available: true })
+      .eq("id", reservation.house_id);
   }
 
   revalidatePath("/admin");
   revalidatePath("/admin/reservierungen");
   revalidatePath("/admin/haeuser");
+  revalidatePath("/admin/warteliste");
   revalidatePath("/anmeldung");
   return { success: true };
 }
