@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   const { data: soonExpiring } = await supabase
     .from("reservations")
     .select(
-      `id, contact_first_name, contact_email, total_price, payment_reference, expires_at, admin_notes,
+      `id, contact_first_name, contact_email, contact_gender, total_price, payment_reference, expires_at, admin_notes,
        house:houses!inner(house_type:house_types!inner(name)),
        event:events!inner(bank_account_holder, bank_iban, bank_bic)`
     )
@@ -44,6 +44,7 @@ export async function GET(request: NextRequest) {
 
       const email = paymentReminderEmail({
         firstName: r.contact_first_name,
+        contactGender: (r as unknown as { contact_gender: string | null }).contact_gender ?? null,
         houseTypeName: ht.house_type.name,
         totalPrice: r.total_price,
         paymentReference: r.payment_reference,

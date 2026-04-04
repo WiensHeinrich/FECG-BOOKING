@@ -63,6 +63,12 @@ function formatEuro(amount: number) {
   }).format(amount);
 }
 
+function greeting(firstName: string, gender: string | undefined | null) {
+  if (gender === "weiblich") return `Liebe ${firstName}`;
+  if (gender === "maennlich") return `Lieber ${firstName}`;
+  return `Liebe/r ${firstName}`;
+}
+
 function formatGender(gender: string | undefined | null) {
   if (gender === "maennlich") return "Männlich";
   if (gender === "weiblich") return "Weiblich";
@@ -139,7 +145,7 @@ export function reservationConfirmationEmail(data: {
         <h1 style="color: #6B8F4E; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
-      <h2 style="margin-top: 0;">Liebe/r ${data.firstName},</h2>
+      <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
       <p>Ihre Reservierung wurde erfolgreich erstellt! Bitte überweisen Sie den Betrag bis zum <strong>${expiryDate}</strong>.</p>
 
       <div style="${cardStyle}">
@@ -235,6 +241,7 @@ export function adminNewReservationEmail(data: {
 // 2. Buchungsbestätigung (nach Zahlungseingang)
 export function bookingConfirmedEmail(data: {
   firstName: string;
+  contactGender: string | null;
   houseTypeName: string;
   houseLabel: string;
   totalPrice: number;
@@ -246,7 +253,7 @@ export function bookingConfirmedEmail(data: {
         <h1 style="color: #6B8F4E; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
-      <h2 style="margin-top: 0;">Liebe/r ${data.firstName},</h2>
+      <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
       <p>Ihre Zahlung ist eingegangen. Ihre Buchung ist damit bestätigt! 🎉</p>
 
       <div style="${cardStyle}">
@@ -257,7 +264,7 @@ export function bookingConfirmedEmail(data: {
         </table>
       </div>
 
-      <p>Wir freuen uns auf eine wunderbare gemeinsame Zeit!</p>
+      <p>Wir freuen uns auf eine wunderbare und gesegnete Zeit!</p>
 
       <div style="${footerStyle}">
         <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
@@ -269,6 +276,7 @@ export function bookingConfirmedEmail(data: {
 // 3. Zahlungserinnerung (3 Tage vor Ablauf)
 export function paymentReminderEmail(data: {
   firstName: string;
+  contactGender: string | null;
   houseTypeName: string;
   totalPrice: number;
   paymentReference: string;
@@ -290,7 +298,7 @@ export function paymentReminderEmail(data: {
         <h1 style="color: #6B8F4E; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
-      <h2 style="margin-top: 0;">Liebe/r ${data.firstName},</h2>
+      <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
       <p>Ihre Reservierung für <strong>${data.houseTypeName}</strong> läuft am <strong>${expiryDate}</strong> ab. Bitte überweisen Sie den Betrag rechtzeitig, damit Ihre Buchung nicht verfällt.</p>
 
       <div style="${highlightStyle}">
@@ -314,6 +322,7 @@ export function paymentReminderEmail(data: {
 // 4. Reservierung abgelaufen
 export function reservationExpiredEmail(data: {
   firstName: string;
+  contactGender: string | null;
   houseTypeName: string;
 }) {
   return {
@@ -323,7 +332,7 @@ export function reservationExpiredEmail(data: {
         <h1 style="color: #6B8F4E; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
       </div>
 
-      <h2 style="margin-top: 0;">Liebe/r ${data.firstName},</h2>
+      <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
       <p>Leider ist Ihre Reservierung für <strong>${data.houseTypeName}</strong> abgelaufen, da keine Zahlung eingegangen ist.</p>
       <p>Falls noch Unterkünfte verfügbar sind, können Sie sich gerne erneut anmelden.</p>
 

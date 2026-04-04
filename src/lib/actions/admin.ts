@@ -26,7 +26,7 @@ export async function confirmPayment(reservationId: string) {
   // Bestätigungs-E-Mail senden
   const { data: reservation } = await supabase
     .from("reservations")
-    .select("contact_first_name, contact_email, total_price, house:houses!inner(house_number, house_type:house_types!inner(name))")
+    .select("contact_first_name, contact_email, contact_gender, total_price, house:houses!inner(house_number, house_type:house_types!inner(name))")
     .eq("id", reservationId)
     .single();
 
@@ -34,6 +34,7 @@ export async function confirmPayment(reservationId: string) {
     const ht = reservation.house as unknown as { house_number: number; house_type: { name: string } };
     const email = bookingConfirmedEmail({
       firstName: reservation.contact_first_name,
+      contactGender: reservation.contact_gender ?? null,
       houseTypeName: ht.house_type.name,
       houseLabel: `Haus ${ht.house_number}`,
       totalPrice: reservation.total_price,
