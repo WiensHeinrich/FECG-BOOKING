@@ -1,4 +1,4 @@
-import { getWaitlist, getActiveEventAdmin } from "@/lib/queries/admin";
+import { getWaitlist, getActiveEventAdmin, getAvailableHouseCountByType } from "@/lib/queries/admin";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -16,7 +16,10 @@ export default async function WaitlistPage() {
   const event = await getActiveEventAdmin();
   if (!event) return <p>Kein aktives Event.</p>;
 
-  const waitlist = await getWaitlist(event.id);
+  const [waitlist, availableByType] = await Promise.all([
+    getWaitlist(event.id),
+    getAvailableHouseCountByType(event.id),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -64,6 +67,7 @@ export default async function WaitlistPage() {
                         <ConvertWaitlistButton
                           entryId={w.id}
                           name={`${w.contact_first_name} ${w.contact_last_name}`}
+                          hasAvailableHouse={(availableByType[w.house_type_id] || 0) > 0}
                         />
                         <WaitlistRemoveButton entryId={w.id} />
                       </div>

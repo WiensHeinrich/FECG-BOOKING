@@ -181,6 +181,43 @@ export async function getWaitlist(eventId: string) {
   return data as (WaitlistEntry & { house_type: { name: string } })[];
 }
 
+// Verfügbare Häuser pro Haustyp (für Warteliste-Anzeige)
+export async function getAvailableHouseCountByType(eventId: string) {
+  await requireAdminAccess();
+  const supabase = createAdminClient();
+
+  // Alle Häuser laden, die zum Event gehören
+  const { data: houses } = await supabase
+    .from("houses")
+    .select("id, house_type_id, is_available, house_type:house_types!inner(event_id)")
+    .eq("is_available", true)
+    .eq("house_type.event_id", eventId);
+
+  if (!houses || houses.length === 0) {
+    return {} as Record<string, number>;
+  }
+
+  // Aktive Reservierungen für diese Häuser prüfen
+  const houseIds = houses.map((h) => h.id);
+  const { data: reservations } = await supabase
+    .from("reservations")
+    .select("house_id")
+    .in("house_id", houseIds)
+    .in("status", ["reserviert", "bestaetigt"]);
+
+  const occupiedHouseIds = new Set((reservations || []).map((r) => r.house_id));
+
+  // Zähle freie Häuser pro Typ
+  const counts: Record<string, number> = {};
+  for (const h of houses) {
+    if (!occupiedHouseIds.has(h.id)) {
+      counts[h.house_type_id] = (counts[h.house_type_id] || 0) + 1;
+    }
+  }
+
+  return counts;
+}
+
 // Aktives Event für Admin
 export async function getActiveEventAdmin() {
   await requireAdminAccess();

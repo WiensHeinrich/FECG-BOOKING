@@ -1,16 +1,18 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { ArrowRightLeft, Loader2 } from "lucide-react";
+import { ArrowRightLeft, Loader2, Ban } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { convertWaitlistToReservation } from "@/lib/actions/admin";
 
 export function ConvertWaitlistButton({
   entryId,
   name,
+  hasAvailableHouse,
 }: {
   entryId: string;
   name: string;
+  hasAvailableHouse: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const [showConfirm, setShowConfirm] = useState(false);
@@ -61,6 +63,22 @@ export function ConvertWaitlistButton({
           <p className="text-xs text-destructive">{error}</p>
         )}
       </div>
+    );
+  }
+
+  // Kein freies Haus → roter Button (deaktiviert)
+  if (!hasAvailableHouse) {
+    return (
+      <Button
+        variant="outline"
+        size="sm"
+        className="h-8 gap-1.5 text-xs border-red-400 text-red-600 bg-red-50 cursor-not-allowed opacity-80"
+        disabled
+        title="Keine freien Häuser für diesen Unterkunftstyp"
+      >
+        <Ban className="h-3.5 w-3.5" />
+        Ausgebucht
+      </Button>
     );
   }
 
