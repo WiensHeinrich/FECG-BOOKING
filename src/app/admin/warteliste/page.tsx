@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { formatDateTime } from "@/lib/utils/format";
 import { WaitlistRemoveButton } from "@/components/admin/waitlist-remove-button";
+import { ConvertWaitlistButton } from "@/components/admin/convert-waitlist-button";
 
 export default async function WaitlistPage() {
   const event = await getActiveEventAdmin();
@@ -34,7 +35,7 @@ export default async function WaitlistPage() {
                 <TableHead>Gäste</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Angemeldet</TableHead>
-                <TableHead></TableHead>
+                <TableHead>Aktionen</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -59,7 +60,13 @@ export default async function WaitlistPage() {
                   </TableCell>
                   <TableCell>
                     {w.status === "wartend" && (
-                      <WaitlistRemoveButton entryId={w.id} />
+                      <div className="flex items-center gap-2">
+                        <ConvertWaitlistButton
+                          entryId={w.id}
+                          name={`${w.contact_first_name} ${w.contact_last_name}`}
+                        />
+                        <WaitlistRemoveButton entryId={w.id} />
+                      </div>
                     )}
                   </TableCell>
                 </TableRow>
