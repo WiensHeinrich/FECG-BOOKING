@@ -56,6 +56,10 @@ function row(label: string, value: string) {
   </tr>`;
 }
 
+function formatIban(iban: string) {
+  return iban.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim();
+}
+
 function formatEuro(amount: number) {
   return new Intl.NumberFormat("de-DE", {
     style: "currency",
@@ -142,7 +146,7 @@ export function reservationConfirmationEmail(data: {
     subject: `Reservierung bestätigt - ${data.houseTypeName}`,
     html: `<div style="${baseStyle}">
       <div style="${headerStyle}">
-        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
+        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit 2027</h1>
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
@@ -173,9 +177,9 @@ export function reservationConfirmationEmail(data: {
         <h3 style="margin-top: 0; color: #00ADD6;">Überweisungsdaten</h3>
         <table style="width: 100%; border-collapse: collapse;">
           ${row("Empfänger", data.bankAccountHolder)}
-          ${row("IBAN", `<span style="font-family: monospace;">${data.bankIban}</span>`)}
-          ${data.bankBic ? row("BIC", `<span style="font-family: monospace;">${data.bankBic}</span>`) : ""}
-          ${row("Verwendungszweck", `<strong style="font-family: monospace;">${data.paymentReference}</strong>`)}
+          ${row("IBAN", formatIban(data.bankIban))}
+          ${data.bankBic ? row("BIC", data.bankBic) : ""}
+          ${row("Verwendungszweck", `<strong>${data.paymentReference}</strong>`)}
           ${row("Betrag", `<strong>${formatEuro(data.totalPrice)}</strong>`)}
         </table>
       </div>
@@ -225,7 +229,7 @@ export function adminNewReservationEmail(data: {
           ${data.contactGender ? row("Geschlecht", formatGender(data.contactGender)) : ""}
           ${row("Unterkunft", data.houseTypeName)}
           ${row("Betrag", formatEuro(data.totalPrice))}
-          ${row("Verwendungszweck", `<strong style="font-family: monospace;">${data.paymentReference}</strong>`)}
+          ${row("Verwendungszweck", `<strong>${data.paymentReference}</strong>`)}
         </table>
       </div>
 
@@ -250,7 +254,7 @@ export function bookingConfirmedEmail(data: {
     subject: `Zahlung bestätigt - Ihre Buchung ist sicher!`,
     html: `<div style="${baseStyle}">
       <div style="${headerStyle}">
-        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
+        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit 2027</h1>
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
@@ -295,7 +299,7 @@ export function paymentReminderEmail(data: {
     subject: `Erinnerung: Zahlung bis ${expiryDate} fällig`,
     html: `<div style="${baseStyle}">
       <div style="${headerStyle}">
-        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
+        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit 2027</h1>
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
@@ -305,9 +309,9 @@ export function paymentReminderEmail(data: {
         <h3 style="margin-top: 0; color: #00ADD6;">Überweisungsdaten</h3>
         <table style="width: 100%; border-collapse: collapse;">
           ${row("Empfänger", data.bankAccountHolder)}
-          ${row("IBAN", `<span style="font-family: monospace;">${data.bankIban}</span>`)}
-          ${data.bankBic ? row("BIC", `<span style="font-family: monospace;">${data.bankBic}</span>`) : ""}
-          ${row("Verwendungszweck", `<strong style="font-family: monospace;">${data.paymentReference}</strong>`)}
+          ${row("IBAN", formatIban(data.bankIban))}
+          ${data.bankBic ? row("BIC", data.bankBic) : ""}
+          ${row("Verwendungszweck", `<strong>${data.paymentReference}</strong>`)}
           ${row("Betrag", `<strong>${formatEuro(data.totalPrice)}</strong>`)}
         </table>
       </div>
@@ -331,7 +335,7 @@ export function waitlistConfirmationEmail(data: {
     subject: `Warteliste bestätigt - ${data.houseTypeName} (Platz ${data.position})`,
     html: `<div style="${baseStyle}">
       <div style="${headerStyle}">
-        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
+        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit 2027</h1>
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
@@ -412,7 +416,7 @@ export function reservationExpiredEmail(data: {
     subject: `Reservierung abgelaufen - ${data.houseTypeName}`,
     html: `<div style="${baseStyle}">
       <div style="${headerStyle}">
-        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
+        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit 2027</h1>
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>

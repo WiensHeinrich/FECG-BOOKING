@@ -209,17 +209,17 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">IBAN</span>
-                <span className="font-mono">{reservation.bank_iban}</span>
+                <span>{reservation.bank_iban.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim()}</span>
               </div>
               {reservation.bank_bic && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">BIC</span>
-                  <span className="font-mono">{reservation.bank_bic}</span>
+                  <span>{reservation.bank_bic}</span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Verwendungszweck</span>
-                <span className="font-mono font-semibold">
+                <span className="font-semibold">
                   {reservation.payment_reference}
                 </span>
               </div>
