@@ -4,7 +4,7 @@ import { requireAdminAccess } from "@/lib/auth/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { sendEmail } from "@/lib/email/send";
-import { bookingConfirmedEmail, reservationConfirmationEmail } from "@/lib/email/templates";
+import { bookingConfirmedEmail, reservationConfirmationEmail, cancellationEmail } from "@/lib/email/templates";
 import { ADMIN_EMAIL } from "@/lib/email/resend";
 
 export async function confirmPayment(reservationId: string) {
@@ -50,17 +50,34 @@ export async function confirmPayment(reservationId: string) {
 
 export async function cancelReservation(
   reservationId: string,
-  notes?: string
+  cancellationReason: string,
+  cancellationDetails?: string
 ) {
   await requireAdminAccess();
   const supabase = createAdminClient();
+
+  // Stornierungsgrund als Notiz zusammenbauen
+  const reasonText = cancellationReason === "zahlung_nicht_eingegangen"
+    ? "Zahlung nicht eingegangen"
+    : cancellationReason === "auf_wunsch"
+    ? "Auf Wunsch des Gastes"
+    : cancellationDetails || "Sonstiger Grund";
+
+  const fullNotes = `Stornierungsgrund: ${reasonText}${cancellationDetails && cancellationReason !== "sonstiges" ? `\n${cancellationDetails}` : ""}`;
+
+  // Reservierungsdaten laden (für E-Mail + Haus freigeben)
+  const { data: reservation } = await supabase
+    .from("reservations")
+    .select("house_id, contact_first_name, contact_email, contact_gender, house:houses!inner(house_type:house_types!inner(name))")
+    .eq("id", reservationId)
+    .single();
 
   const { error } = await supabase
     .from("reservations")
     .update({
       status: "storniert",
       cancelled_at: new Date().toISOString(),
-      admin_notes: notes || null,
+      admin_notes: fullNotes,
     })
     .eq("id", reservationId);
 
@@ -69,22 +86,29 @@ export async function cancelReservation(
   }
 
   // Haus wieder freigeben
-  const { data: reservation } = await supabase
-    .from("reservations")
-    .select("house_id")
-    .eq("id", reservationId)
-    .single();
-
-  if (reservation) {
+  if (reservation?.house_id) {
     await supabase
       .from("houses")
       .update({ is_available: true })
       .eq("id", reservation.house_id);
   }
 
+  // Stornierungs-E-Mail an den Gast senden
+  if (reservation) {
+    const ht = reservation.house as unknown as { house_type: { name: string } };
+    const email = cancellationEmail({
+      firstName: reservation.contact_first_name,
+      contactGender: reservation.contact_gender ?? null,
+      houseTypeName: ht.house_type.name,
+      reason: reasonText,
+    });
+    sendEmail({ to: reservation.contact_email, ...email }).catch(console.error);
+  }
+
   revalidatePath("/admin");
   revalidatePath("/admin/reservierungen");
   revalidatePath("/admin/haeuser");
+  revalidatePath("/admin/warteliste");
   return { success: true };
 }
 

@@ -406,7 +406,39 @@ export function adminNewWaitlistEmail(data: {
   };
 }
 
-// 6. Reservierung abgelaufen
+// 6. Stornierungsbenachrichtigung (an den Gast)
+export function cancellationEmail(data: {
+  firstName: string;
+  contactGender: string | null;
+  houseTypeName: string;
+  reason: string;
+}) {
+  return {
+    subject: `Reservierung storniert - ${data.houseTypeName}`,
+    html: `<div style="${baseStyle}">
+      <div style="${headerStyle}">
+        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit 2027</h1>
+      </div>
+
+      <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
+      <p>Ihre Reservierung für <strong>${data.houseTypeName}</strong> wurde leider storniert.</p>
+
+      <div style="${highlightStyle}">
+        <p style="margin: 0;"><strong>Grund der Stornierung:</strong></p>
+        <p style="margin: 8px 0 0 0;">${data.reason}</p>
+      </div>
+
+      <p>Falls Sie Fragen haben, wenden Sie sich bitte an das Organisationsteam.</p>
+      <p>Falls noch Unterkünfte verfügbar sind, können Sie sich gerne erneut anmelden.</p>
+
+      <div style="${footerStyle}">
+        <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
+      </div>
+    </div>`,
+  };
+}
+
+// 7. Reservierung abgelaufen
 export function reservationExpiredEmail(data: {
   firstName: string;
   contactGender: string | null;
