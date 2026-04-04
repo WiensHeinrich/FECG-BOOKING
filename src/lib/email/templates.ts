@@ -319,7 +319,90 @@ export function paymentReminderEmail(data: {
   };
 }
 
-// 4. Reservierung abgelaufen
+// 4. Warteliste-Bestätigung (an den Gast)
+export function waitlistConfirmationEmail(data: {
+  firstName: string;
+  contactGender: string | null;
+  houseTypeName: string;
+  position: number;
+  guests: GuestEmailData[];
+}) {
+  return {
+    subject: `Warteliste bestätigt - ${data.houseTypeName} (Platz ${data.position})`,
+    html: `<div style="${baseStyle}">
+      <div style="${headerStyle}">
+        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit</h1>
+      </div>
+
+      <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
+      <p>Sie wurden erfolgreich auf die <strong>Warteliste</strong> für <strong>${data.houseTypeName}</strong> gesetzt.</p>
+
+      <div style="${cardStyle}">
+        <h3 style="margin-top: 0; color: #00ADD6;">Ihre Warteliste-Position</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          ${row("Unterkunftstyp", data.houseTypeName)}
+          ${row("Position", `<strong>Platz ${data.position}</strong>`)}
+        </table>
+      </div>
+
+      ${renderGuestList(data.guests)}
+
+      <div style="${highlightStyle}">
+        <p style="margin: 0;"><strong>Wie geht es weiter?</strong></p>
+        <p style="margin: 8px 0 0 0;">Sobald eine Unterkunft dieses Typs frei wird, werden wir Sie benachrichtigen und Ihre Anmeldung in eine verbindliche Reservierung überführen. Sie erhalten dann eine E-Mail mit allen Zahlungsdaten.</p>
+      </div>
+
+      <div style="${footerStyle}">
+        <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
+      </div>
+    </div>`,
+  };
+}
+
+// 5. Warteliste-Benachrichtigung (an Admin)
+export function adminNewWaitlistEmail(data: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  contactGender: string | null;
+  houseTypeName: string;
+  position: number;
+  guestCount: number;
+  guests: GuestEmailData[];
+}) {
+  return {
+    subject: `Neue Warteliste: ${data.firstName} ${data.lastName} - ${data.houseTypeName} (Platz ${data.position})`,
+    html: `<div style="${baseStyle}">
+      <div style="${headerStyle}">
+        <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">Neuer Warteliste-Eintrag</h1>
+      </div>
+
+      <p>Es wurde ein neuer Warteliste-Eintrag erstellt:</p>
+
+      <div style="${cardStyle}">
+        <h3 style="margin-top: 0; color: #00ADD6;">Kontaktperson</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          ${row("Name", `${data.firstName} ${data.lastName}`)}
+          ${row("E-Mail", data.email)}
+          ${data.phone ? row("Telefon", data.phone) : ""}
+          ${data.contactGender ? row("Geschlecht", formatGender(data.contactGender)) : ""}
+          ${row("Unterkunftstyp", data.houseTypeName)}
+          ${row("Gästeanzahl", String(data.guestCount))}
+          ${row("Warteliste-Position", `<strong>Platz ${data.position}</strong>`)}
+        </table>
+      </div>
+
+      ${renderGuestList(data.guests)}
+
+      <div style="${footerStyle}">
+        <p>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
+      </div>
+    </div>`,
+  };
+}
+
+// 6. Reservierung abgelaufen
 export function reservationExpiredEmail(data: {
   firstName: string;
   contactGender: string | null;

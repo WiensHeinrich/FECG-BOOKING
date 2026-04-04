@@ -3,6 +3,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod/v4";
 import { redirect } from "next/navigation";
+import { sendEmail } from "@/lib/email/send";
+import { waitlistConfirmationEmail, adminNewWaitlistEmail } from "@/lib/email/templates";
+import { ADMIN_EMAIL } from "@/lib/email/resend";
+import type { GuestEmailData } from "@/lib/email/templates";
 
 const guestSchema = z.object({
   first_name: z.string().min(1),
@@ -65,6 +69,49 @@ export async function joinWaitlist(formData: WaitlistFormData) {
   if (result?.error || !result?.position) {
     return { error: result?.error || "Warteliste-Eintrag fehlgeschlagen." };
   }
+
+  // Haustyp-Name laden für E-Mails
+  const { data: houseType } = await supabase
+    .from("house_types")
+    .select("name")
+    .eq("id", data.house_type_id)
+    .single();
+
+  const houseTypeName = houseType?.name || "Unterkunft";
+
+  // Gästedaten für E-Mail aufbereiten
+  const emailGuests: GuestEmailData[] = (data.guests || []).map((g) => ({
+    first_name: g.first_name,
+    last_name: g.last_name,
+    birth_date: g.birth_date || null,
+    is_child: g.is_child,
+    gender: g.gender || null,
+    dietary_notes: g.dietary_notes || null,
+  }));
+
+  // 1. Bestätigungs-E-Mail an den Gast
+  const guestEmail = waitlistConfirmationEmail({
+    firstName: data.contact_first_name,
+    contactGender: data.contact_gender ?? null,
+    houseTypeName,
+    position: result.position,
+    guests: emailGuests,
+  });
+  sendEmail({ to: data.contact_email, ...guestEmail }).catch(console.error);
+
+  // 2. Info-E-Mail an Admin
+  const adminEmail = adminNewWaitlistEmail({
+    firstName: data.contact_first_name,
+    lastName: data.contact_last_name,
+    email: data.contact_email,
+    phone: data.contact_phone ?? null,
+    contactGender: data.contact_gender ?? null,
+    houseTypeName,
+    position: result.position,
+    guestCount: data.guest_count,
+    guests: emailGuests,
+  });
+  sendEmail({ to: ADMIN_EMAIL, ...adminEmail }).catch(console.error);
 
   redirect(`/anmeldung/warteliste?position=${result.position}`);
 }
