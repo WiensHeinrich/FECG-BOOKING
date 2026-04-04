@@ -49,7 +49,7 @@ BEGIN
   END IF;
 
   IF now() < v_event.registration_start OR now() > v_event.registration_end THEN
-    RETURN jsonb_build_object('error', 'Anmeldung ist aktuell nicht moeglich.');
+    RETURN jsonb_build_object('error', 'Anmeldung ist aktuell nicht möglich.');
   END IF;
 
   SELECT * INTO v_house_type
@@ -74,7 +74,7 @@ BEGIN
   FOR UPDATE OF h;
 
   IF v_house_id IS NULL THEN
-    RETURN jsonb_build_object('error', 'Kein Haus verfuegbar.');
+    RETURN jsonb_build_object('error', 'Kein Haus verfügbar.');
   END IF;
 
   v_payment_reference :=
@@ -282,7 +282,7 @@ BEGIN
   IF v_available_house_count > 0 THEN
     RETURN jsonb_build_object(
       'error',
-      'Es sind noch freie Unterkuenfte verfuegbar. Bitte reservieren Sie direkt.'
+      'Es sind noch freie Unterkünfte verfügbar. Bitte reservieren Sie direkt.'
     );
   END IF;
 
@@ -296,7 +296,7 @@ BEGIN
   ) THEN
     RETURN jsonb_build_object(
       'error',
-      'Fuer diese E-Mail-Adresse besteht bereits ein offener Wartelisteneintrag.'
+      'Für diese E-Mail-Adresse besteht bereits ein offener Wartelisteneintrag.'
     );
   END IF;
 
