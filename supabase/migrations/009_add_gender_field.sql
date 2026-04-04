@@ -3,8 +3,10 @@
 -- Geschlecht-Spalte zur guests-Tabelle
 ALTER TABLE guests ADD COLUMN IF NOT EXISTS gender TEXT CHECK (gender IN ('maennlich', 'weiblich'));
 
--- Geschlecht-Spalte zur reservations-Tabelle (für Kontaktperson)
+-- Kontaktperson-Spalten zur reservations-Tabelle
 ALTER TABLE reservations ADD COLUMN IF NOT EXISTS contact_gender TEXT CHECK (contact_gender IN ('maennlich', 'weiblich'));
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS contact_birth_date DATE;
+ALTER TABLE reservations ADD COLUMN IF NOT EXISTS contact_dietary_notes TEXT;
 
 -- Alte Funktionen droppen (Signatur hat sich geändert)
 DROP FUNCTION IF EXISTS create_public_reservation(uuid, uuid, text, text, text, text, jsonb);
@@ -20,6 +22,8 @@ CREATE OR REPLACE FUNCTION create_public_reservation(
   p_contact_email TEXT,
   p_contact_phone TEXT,
   p_contact_gender TEXT DEFAULT NULL,
+  p_contact_birth_date TEXT DEFAULT NULL,
+  p_contact_dietary_notes TEXT DEFAULT NULL,
   p_guests JSONB DEFAULT '[]'::JSONB
 )
 RETURNS JSONB
@@ -88,6 +92,8 @@ BEGIN
     contact_email,
     contact_phone,
     contact_gender,
+    contact_birth_date,
+    contact_dietary_notes,
     total_price,
     payment_reference,
     expires_at,
@@ -101,6 +107,12 @@ BEGIN
     p_contact_email,
     NULLIF(BTRIM(p_contact_phone), ''),
     NULLIF(BTRIM(p_contact_gender), ''),
+    CASE
+      WHEN p_contact_birth_date IS NOT NULL AND p_contact_birth_date <> ''
+        THEN p_contact_birth_date::DATE
+      ELSE NULL
+    END,
+    NULLIF(BTRIM(p_contact_dietary_notes), ''),
     v_house_type.price_per_house,
     v_payment_reference,
     v_expires_at,

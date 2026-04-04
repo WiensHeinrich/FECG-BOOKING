@@ -103,6 +103,8 @@ export async function createReservation(formData: BookingFormData) {
       p_contact_email: data.contact_email,
       p_contact_phone: data.contact_phone ?? null,
       p_contact_gender: data.contact_gender ?? null,
+      p_contact_birth_date: data.contact_birth_date ?? null,
+      p_contact_dietary_notes: data.contact_dietary_notes ?? null,
       p_guests: data.guests,
     }
   );

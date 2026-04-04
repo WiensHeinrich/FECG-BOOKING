@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Plus, Trash2, AlertCircle, X, FileDown } from "lucide-react";
+import { Loader2, Plus, Trash2, AlertCircle, X, FileDown, UserCheck } from "lucide-react";
 import { HouseTypeCard } from "./house-type-card";
 import { createReservation } from "@/lib/actions/booking";
 import { joinWaitlist } from "@/lib/actions/waitlist";
@@ -59,6 +59,15 @@ export function BookingForm({
     (new Date(eventEndDate).getTime() - new Date(eventStartDate).getTime()) / (1000 * 60 * 60 * 24)
   ));
   const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null);
+  const [contact, setContact] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    gender: "" as "" | "maennlich" | "weiblich",
+    birth_date: "",
+    dietary_notes: "",
+  });
   const [guests, setGuests] = useState<GuestData[]>([{ ...emptyGuest }]);
   const [waitlistGuestCount, setWaitlistGuestCount] = useState(1);
   const [error, setError] = useState<string | null>(null);
@@ -151,11 +160,13 @@ export function BookingForm({
     const data = {
       event_id: eventId,
       house_type_id: selectedTypeId,
-      contact_first_name: formData.get("contact_first_name") as string,
-      contact_last_name: formData.get("contact_last_name") as string,
-      contact_email: formData.get("contact_email") as string,
-      contact_phone: (formData.get("contact_phone") as string) || undefined,
-      contact_gender: (formData.get("contact_gender") as "maennlich" | "weiblich") || undefined,
+      contact_first_name: contact.first_name,
+      contact_last_name: contact.last_name,
+      contact_email: contact.email,
+      contact_phone: contact.phone || undefined,
+      contact_gender: (contact.gender as "maennlich" | "weiblich") || undefined,
+      contact_birth_date: contact.birth_date || undefined,
+      contact_dietary_notes: contact.dietary_notes || undefined,
       guests: guests.map((g, i) => ({ ...g, sort_order: i })),
     };
 
@@ -179,11 +190,11 @@ export function BookingForm({
       const result = await joinWaitlist({
         event_id: eventId,
         house_type_id: selectedTypeId,
-        contact_first_name: formData.get("contact_first_name") as string,
-        contact_last_name: formData.get("contact_last_name") as string,
-        contact_email: formData.get("contact_email") as string,
-        contact_phone: (formData.get("contact_phone") as string) || undefined,
-        contact_gender: (formData.get("contact_gender") as "maennlich" | "weiblich") || undefined,
+        contact_first_name: contact.first_name,
+        contact_last_name: contact.last_name,
+        contact_email: contact.email,
+        contact_phone: contact.phone || undefined,
+        contact_gender: (contact.gender as "maennlich" | "weiblich") || undefined,
         guest_count: guests.length,
         guests: guests.map((g, i) => ({ ...g, sort_order: i })),
       });
@@ -229,38 +240,91 @@ export function BookingForm({
             <Card className="mt-4">
               <CardContent className="grid gap-5 pt-6 md:grid-cols-2">
                 <div className="space-y-1.5">
-                  <Label htmlFor="contact_first_name">Vorname *</Label>
-                  <Input id="contact_first_name" name="contact_first_name" required />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="contact_last_name">Nachname *</Label>
-                  <Input id="contact_last_name" name="contact_last_name" required />
-                </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="contact_email">E-Mail *</Label>
+                  <Label>Vorname *</Label>
                   <Input
-                    id="contact_email"
-                    name="contact_email"
+                    value={contact.first_name}
+                    onChange={(e) => setContact((c) => ({ ...c, first_name: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Nachname *</Label>
+                  <Input
+                    value={contact.last_name}
+                    onChange={(e) => setContact((c) => ({ ...c, last_name: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>E-Mail *</Label>
+                  <Input
+                    value={contact.email}
+                    onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
                     type="email"
                     required
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="contact_phone">Telefon</Label>
-                  <Input id="contact_phone" name="contact_phone" type="tel" />
+                  <Label>Telefon</Label>
+                  <Input
+                    value={contact.phone}
+                    onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
+                    type="tel"
+                  />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Geschlecht *</Label>
                   <div className="flex gap-4 pt-1">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" name="contact_gender" value="maennlich" required className="h-4 w-4 accent-primary" />
+                      <input
+                        type="radio"
+                        name="contact_gender"
+                        checked={contact.gender === "maennlich"}
+                        onChange={() => setContact((c) => ({ ...c, gender: "maennlich" }))}
+                        required
+                        className="h-4 w-4 accent-primary"
+                      />
                       <span className="text-sm">Männlich</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" name="contact_gender" value="weiblich" className="h-4 w-4 accent-primary" />
+                      <input
+                        type="radio"
+                        name="contact_gender"
+                        checked={contact.gender === "weiblich"}
+                        onChange={() => setContact((c) => ({ ...c, gender: "weiblich" }))}
+                        className="h-4 w-4 accent-primary"
+                      />
                       <span className="text-sm">Weiblich</span>
                     </label>
                   </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Geburtsdatum</Label>
+                  <Input
+                    type="date"
+                    value={contact.birth_date}
+                    onChange={(e) => setContact((c) => ({ ...c, birth_date: e.target.value }))}
+                  />
+                  {contact.birth_date && (() => {
+                    const age = getAgeAtDate(contact.birth_date, eventStartDate);
+                    if (age === null) return null;
+                    return (
+                      <p className={`mt-1 text-xs ${age < 14 ? "text-amber-700" : "text-muted-foreground"}`}>
+                        {age < 14
+                          ? `Kind — ${age} Jahre zum Freizeitbeginn`
+                          : `${age} Jahre zum Freizeitbeginn`}
+                      </p>
+                    );
+                  })()}
+                </div>
+                <div className="md:col-span-2 space-y-1.5">
+                  <Label>Hinweise / Bemerkungen</Label>
+                  <Textarea
+                    value={contact.dietary_notes}
+                    onChange={(e) => setContact((c) => ({ ...c, dietary_notes: e.target.value }))}
+                    placeholder="z.B. Kinderbett wird benötigt, vegetarisch, Allergien..."
+                    rows={2}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -285,17 +349,50 @@ export function BookingForm({
                         <CardTitle className="text-sm font-medium">
                           Gast {index + 1}
                         </CardTitle>
-                        {guests.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => removeGuest(index)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
+                        <div className="flex items-center gap-1">
+                          {index === 0 && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="h-8 gap-1.5 text-xs"
+                              onClick={() => {
+                                setGuests((prev) =>
+                                  prev.map((g, i) =>
+                                    i === 0
+                                      ? {
+                                          ...g,
+                                          first_name: contact.first_name,
+                                          last_name: contact.last_name,
+                                          gender: (contact.gender as "maennlich" | "weiblich") || undefined,
+                                          birth_date: contact.birth_date || "",
+                                          is_child: (() => {
+                                            const age = getAgeAtDate(contact.birth_date, eventStartDate);
+                                            return age !== null && age < 14;
+                                          })(),
+                                          dietary_notes: contact.dietary_notes || "",
+                                        }
+                                      : g
+                                  )
+                                );
+                              }}
+                            >
+                              <UserCheck className="h-3.5 w-3.5" />
+                              Aus Kontaktperson
+                            </Button>
+                          )}
+                          {guests.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => removeGuest(index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </CardHeader>
                     <CardContent className="grid gap-5 md:grid-cols-2">

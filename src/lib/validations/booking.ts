@@ -18,6 +18,8 @@ export const bookingFormSchema = z.object({
   contact_email: z.email("Bitte gültige E-Mail-Adresse eingeben"),
   contact_phone: z.string().optional(),
   contact_gender: z.enum(["maennlich", "weiblich"]).optional(),
+  contact_birth_date: z.string().optional(),
+  contact_dietary_notes: z.string().optional(),
   guests: z.array(guestSchema).min(1, "Mindestens ein Gast erforderlich"),
 });
 
