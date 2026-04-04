@@ -62,16 +62,16 @@ export default async function WaitlistPage() {
                     {formatDateTime(w.created_at)}
                   </TableCell>
                   <TableCell>
-                    {w.status === "wartend" && (
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      {w.status === "wartend" && (
                         <ConvertWaitlistButton
                           entryId={w.id}
                           name={`${w.contact_first_name} ${w.contact_last_name}`}
                           hasAvailableHouse={(availableByType[w.house_type_id] || 0) > 0}
                         />
-                        <WaitlistRemoveButton entryId={w.id} />
-                      </div>
-                    )}
+                      )}
+                      <WaitlistRemoveButton entryId={w.id} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

@@ -96,7 +96,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
     <div className="container mx-auto px-4 py-12">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 text-center">
-          <CheckCircle2 className="mx-auto h-16 w-16 text-green-600" />
+          <CheckCircle2 className="mx-auto h-16 w-16 text-[#00ADD6]" />
           <h1 className="mt-4 text-3xl font-bold">Reservierung erfolgreich!</h1>
           <p className="mt-2 text-muted-foreground">
             Ihre Reservierung wurde erstellt. Bitte überweisen Sie den Betrag

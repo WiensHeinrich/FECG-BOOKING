@@ -38,7 +38,7 @@ export function ConvertWaitlistButton({
         <div className="flex items-center gap-1">
           <Button
             size="sm"
-            className="h-7 px-2 text-xs bg-green-600 hover:bg-green-700 text-white"
+            className="h-7 px-2 text-xs bg-[#00ADD6] hover:bg-[#0095b8] text-white"
             onClick={handleConvert}
             disabled={isPending}
           >
@@ -87,7 +87,7 @@ export function ConvertWaitlistButton({
       <Button
         variant="outline"
         size="sm"
-        className="h-8 gap-1.5 text-xs border-green-600 text-green-700 hover:bg-green-50"
+        className="h-8 gap-1.5 text-xs border-[#00ADD6] text-[#008aad] hover:bg-[#e8f7fb]"
         onClick={() => setShowConfirm(true)}
         title={`${name} in Reservierung überführen`}
       >

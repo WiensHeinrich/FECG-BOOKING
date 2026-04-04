@@ -354,7 +354,7 @@ export function BookingForm({
                             <Button
                               type="button"
                               size="sm"
-                              className="h-8 gap-1.5 text-xs bg-green-600 text-white hover:bg-green-700"
+                              className="h-8 gap-1.5 text-xs bg-[#00ADD6] text-white hover:bg-[#0095b8]"
                               onClick={() => {
                                 setGuests((prev) =>
                                   prev.map((g, i) =>

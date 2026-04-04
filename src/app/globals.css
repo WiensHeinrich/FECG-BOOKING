@@ -49,15 +49,15 @@
 
 :root {
   --radius: 0.75rem;
-  /* Waldfreizeit: warme Erdtöne aus den Bildern — Cream · Waldgrün · Gold · Braun */
+  /* Gemeindefreizeit: warme Erdtöne + FECG Blau (#00ADD6) als Akzent */
   --background: oklch(0.96 0.012 75);
   --foreground: oklch(0.25 0.04 55);
   --card: oklch(0.98 0.008 75);
   --card-foreground: oklch(0.25 0.04 55);
   --popover: oklch(0.98 0.008 75);
   --popover-foreground: oklch(0.25 0.04 55);
-  --primary: oklch(0.52 0.10 145);
-  --primary-foreground: oklch(0.98 0.008 90);
+  --primary: oklch(0.65 0.14 215);
+  --primary-foreground: oklch(0.99 0.002 215);
   --secondary: oklch(0.93 0.02 80);
   --secondary-foreground: oklch(0.30 0.04 55);
   --muted: oklch(0.94 0.012 75);
@@ -67,11 +67,11 @@
   --destructive: oklch(0.55 0.18 25);
   --border: oklch(0.90 0.015 75);
   --input: oklch(0.92 0.012 75);
-  --ring: oklch(0.52 0.10 145);
-  --chart-1: oklch(0.52 0.10 145);
+  --ring: oklch(0.65 0.14 215);
+  --chart-1: oklch(0.65 0.14 215);
   --chart-2: oklch(0.72 0.12 80);
   --chart-3: oklch(0.25 0.04 55);
-  --chart-4: oklch(0.65 0.08 145);
+  --chart-4: oklch(0.55 0.10 215);
   --chart-5: oklch(0.60 0.10 55);
   --sidebar: oklch(0.96 0.012 75);
   --sidebar-foreground: oklch(0.25 0.04 55);
@@ -80,7 +80,7 @@
   --sidebar-accent: oklch(0.93 0.02 80);
   --sidebar-accent-foreground: oklch(0.30 0.04 55);
   --sidebar-border: oklch(0.90 0.015 75);
-  --sidebar-ring: oklch(0.52 0.10 145);
+  --sidebar-ring: oklch(0.65 0.14 215);
 }
 
 .dark {

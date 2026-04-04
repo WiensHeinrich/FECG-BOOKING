@@ -111,11 +111,11 @@ export async function GET() {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      border-bottom: 3px solid #6B8F4E;
+      border-bottom: 3px solid #00ADD6;
       padding-bottom: 12px;
       margin-bottom: 16px;
     }
-    .header h1 { font-size: 18px; color: #6B8F4E; }
+    .header h1 { font-size: 18px; color: #00ADD6; }
     .header .subtitle { font-size: 12px; color: #666; margin-top: 2px; }
     .header .date { font-size: 10px; color: #999; text-align: right; }
     .summary {
@@ -128,7 +128,7 @@ export async function GET() {
       background: #f8f9fa;
       border-radius: 6px;
       padding: 10px 14px;
-      border-left: 3px solid #6B8F4E;
+      border-left: 3px solid #00ADD6;
     }
     .summary-box .label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
     .summary-box .value { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-top: 2px; }
@@ -142,7 +142,7 @@ export async function GET() {
       margin-top: 8px;
     }
     thead th {
-      background: #6B8F4E;
+      background: #00ADD6;
       color: white;
       padding: 6px 8px;
       text-align: left;
@@ -190,13 +190,13 @@ export async function GET() {
     }
     .bank-info {
       margin-top: 16px;
-      background: #f5f0e5;
-      border-left: 3px solid #6B8F4E;
+      background: #e8f7fb;
+      border-left: 3px solid #00ADD6;
       padding: 10px 14px;
       border-radius: 0 6px 6px 0;
       font-size: 10px;
     }
-    .bank-info strong { color: #6B8F4E; }
+    .bank-info strong { color: #00ADD6; }
     @media print {
       body { padding: 10mm; }
       .no-print { display: none; }

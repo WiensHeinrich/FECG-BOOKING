@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
           <h2 style="color:#b45309;">Überfällige Reservierungen</h2>
           <p>Die folgenden Reservierungen haben die Zahlungsfrist überschritten und wurden <strong>nicht automatisch storniert</strong>. Bitte prüfe den Zahlungseingang und storniere ggf. manuell im Admin-Dashboard.</p>
           <table style="width:100%;border-collapse:collapse;margin:16px 0;">
-            <tr style="background:#f5f0e5;">
+            <tr style="background:#e8f7fb;">
               <th style="padding:8px;text-align:left;">Name</th>
               <th style="padding:8px;text-align:left;">E-Mail</th>
               <th style="padding:8px;text-align:left;">Unterkunft</th>
