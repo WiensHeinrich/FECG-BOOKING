@@ -10,10 +10,11 @@ import {
   cancelReservation,
   extendReservation,
   updateAdminNotes,
+  revertReservationStatus,
 } from "@/lib/actions/admin";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { CheckCircle, XCircle, Clock, Save, Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Save, Loader2, Undo2 } from "lucide-react";
 
 export function ReservationActions({
   reservationId,
@@ -34,6 +35,9 @@ export function ReservationActions({
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelReason, setCancelReason] = useState<string>("");
   const [cancelDetails, setCancelDetails] = useState("");
+
+  // Rückgängig-Bestätigung
+  const [showRevertConfirm, setShowRevertConfirm] = useState(false);
 
   async function handleAction(
     action: () => Promise<{ error?: string; success?: boolean }>,
@@ -73,9 +77,36 @@ export function ReservationActions({
     setLoading(null);
   }
 
+  async function handleRevert() {
+    setLoading("revert");
+    const result = await revertReservationStatus(reservationId);
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("Status wurde zurückgesetzt auf 'Reserviert'.");
+      setShowRevertConfirm(false);
+      router.refresh();
+    }
+    setLoading(null);
+  }
+
+  const revertLabel =
+    status === "bestaetigt"
+      ? "Zahlung zurücknehmen"
+      : status === "storniert"
+      ? "Stornierung rückgängig"
+      : "";
+
+  const revertDescription =
+    status === "bestaetigt"
+      ? "Status wird auf 'Reserviert' und Zahlung auf 'Ausstehend' zurückgesetzt."
+      : status === "storniert"
+      ? "Status wird auf 'Reserviert' zurückgesetzt und das Haus wieder als belegt markiert."
+      : "";
+
   return (
     <div className="space-y-4">
-      {/* Aktions-Buttons */}
+      {/* Aktions-Buttons für "reserviert" */}
       {status === "reserviert" && (
         <Card>
           <CardHeader>
@@ -206,6 +237,54 @@ export function ReservationActions({
                       setCancelDetails("");
                     }}
                     disabled={loading === "cancel"}
+                  >
+                    Abbrechen
+                  </Button>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Rückgängig-Button für "bestätigt" oder "storniert" */}
+      {(status === "bestaetigt" || status === "storniert") && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Aktionen</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {!showRevertConfirm ? (
+              <Button
+                variant="outline"
+                onClick={() => setShowRevertConfirm(true)}
+                disabled={loading !== null}
+              >
+                <Undo2 className="mr-2 h-4 w-4" />
+                {revertLabel}
+              </Button>
+            ) : (
+              <div className="rounded-md border border-amber-300 bg-amber-50 p-4 space-y-3">
+                <h4 className="font-semibold text-amber-800">Rückgängig machen?</h4>
+                <p className="text-sm text-amber-700">{revertDescription}</p>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    className="border-amber-400 text-amber-800 hover:bg-amber-100"
+                    onClick={handleRevert}
+                    disabled={loading === "revert"}
+                  >
+                    {loading === "revert" ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Undo2 className="mr-2 h-4 w-4" />
+                    )}
+                    {loading === "revert" ? "Wird zurückgesetzt..." : "Ja, rückgängig machen"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setShowRevertConfirm(false)}
+                    disabled={loading === "revert"}
                   >
                     Abbrechen
                   </Button>

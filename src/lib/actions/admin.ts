@@ -192,6 +192,67 @@ export async function extendReservation(reservationId: string, days: number) {
   return { success: true };
 }
 
+export async function revertReservationStatus(reservationId: string) {
+  await requireAdminAccess();
+  const supabase = createAdminClient();
+
+  // Aktuelle Reservierung laden
+  const { data: reservation } = await supabase
+    .from("reservations")
+    .select("status, payment_status, house_id")
+    .eq("id", reservationId)
+    .single();
+
+  if (!reservation) {
+    return { error: "Reservierung nicht gefunden." };
+  }
+
+  if (reservation.status === "bestaetigt") {
+    // Bestätigt → zurück auf "reserviert" + Zahlung "ausstehend"
+    const { error } = await supabase
+      .from("reservations")
+      .update({
+        status: "reserviert",
+        payment_status: "ausstehend",
+        payment_confirmed_at: null,
+      })
+      .eq("id", reservationId);
+
+    if (error) {
+      return { error: "Status konnte nicht zurückgesetzt werden." };
+    }
+  } else if (reservation.status === "storniert") {
+    // Storniert → zurück auf "reserviert" + Haus wieder belegen
+    const { error } = await supabase
+      .from("reservations")
+      .update({
+        status: "reserviert",
+        cancelled_at: null,
+      })
+      .eq("id", reservationId);
+
+    if (error) {
+      return { error: "Status konnte nicht zurückgesetzt werden." };
+    }
+
+    // Haus als nicht mehr verfügbar markieren (ist wieder belegt)
+    if (reservation.house_id) {
+      await supabase
+        .from("houses")
+        .update({ is_available: false })
+        .eq("id", reservation.house_id);
+    }
+  } else {
+    return { error: "Dieser Status kann nicht rückgängig gemacht werden." };
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/admin/reservierungen");
+  revalidatePath("/admin/haeuser");
+  revalidatePath("/admin/warteliste");
+  return { success: true };
+}
+
 export async function updateAdminNotes(
   reservationId: string,
   notes: string
