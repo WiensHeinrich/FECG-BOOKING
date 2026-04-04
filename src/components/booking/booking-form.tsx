@@ -380,7 +380,7 @@ export function BookingForm({
                               Aus Kontaktperson übernehmen
                             </Button>
                           )}
-                          {guests.length > 1 && (
+                          {guests.length > minGuests && (
                             <Button
                               type="button"
                               variant="ghost"
