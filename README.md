@@ -49,7 +49,7 @@ Die Anwendung laeuft danach unter [http://localhost:3000](http://localhost:3000)
 
 ## Datenbank
 
-Die Supabase-Migrationen liegen in `supabase/migrations/001_create_schema.sql`, `supabase/migrations/002_fix_rls.sql`, `supabase/migrations/003_create_admin_user.sql` und `supabase/migrations/004_secure_public_flows.sql`.
+Die Supabase-Migrationen liegen in `supabase/migrations/001_create_schema.sql`, `supabase/migrations/002_fix_rls.sql`, `supabase/migrations/003_create_admin_user.sql` und `supabase/migrations/004_secure_public_flows.sql` und folgende (aktuell bis `011_fix_registration_timezone.sql`).
 
 Fuer lokale Testdaten gibt es `supabase/seed.sql`.
 
