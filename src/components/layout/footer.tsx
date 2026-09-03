@@ -81,7 +81,7 @@ export function Footer({
           <p>
             &copy; {new Date().getFullYear()} {siteConfig.church}
           </p>
-          <Link href="/login" className="transition-colors hover:text-primary">
+          <Link href="/login" prefetch={false} className="transition-colors hover:text-primary">
             Admin-Login
           </Link>
         </div>
