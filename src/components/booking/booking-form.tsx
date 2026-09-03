@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useRef, useEffect } from "react";
+import { useState, useTransition, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Plus, Trash2, AlertCircle, X, FileDown, UserCheck } from "lucide-react";
+import { Loader2, Plus, Trash2, AlertCircle, X, UserCheck } from "lucide-react";
 import { HouseTypeCard } from "./house-type-card";
 import { createReservation } from "@/lib/actions/booking";
 import { joinWaitlist } from "@/lib/actions/waitlist";
@@ -75,22 +75,17 @@ export function BookingForm({
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const contactSectionRef = useRef<HTMLElement>(null);
-  const [shouldScroll, setShouldScroll] = useState(false);
-
-  // Sanfter Scroll zur Kontaktsektion nach Auswahl — nicht ganz nach oben,
+  // Sanfter Scroll zur Kontaktsektion nach Auswahl, nicht ganz nach oben,
   // damit die ausgewählte Unterkunft noch sichtbar bleibt
-  useEffect(() => {
-    if (shouldScroll && selectedTypeId && contactSectionRef.current) {
-      setTimeout(() => {
-        const el = contactSectionRef.current;
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        const offset = window.scrollY + rect.top - 120; // 120px Abstand oben
-        window.scrollTo({ top: offset, behavior: "smooth" });
-      }, 100);
-      setShouldScroll(false);
-    }
-  }, [shouldScroll, selectedTypeId]);
+  function scrollToContactSection() {
+    setTimeout(() => {
+      const el = contactSectionRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const offset = window.scrollY + rect.top - 120;
+      window.scrollTo({ top: offset, behavior: "smooth" });
+    }, 100);
+  }
 
   const selectedType = houseTypes.find((ht) => ht.id === selectedTypeId);
   const selectedAvailability = availability.find(
@@ -101,7 +96,7 @@ export function BookingForm({
   function selectHouseType(houseType: HouseType) {
     setSelectedTypeId(houseType.id);
     setError(null);
-    setShouldScroll(true);
+    scrollToContactSection();
     const min = Math.max(houseType.max_guests - 1, 1);
     const max = houseType.max_guests + 2;
     setGuests((prev) => {

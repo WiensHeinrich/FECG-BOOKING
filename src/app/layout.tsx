@@ -4,33 +4,55 @@ import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Toaster } from "@/components/ui/sonner";
+import { siteConfig } from "@/lib/config/site";
+import { getActiveEvent } from "@/lib/queries/events";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Gemeindefreizeit | FECG Trossingen e.V.",
-    template: "%s | FECG Trossingen Gemeindefreizeit 2027",
+    default: `${siteConfig.name} | ${siteConfig.church}`,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "Buchungssystem für die Gemeindefreizeit der FECG Trossingen e.V. Reservieren Sie Ihr Ferienhaus und melden Sie sich online an.",
+  description: siteConfig.description,
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: siteConfig.name,
+    title: `${siteConfig.name} | ${siteConfig.church}`,
+    description: siteConfig.description,
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: siteConfig.name }],
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const event = await getActiveEvent();
+  const title = event?.title ?? siteConfig.name;
+
   return (
     <html lang="de">
       <body className={`${geistSans.variable} font-sans antialiased`}>
         <div className="flex min-h-screen flex-col">
-          <Header />
+          <Header title={title} />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <Footer
+            title={title}
+            contactEmail={event?.contact_email ?? siteConfig.contactEmail}
+            contactPhone={event?.contact_phone}
+          />
         </div>
         <Toaster />
       </body>

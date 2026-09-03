@@ -1,15 +1,123 @@
 import type { Metadata } from "next";
-import { FileDown } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Car,
+  Check,
+  Clock,
+  FileDown,
+  FileText,
+  X,
+} from "lucide-react";
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
+import { ImagePreview } from "@/components/ui/image-preview";
 import { getActiveEvent } from "@/lib/queries/events";
 import { getPublishedDocuments } from "@/lib/queries/documents";
 import { formatFileSize } from "@/lib/utils/format";
-import { ImagePreview } from "@/components/ui/image-preview";
+import { getRegistrationInfo } from "@/lib/utils/registration";
 
 export const metadata: Metadata = {
   title: "Informationen",
   description:
-    "Downloads und wichtige Informationen zur Gemeindefreizeit im Feriendorf Eckenhof Schramberg.",
+    "An- und Abreise, Ausstattung der Unterkünfte, Mitbringliste, Gemeinschaftseinrichtungen und Grundrisse für die Gemeindefreizeit im Feriendorf Eckenhof Schramberg.",
 };
+
+const sections = [
+  { id: "anreise", label: "An- und Abreise" },
+  { id: "ausstattung", label: "Ausstattung" },
+  { id: "mitbringen", label: "Mitbringen" },
+  { id: "einrichtungen", label: "Einrichtungen" },
+  { id: "grundrisse", label: "Grundrisse" },
+];
+
+const vorhanden = [
+  "Kaffeemaschine (Filtertüten bitte mitbringen)",
+  "Wasserkocher",
+  "Kühlschrank (ohne Gefrierfach)",
+  "Grundgeschirr und Besteck",
+  "Bettwäsche inklusive",
+  "Kinderbett und Hochstuhl auf Anfrage",
+  "WLAN im ganzen Dorf",
+  "Heizung",
+];
+
+const nichtVorhanden = [
+  "Backofen (nur in Typ C)",
+  "Spülmaschine (nur in Typ C)",
+  "Gefrierfach",
+  "Elektrogrill (Gemeinschaftsgrill vorhanden)",
+  "Fernseher im Haus (TV-Raum im Hauptgebäude)",
+];
+
+const mitbringen = [
+  "Spülmittel und Spültabs",
+  "Spültücher und Putzlappen",
+  "Müllbeutel",
+  "Toilettenpapier",
+  "Filtertüten für die Kaffeemaschine",
+  "Handtücher",
+  "Sandspielzeug für den Sandkasten",
+  "Eigenes Datenvolumen, das WLAN kann begrenzt sein",
+];
+
+const einrichtungen = [
+  {
+    title: "Großer Grillplatz",
+    text: "Überdachter Gemeinschaftsgrill für alle Gäste. Ideal für gemeinsame Abende.",
+    image: "/images/grill.webp",
+  },
+  {
+    title: "Waschraum",
+    text: "Münzbetriebene Waschmaschine und Trockner (3,50 € pro Ladung). Ein Bügeleisen ist vorhanden.",
+    image: "/images/waschraum.webp",
+  },
+  {
+    title: "Spielplatz und Spieleverleih",
+    text: "Kinderspielplatz mit Sandkasten. Bälle, Badminton und mehr können an der Rezeption ausgeliehen werden.",
+    image: "/images/spielplatz.webp",
+  },
+  {
+    title: "WLAN und TV-Raum",
+    text: "WLAN im gesamten Dorf. Der TV-Raum im Hauptgebäude ist mit dem Schlüssel von der Rezeption nutzbar.",
+    image: "/images/wlan-tv-raum.webp",
+  },
+];
+
+const grundrisse = [
+  {
+    title: "Übersichtsplan",
+    text: "Lageplan des gesamten Feriendorfs",
+    image: "/docs/uebersichtsplan-eckenhof.jpg",
+    download: "/docs/uebersichtsplan-eckenhof.jpg",
+  },
+  {
+    title: "Ferienhaus Typ A und B",
+    text: "Raumaufteilung für bis zu 6 Personen",
+    image: "/images/grundriss-typ-ab.webp",
+    download: "/docs/grundriss-typ-a.pdf",
+  },
+  {
+    title: "Ferienhaus Typ C",
+    text: "Raumaufteilung für 8 bis 10 Personen",
+    image: "/images/grundriss-typ-c.webp",
+    download: "/docs/grundriss-typ-c.pdf",
+  },
+  {
+    title: "Gästehaus G1 bis G11",
+    text: "Raumaufteilung der Gästehäuser",
+    image: "/images/grundriss-gaestehaus.webp",
+    download: "/docs/grundriss-gaestehaus.pdf",
+  },
+  {
+    title: "Villa II und III",
+    text: "Raumaufteilung der Villen",
+    image: "/images/grundriss-villa-2-3.webp",
+    download: null,
+  },
+];
 
 export default async function InformationenPage() {
   const event = await getActiveEvent();
@@ -23,242 +131,349 @@ export default async function InformationenPage() {
   }
 
   const documents = await getPublishedDocuments(event.id);
+  const registration = getRegistrationInfo(event);
+  const arrivalDay = format(new Date(event.start_date), "EEEE, d. MMMM yyyy", { locale: de });
+  const departureDay = format(new Date(event.end_date), "EEEE, d. MMMM yyyy", { locale: de });
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="mx-auto max-w-4xl">
-        <h1 className="text-3xl font-bold">Informationen</h1>
-        <p className="mt-2 text-muted-foreground">
-          Alles Wichtige rund um die {event.title} im Feriendorf Eckenhof
-          Schramberg.
-        </p>
-
-        {/* An-/Abreise Zeiten */}
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold">An- und Abreise</h2>
-          <div className="mt-4 grid gap-6 md:grid-cols-2">
-            {/* Anreise */}
-            <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-              <div
-                className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-                style={{ backgroundImage: "url('/Pictures/Anreise.png')" }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
-              <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
-                <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Anreise</h3>
-                <p className="mt-1 text-lg font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-xl group-hover:text-white">17:00 Uhr</p>
-              </div>
-            </div>
-            {/* Abreise */}
-            <div className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-              <div
-                className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-                style={{ backgroundImage: "url('/Pictures/Abreise.png')" }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
-              <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
-                <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Abreise</h3>
-                <p className="mt-1 text-lg font-semibold text-white/80 drop-shadow transition-all duration-500 group-hover:text-xl group-hover:text-white">Bis spätestens 12:00 Uhr</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Ausstattung */}
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold">Ausstattung der Unterkünfte</h2>
-          <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div
-              className="h-[36rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 sm:h-[28rem] md:h-[32rem]"
-              style={{ backgroundImage: "url('/Pictures/K%C3%BCche%20blanko.png')" }}
-            />
-            <div className="absolute inset-0 bg-black/40 transition-all duration-500 group-hover:bg-black/65" />
-            <div className="absolute inset-0 flex items-center justify-center px-6">
-              <div className="grid w-full max-w-2xl gap-10 sm:grid-cols-2">
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Vorhanden</h3>
-                  <ul className="mt-4 space-y-2 text-base text-white/90 drop-shadow transition-all duration-500 group-hover:text-lg">
-                    <li>Kaffeemaschine (Filtertüten mitbringen)</li>
-                    <li>Wasserkocher</li>
-                    <li>Kühlschrank (kein Gefrierfach)</li>
-                    <li>Grundgeschirr und Besteck</li>
-                    <li>Bettwäsche inklusive</li>
-                    <li>Kinderbett und Hochstuhl (auf Anfrage)</li>
-                    <li>WLAN (Passwort: &quot;eckenhof&quot;)</li>
-                    <li>Heizung</li>
-                  </ul>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-white/70 drop-shadow-lg transition-all duration-500 group-hover:text-3xl">Nicht vorhanden</h3>
-                  <ul className="mt-4 space-y-2 text-base text-white/60 drop-shadow transition-all duration-500 group-hover:text-lg">
-                    <li>Backofen (nur Typ C Häuser)</li>
-                    <li>Spülmaschine (nur Typ C Häuser)</li>
-                    <li>Gefrierfach</li>
-                    <li>Elektrogrill (Gemeinschaftsgrill vorhanden)</li>
-                    <li>TV im Haus (TV-Raum im Hauptgebäude)</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Mitbringen */}
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold">Bitte mitbringen</h2>
-          <div className="group relative mt-4 overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-            <div
-              className="h-[36rem] bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50 sm:h-[28rem] md:h-[32rem]"
-              style={{ backgroundImage: "url('/Pictures/Bitte%20mitbringen_blanko.png')" }}
-            />
-            <div className="absolute inset-0 bg-black/40 transition-all duration-500 group-hover:bg-black/65" />
-            <div className="absolute inset-0 flex items-center justify-center px-6">
-              <ul className="space-y-2.5 text-center text-base text-white/90 drop-shadow transition-all duration-500 group-hover:text-lg">
-                <li>Spülmittel und Spültabs</li>
-                <li>Spültücher und Putzlappen</li>
-                <li>Müllbeutel</li>
-                <li>Toilettenpapier</li>
-                <li>Filtertüten für die Kaffeemaschine</li>
-                <li>Handtücher</li>
-                <li>Sandspielzeug (Sandkasten vorhanden)</li>
-                <li>Eigenes Datenvolumen (WLAN evtl. begrenzt)</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Gemeinschaftseinrichtungen */}
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold">Gemeinschaftseinrichtungen</h2>
-          <div className="mt-4 grid gap-5 sm:grid-cols-2">
-            {[
-              {
-                title: "Großer Grillplatz",
-                text: "Überdachter Gemeinschaftsgrill für alle Gäste",
-                image: "/Pictures/Grill.png",
-              },
-              {
-                title: "Waschraum",
-                text: "Münzbetriebene Waschmaschine & Trockner (3,50 €/Ladung). Bügeleisen vorhanden.",
-                image: "/Pictures/Waschraum.png",
-              },
-              {
-                title: "Spielplatz & Spieleverleih",
-                text: "Kinderspielplatz mit Sandkasten. Bälle, Badminton u.v.m. an der Rezeption ausleihbar.",
-                image: "/Pictures/Spielplatz%20und%20Spieleverleih.png",
-              },
-              {
-                title: "WLAN & TV-Raum",
-                text: "WLAN im gesamten Dorf. TV-Raum im Hauptgebäude (Schlüssel an der Rezeption).",
-                image: "/Pictures/WLAN%20und%20TV-Raum.png",
-              },
-            ].map(({ title, text, image }) => (
-              <div key={title} className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-                <div
-                  className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-                  style={{ backgroundImage: `url('${image}')` }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
-                  <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-2xl">{title}</h3>
-                  <p className="mt-1 text-sm text-white/70 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white">{text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Grundrisse & Dokumente */}
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold">Grundrisse & Dokumente</h2>
-
-          <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                title: "Übersichtsplan",
-                text: "Lageplan des gesamten Feriendorfs",
-                href: "/docs/uebersichtsplan-eckenhof.jpg",
-                image: "/docs/uebersichtsplan-eckenhof.jpg",
-              },
-              {
-                title: "Grundriss Typ A + B",
-                text: "Raumaufteilung Ferienhaus Typ A & B (6 Personen)",
-                href: "/docs/grundriss-typ-a.pdf",
-                image: "/Pictures/Grundriss%20Typ%20A%2BB.png",
-              },
-              {
-                title: "Grundriss Typ C",
-                text: "Raumaufteilung Ferienhaus Typ C (8–10 Personen)",
-                href: "/docs/grundriss-typ-c.pdf",
-                image: "/Pictures/Grundriss%20Typ%20C.png",
-              },
-              {
-                title: "Grundriss Gästehaus",
-                text: "Raumaufteilung Gästehaus G1-10",
-                href: "/docs/grundriss-gaestehaus.pdf",
-                image: "/Pictures/Grundriss%20G%C3%A4stehaus.png",
-              },
-              {
-                title: "Villa 2 und 3",
-                text: "Raumaufteilung Villa Typ 2 & 3",
-                href: "#",
-                image: "/Pictures/Villa%202%20und%203.png",
-              },
-            ].map(({ title, text, href, image }) => (
-              <div key={title} className="group relative overflow-hidden rounded-2xl shadow-md transition-all duration-500 hover:shadow-2xl hover:shadow-primary/15">
-                <ImagePreview src={image} alt={title} />
-                <a href={href} download={href !== "#"} className="block">
-                  <div
-                    className="h-64 bg-cover bg-center transition-all duration-700 ease-out group-hover:scale-110 group-hover:brightness-50 group-hover:saturate-50"
-                    style={{ backgroundImage: `url('${image}')` }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70 group-hover:via-black/50 group-hover:to-black/30" />
-                  <div className="absolute inset-x-0 bottom-0 p-6 text-center transition-all duration-500 group-hover:bottom-auto group-hover:top-1/2 group-hover:-translate-y-1/2">
-                    <h3 className="text-xl font-bold text-white drop-shadow-lg transition-all duration-500 group-hover:text-2xl">{title}</h3>
-                    <p className="mt-1 text-sm text-white/70 drop-shadow transition-all duration-500 group-hover:text-base group-hover:text-white">{text}</p>
-                    <div className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-white/80 transition-all duration-500 group-hover:text-white">
-                      <FileDown className="h-4 w-4" />
-                      Herunterladen
-                    </div>
-                  </div>
-                </a>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Dynamische Dokumente aus der Datenbank */}
-        {documents.length > 0 && (
-          <section className="mt-10">
-            <h2 className="text-2xl font-semibold">Weitere Dokumente</h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              {documents.map((doc) => (
+    <div>
+      {/* Kopfbereich */}
+      <section className="border-b bg-secondary/40">
+        <div className="container mx-auto px-4 py-12 md:py-16">
+          <div className="mx-auto max-w-4xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              {event.title}
+            </p>
+            <h1 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
+              Alles Wichtige auf einen Blick
+            </h1>
+            <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
+              Hier finden Sie alle Informationen rund um die Freizeit im Feriendorf Eckenhof
+              Schramberg: Anreise, Ausstattung, was Sie mitbringen sollten und die Grundrisse
+              der Unterkünfte.
+            </p>
+            <nav className="mt-6 flex flex-wrap gap-2" aria-label="Abschnitte">
+              {sections.map((s) => (
                 <a
-                  key={doc.id}
-                  href={doc.file_url}
-                  download
-                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-accent/30 via-secondary/40 to-accent/20 p-6 shadow-md transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:shadow-primary/15 hover:from-accent/50 hover:via-secondary/50 hover:to-accent/30"
+                  key={s.id}
+                  href={`#${s.id}`}
+                  className="rounded-full border bg-card px-3.5 py-1.5 text-sm font-medium text-foreground/80 transition-colors hover:border-primary/40 hover:text-primary"
                 >
-                  <div className="absolute -right-4 -top-4 text-6xl opacity-10 transition-all duration-500 group-hover:scale-125 group-hover:opacity-20">📄</div>
-                  <div className="relative">
-                    <h3 className="text-base font-bold text-foreground/90 transition-all duration-500 group-hover:text-lg">{doc.title}</h3>
-                    {doc.description && (
-                      <p className="mt-1 text-sm text-muted-foreground transition-all duration-500 group-hover:text-foreground/70">{doc.description}</p>
-                    )}
-                    {doc.file_size_bytes && (
-                      <p className="mt-0.5 text-xs text-muted-foreground">{formatFileSize(doc.file_size_bytes)}</p>
-                    )}
-                    <div className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-all duration-500 group-hover:gap-2.5">
-                      <FileDown className="h-4 w-4" />
-                      Herunterladen
-                    </div>
-                  </div>
+                  {s.label}
                 </a>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </section>
+
+      <div className="container mx-auto px-4">
+        <div className="mx-auto max-w-4xl">
+          {/* An- und Abreise */}
+          <section id="anreise" className="scroll-mt-24 py-12 md:py-16">
+            <SectionTitle
+              eyebrow="Ankommen und Abfahren"
+              title="An- und Abreise"
+            />
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              <TimeCard
+                image="/images/anreise.webp"
+                title="Anreise"
+                day={arrivalDay}
+                time="ab 17:00 Uhr"
+              />
+              <TimeCard
+                image="/images/abreise.webp"
+                title="Abreise"
+                day={departureDay}
+                time="bis spätestens 12:00 Uhr"
+              />
+            </div>
+            <div className="mt-5 flex gap-4 rounded-2xl border bg-card p-5 shadow-sm">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Car className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Mit dem Auto</h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  {event.location_address ?? "Feriendorf Eckenhof, Schramberg-Sulgen"}. Das
+                  Feriendorf ist autofrei, Fahrzeuge sind im Dorf nicht erlaubt. Parkplätze
+                  befinden sich in der Nähe. Für den Gepäcktransport stehen Bollerwagen zur
+                  Verfügung.
+                </p>
+                {event.location_url && (
+                  <a
+                    href={event.location_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-block text-sm font-semibold text-primary underline-offset-4 hover:underline"
+                  >
+                    Route in Google Maps öffnen
+                  </a>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* Ausstattung */}
+          <section id="ausstattung" className="scroll-mt-24 border-t py-12 md:py-16">
+            <SectionTitle
+              eyebrow="In jeder Unterkunft"
+              title="Ausstattung der Unterkünfte"
+            />
+            <div className="mt-8 grid gap-6 md:grid-cols-[1fr_1.15fr] md:items-start">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-md md:aspect-[4/5]">
+                <Image
+                  src="/images/kueche.webp"
+                  alt="Küche im Ferienhaus"
+                  fill
+                  sizes="(min-width: 768px) 40vw, 100vw"
+                  className="object-cover object-center"
+                />
+              </div>
+              <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-1">
+                <ChecklistCard title="Vorhanden" items={vorhanden} positive />
+                <ChecklistCard title="Nicht vorhanden" items={nichtVorhanden} />
+              </div>
+            </div>
+          </section>
+
+          {/* Mitbringen */}
+          <section id="mitbringen" className="scroll-mt-24 border-t py-12 md:py-16">
+            <SectionTitle eyebrow="Packliste" title="Bitte mitbringen" />
+            <div className="mt-8 grid gap-6 md:grid-cols-[1.15fr_1fr] md:items-start">
+              <div className="rounded-2xl border bg-card p-6 shadow-sm">
+                <ul className="grid gap-3 sm:grid-cols-2">
+                  {mitbringen.map((item) => (
+                    <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                        <Check className="h-3 w-3" />
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-md md:aspect-[4/3]">
+                <Image
+                  src="/images/mitbringen.webp"
+                  alt="Küche mit Vorräten"
+                  fill
+                  sizes="(min-width: 768px) 40vw, 100vw"
+                  className="object-cover object-center"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Gemeinschaftseinrichtungen */}
+          <section id="einrichtungen" className="scroll-mt-24 border-t py-12 md:py-16">
+            <SectionTitle
+              eyebrow="Im Feriendorf"
+              title="Gemeinschaftseinrichtungen"
+            />
+            <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              {einrichtungen.map((e) => (
+                <article
+                  key={e.title}
+                  className="group overflow-hidden rounded-2xl border bg-card shadow-sm transition-shadow hover:shadow-lg"
+                >
+                  <div className="relative aspect-[2/1] overflow-hidden">
+                    <Image
+                      src={e.image}
+                      alt={e.title}
+                      fill
+                      sizes="(min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-semibold">{e.title}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{e.text}</p>
+                  </div>
+                </article>
               ))}
             </div>
           </section>
-        )}
+
+          {/* Grundrisse und Dokumente */}
+          <section id="grundrisse" className="scroll-mt-24 border-t py-12 md:py-16">
+            <SectionTitle
+              eyebrow="Zum Anschauen und Herunterladen"
+              title="Grundrisse und Dokumente"
+            />
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {grundrisse.map((g) => (
+                <article
+                  key={g.title}
+                  className="flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm"
+                >
+                  <div className="relative aspect-[4/3] bg-white">
+                    <Image
+                      src={g.image}
+                      alt={g.title}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-contain p-3"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="font-semibold">{g.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{g.text}</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <ImagePreview src={g.image} alt={g.title} />
+                      {g.download && (
+                        <Button asChild variant="outline" size="sm" className="gap-1.5">
+                          <a href={g.download} download>
+                            <FileDown className="h-4 w-4" />
+                            Download
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {documents.length > 0 && (
+              <div className="mt-10">
+                <h3 className="text-lg font-semibold">Weitere Dokumente</h3>
+                <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {documents.map((doc) => (
+                    <li key={doc.id}>
+                      <a
+                        href={doc.file_url}
+                        download
+                        className="flex items-start gap-3 rounded-xl border bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+                      >
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <FileText className="h-5 w-5" />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block font-medium">{doc.title}</span>
+                          {doc.description && (
+                            <span className="mt-0.5 block text-sm text-muted-foreground">
+                              {doc.description}
+                            </span>
+                          )}
+                          {doc.file_size_bytes && (
+                            <span className="mt-1 block text-xs text-muted-foreground">
+                              {formatFileSize(doc.file_size_bytes)}
+                            </span>
+                          )}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+
+          {/* Abschluss */}
+          <section className="border-t py-12 md:py-16">
+            <div className="flex flex-col items-center justify-between gap-5 rounded-2xl bg-primary/10 px-6 py-8 text-center md:flex-row md:text-left">
+              <div>
+                <h2 className="text-xl font-bold">Noch Fragen?</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Schreiben Sie uns an{" "}
+                  <a
+                    href={`mailto:${event.contact_email}`}
+                    className="font-semibold text-primary underline-offset-4 hover:underline"
+                  >
+                    {event.contact_email}
+                  </a>
+                  {event.contact_phone && <> oder rufen Sie an: {event.contact_phone}</>}.
+                </p>
+              </div>
+              {registration.status === "open" && (
+                <Button asChild size="lg" className="gap-2 shrink-0">
+                  <Link href="/anmeldung">
+                    Zur Anmeldung
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </section>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{eyebrow}</p>
+      <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">{title}</h2>
+    </div>
+  );
+}
+
+function TimeCard({
+  image,
+  title,
+  day,
+  time,
+}: {
+  image: string;
+  title: string;
+  day: string;
+  time: string;
+}) {
+  return (
+    <article className="overflow-hidden rounded-2xl border bg-card shadow-sm">
+      <div className="relative aspect-[2/1]">
+        <Image
+          src={image}
+          alt={title}
+          fill
+          sizes="(min-width: 768px) 50vw, 100vw"
+          className="object-cover"
+        />
+      </div>
+      <div className="p-5">
+        <h3 className="text-lg font-semibold">{title}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{day}</p>
+        <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+          <Clock className="h-4 w-4" />
+          {time}
+        </p>
+      </div>
+    </article>
+  );
+}
+
+function ChecklistCard({
+  title,
+  items,
+  positive = false,
+}: {
+  title: string;
+  items: string[];
+  positive?: boolean;
+}) {
+  return (
+    <div className="rounded-2xl border bg-card p-5 shadow-sm">
+      <h3 className="font-semibold">{title}</h3>
+      <ul className="mt-3 space-y-2">
+        {items.map((item) => (
+          <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed">
+            <span
+              className={
+                positive
+                  ? "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
+                  : "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground"
+              }
+            >
+              {positive ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
+            </span>
+            <span className={positive ? "" : "text-muted-foreground"}>{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

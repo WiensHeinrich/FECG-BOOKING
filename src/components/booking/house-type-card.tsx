@@ -49,7 +49,7 @@ export function HouseTypeCard({
         {/* Ferienhaus-Hintergrundbild — blass */}
         <div
           className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.08] transition-opacity duration-500 group-hover:opacity-[0.15]"
-          style={{ backgroundImage: "url('/Pictures/Ferienhaus.png')" }}
+          style={{ backgroundImage: "url('/images/ferienhaus.webp')" }}
         />
 
         <CardHeader className="relative pb-3">

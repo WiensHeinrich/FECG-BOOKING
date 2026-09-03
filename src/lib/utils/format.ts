@@ -5,6 +5,16 @@ export function formatDate(date: string | Date): string {
   return format(new Date(date), "dd. MMMM yyyy", { locale: de });
 }
 
+// Datum eines Zeitpunkts in deutscher Zeit, unabhängig von der Server-Zeitzone (Vercel läuft in UTC)
+export function formatDateBerlin(date: string | Date): string {
+  return new Date(date).toLocaleDateString("de-DE", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    timeZone: "Europe/Berlin",
+  });
+}
+
 export function formatDateShort(date: string | Date): string {
   return format(new Date(date), "dd.MM.yyyy", { locale: de });
 }

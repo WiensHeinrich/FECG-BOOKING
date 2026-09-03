@@ -1,29 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Eye, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-export function ImagePreview({ src, alt }: { src: string; alt: string }) {
+interface ImagePreviewProps {
+  src: string;
+  alt: string;
+  label?: string;
+  className?: string;
+}
+
+export function ImagePreview({ src, alt, label = "Ansehen", className }: ImagePreviewProps) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
 
   return (
     <>
-      <button
+      <Button
         type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setOpen(true);
-        }}
-        className="absolute right-3 top-3 z-10 rounded-full bg-black/50 p-2.5 text-white/80 opacity-100 backdrop-blur-sm transition-all duration-300 hover:bg-black/70 hover:text-white md:opacity-0 md:group-hover:opacity-100"
-        aria-label={`${alt} vergrößern`}
+        variant="outline"
+        size="sm"
+        className={cn("gap-1.5", className)}
+        onClick={() => setOpen(true)}
       >
-        <Eye className="h-5 w-5" />
-      </button>
+        <Eye className="h-4 w-4" />
+        {label}
+      </Button>
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label={alt}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         >
           <button
@@ -34,11 +59,18 @@ export function ImagePreview({ src, alt }: { src: string; alt: string }) {
           >
             <X className="h-6 w-6" />
           </button>
-          <img
-            src={src}
-            alt={alt}
-            className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain shadow-2xl"
-          />
+          <div
+            className="relative h-[85vh] w-[92vw] max-w-5xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={src}
+              alt={alt}
+              fill
+              sizes="92vw"
+              className="rounded-lg object-contain"
+            />
+          </div>
         </div>
       )}
     </>
