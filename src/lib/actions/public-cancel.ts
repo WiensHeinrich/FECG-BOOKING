@@ -14,12 +14,30 @@ async function hashToken(token: string): Promise<string> {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+function escHtml(s: string | null | undefined): string {
+  if (s === null || s === undefined) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+const VALID_REASONS = ["terminlich_verhindert", "persoenliche_gruende", "sonstiges"] as const;
+type CancelReason = (typeof VALID_REASONS)[number];
+
 export async function publicCancelReservation(
   reservationId: string,
   token: string,
   reason: string,
   details?: string
 ) {
+  if (!VALID_REASONS.includes(reason as CancelReason)) {
+    return { error: "Ungültiger Stornierungsgrund." };
+  }
+  const trimmedDetails = (details ?? "").trim().slice(0, 500);
+
   const supabase = createAdminClient();
 
   // 1. Token validieren
@@ -51,10 +69,10 @@ export async function publicCancelReservation(
       ? "Terminlich verhindert"
       : reason === "persoenliche_gruende"
       ? "Persönliche Gründe"
-      : details || "Sonstiger Grund";
+      : trimmedDetails || "Sonstiger Grund";
 
-  const fullReason = details && reason !== "sonstiges"
-    ? `${reasonText} — ${details}`
+  const fullReason = trimmedDetails && reason !== "sonstiges"
+    ? `${reasonText} — ${trimmedDetails}`
     : reasonText;
 
   // 3. Reservierung stornieren
@@ -95,8 +113,8 @@ export async function publicCancelReservation(
     subject: `Selbst-Stornierung: ${reservation.contact_first_name} — ${ht.house_type.name}`,
     html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">
       <h2 style="color:#b45309;">Reservierung vom Gast storniert</h2>
-      <p><strong>${reservation.contact_first_name}</strong> (${reservation.contact_email}) hat die Reservierung für <strong>${ht.house_type.name}</strong> selbst storniert.</p>
-      <p><strong>Grund:</strong> ${fullReason}</p>
+      <p><strong>${escHtml(reservation.contact_first_name)}</strong> (${escHtml(reservation.contact_email)}) hat die Reservierung für <strong>${escHtml(ht.house_type.name)}</strong> selbst storniert.</p>
+      <p><strong>Grund:</strong> ${escHtml(fullReason)}</p>
       <p style="color:#666;font-size:13px;">Das Haus wurde automatisch wieder freigegeben.</p>
     </div>`,
   }).catch(console.error);

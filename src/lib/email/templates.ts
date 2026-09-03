@@ -1,6 +1,17 @@
 // E-Mail Templates als HTML-Strings
 // Einfach und robust - kein React-Email nötig
 
+// HTML-Escape für alle Nutzereingaben, damit nichts ungewollt als HTML gerendert wird
+function esc(s: string | number | null | undefined): string {
+  if (s === null || s === undefined) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 const baseStyle = `
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #1a1a1a;
@@ -68,9 +79,10 @@ function formatEuro(amount: number) {
 }
 
 function greeting(firstName: string, gender: string | undefined | null) {
-  if (gender === "weiblich") return `Liebe ${firstName}`;
-  if (gender === "maennlich") return `Lieber ${firstName}`;
-  return `Liebe/r ${firstName}`;
+  const name = esc(firstName);
+  if (gender === "weiblich") return `Liebe ${name}`;
+  if (gender === "maennlich") return `Lieber ${name}`;
+  return `Liebe/r ${name}`;
 }
 
 function formatGender(gender: string | undefined | null) {
@@ -107,10 +119,10 @@ function renderGuestList(guests: GuestEmailData[]) {
         .map(
           (g, i) => `
         <div style="${guestCardStyle}">
-          <strong>${i + 1}. ${g.first_name} ${g.last_name}</strong>
+          <strong>${i + 1}. ${esc(g.first_name)} ${esc(g.last_name)}</strong>
           ${g.is_child ? ' <span style="background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 11px;">Kind</span>' : ""}
           <div style="margin-top: 4px; font-size: 13px; color: #666;">
-            Geb.: ${formatBirthDate(g.birth_date)} · Geschlecht: ${formatGender(g.gender)}${g.dietary_notes ? ` · Hinweise: ${g.dietary_notes}` : ""}
+            Geb.: ${formatBirthDate(g.birth_date)} · Geschlecht: ${formatGender(g.gender)}${g.dietary_notes ? ` · Hinweise: ${esc(g.dietary_notes)}` : ""}
           </div>
         </div>`
         )
@@ -155,7 +167,7 @@ export function reservationConfirmationEmail(data: {
       <div style="${cardStyle}">
         <h3 style="margin-top: 0; color: #00ADD6;">Ihre Reservierung</h3>
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Unterkunft", `${data.houseTypeName} - ${data.houseLabel}`)}
+          ${row("Unterkunft", `${esc(data.houseTypeName)} - ${esc(data.houseLabel)}`)}
           ${row("Betrag", formatEuro(data.totalPrice))}
           ${row("Gültig bis", expiryDate)}
         </table>
@@ -164,9 +176,9 @@ export function reservationConfirmationEmail(data: {
       <div style="${cardStyle}">
         <h3 style="margin-top: 0; color: #00ADD6;">Kontaktperson</h3>
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Name", `${data.firstName} ${data.lastName}`)}
-          ${row("E-Mail", data.contactEmail)}
-          ${data.contactPhone ? row("Telefon", data.contactPhone) : ""}
+          ${row("Name", `${esc(data.firstName)} ${esc(data.lastName)}`)}
+          ${row("E-Mail", esc(data.contactEmail))}
+          ${data.contactPhone ? row("Telefon", esc(data.contactPhone)) : ""}
           ${data.contactGender ? row("Geschlecht", formatGender(data.contactGender)) : ""}
         </table>
       </div>
@@ -176,10 +188,10 @@ export function reservationConfirmationEmail(data: {
       <div style="${highlightStyle}">
         <h3 style="margin-top: 0; color: #00ADD6;">Überweisungsdaten</h3>
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Empfänger", data.bankAccountHolder)}
-          ${row("IBAN", formatIban(data.bankIban))}
-          ${data.bankBic ? row("BIC", data.bankBic) : ""}
-          ${row("Verwendungszweck", `<strong>${data.paymentReference}</strong>`)}
+          ${row("Empfänger", esc(data.bankAccountHolder))}
+          ${row("IBAN", esc(formatIban(data.bankIban)))}
+          ${data.bankBic ? row("BIC", esc(data.bankBic)) : ""}
+          ${row("Verwendungszweck", `<strong>${esc(data.paymentReference)}</strong>`)}
           ${row("Betrag", `<strong>${formatEuro(data.totalPrice)}</strong>`)}
         </table>
       </div>
@@ -225,13 +237,13 @@ export function adminNewReservationEmail(data: {
       <div style="${cardStyle}">
         <h3 style="margin-top: 0; color: #00ADD6;">Kontaktperson</h3>
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Name", `${data.firstName} ${data.lastName}`)}
-          ${row("E-Mail", data.email)}
-          ${data.phone ? row("Telefon", data.phone) : ""}
+          ${row("Name", `${esc(data.firstName)} ${esc(data.lastName)}`)}
+          ${row("E-Mail", esc(data.email))}
+          ${data.phone ? row("Telefon", esc(data.phone)) : ""}
           ${data.contactGender ? row("Geschlecht", formatGender(data.contactGender)) : ""}
-          ${row("Unterkunft", data.houseTypeName)}
+          ${row("Unterkunft", esc(data.houseTypeName))}
           ${row("Betrag", formatEuro(data.totalPrice))}
-          ${row("Verwendungszweck", `<strong>${data.paymentReference}</strong>`)}
+          ${row("Verwendungszweck", `<strong>${esc(data.paymentReference)}</strong>`)}
         </table>
       </div>
 
@@ -264,7 +276,7 @@ export function bookingConfirmedEmail(data: {
 
       <div style="${cardStyle}">
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Unterkunft", `${data.houseTypeName} - ${data.houseLabel}`)}
+          ${row("Unterkunft", `${esc(data.houseTypeName)} - ${esc(data.houseLabel)}`)}
           ${row("Betrag", formatEuro(data.totalPrice))}
           ${row("Status", '<span style="color: #16a34a; font-weight: bold;">Bestätigt</span>')}
         </table>
@@ -305,15 +317,15 @@ export function paymentReminderEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Ihre Reservierung für <strong>${data.houseTypeName}</strong> läuft am <strong>${expiryDate}</strong> ab. Bitte überweisen Sie den Betrag rechtzeitig, damit Ihre Buchung nicht verfällt.</p>
+      <p>Ihre Reservierung für <strong>${esc(data.houseTypeName)}</strong> läuft am <strong>${expiryDate}</strong> ab. Bitte überweisen Sie den Betrag rechtzeitig, damit Ihre Buchung nicht verfällt.</p>
 
       <div style="${highlightStyle}">
         <h3 style="margin-top: 0; color: #00ADD6;">Überweisungsdaten</h3>
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Empfänger", data.bankAccountHolder)}
-          ${row("IBAN", formatIban(data.bankIban))}
-          ${data.bankBic ? row("BIC", data.bankBic) : ""}
-          ${row("Verwendungszweck", `<strong>${data.paymentReference}</strong>`)}
+          ${row("Empfänger", esc(data.bankAccountHolder))}
+          ${row("IBAN", esc(formatIban(data.bankIban)))}
+          ${data.bankBic ? row("BIC", esc(data.bankBic)) : ""}
+          ${row("Verwendungszweck", `<strong>${esc(data.paymentReference)}</strong>`)}
           ${row("Betrag", `<strong>${formatEuro(data.totalPrice)}</strong>`)}
         </table>
       </div>
@@ -341,12 +353,12 @@ export function waitlistConfirmationEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Sie wurden erfolgreich auf die <strong>Warteliste</strong> für <strong>${data.houseTypeName}</strong> gesetzt.</p>
+      <p>Sie wurden erfolgreich auf die <strong>Warteliste</strong> für <strong>${esc(data.houseTypeName)}</strong> gesetzt.</p>
 
       <div style="${cardStyle}">
         <h3 style="margin-top: 0; color: #00ADD6;">Ihre Warteliste-Position</h3>
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Unterkunftstyp", data.houseTypeName)}
+          ${row("Unterkunftstyp", esc(data.houseTypeName))}
           ${row("Position", `<strong>Platz ${data.position}</strong>`)}
         </table>
       </div>
@@ -389,11 +401,11 @@ export function adminNewWaitlistEmail(data: {
       <div style="${cardStyle}">
         <h3 style="margin-top: 0; color: #00ADD6;">Kontaktperson</h3>
         <table style="width: 100%; border-collapse: collapse;">
-          ${row("Name", `${data.firstName} ${data.lastName}`)}
-          ${row("E-Mail", data.email)}
-          ${data.phone ? row("Telefon", data.phone) : ""}
+          ${row("Name", `${esc(data.firstName)} ${esc(data.lastName)}`)}
+          ${row("E-Mail", esc(data.email))}
+          ${data.phone ? row("Telefon", esc(data.phone)) : ""}
           ${data.contactGender ? row("Geschlecht", formatGender(data.contactGender)) : ""}
-          ${row("Unterkunftstyp", data.houseTypeName)}
+          ${row("Unterkunftstyp", esc(data.houseTypeName))}
           ${row("Gästeanzahl", String(data.guestCount))}
           ${row("Warteliste-Position", `<strong>Platz ${data.position}</strong>`)}
         </table>
@@ -423,11 +435,11 @@ export function cancellationEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Ihre Reservierung für <strong>${data.houseTypeName}</strong> wurde leider storniert.</p>
+      <p>Ihre Reservierung für <strong>${esc(data.houseTypeName)}</strong> wurde leider storniert.</p>
 
       <div style="${highlightStyle}">
         <p style="margin: 0;"><strong>Grund der Stornierung:</strong></p>
-        <p style="margin: 8px 0 0 0;">${data.reason}</p>
+        <p style="margin: 8px 0 0 0;">${esc(data.reason)}</p>
       </div>
 
       <p>Falls Sie Fragen haben, wenden Sie sich bitte an das Organisationsteam.</p>
@@ -454,7 +466,7 @@ export function reservationExpiredEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Leider ist Ihre Reservierung für <strong>${data.houseTypeName}</strong> abgelaufen, da keine Zahlung eingegangen ist.</p>
+      <p>Leider ist Ihre Reservierung für <strong>${esc(data.houseTypeName)}</strong> abgelaufen, da keine Zahlung eingegangen ist.</p>
       <p>Falls noch Unterkünfte verfügbar sind, können Sie sich gerne erneut anmelden.</p>
 
       <div style="${footerStyle}">

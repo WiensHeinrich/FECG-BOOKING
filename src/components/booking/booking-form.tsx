@@ -338,6 +338,7 @@ export function BookingForm({
                     onChange={(e) => setContact((c) => ({ ...c, dietary_notes: e.target.value }))}
                     placeholder="z.B. Kinderbett wird benötigt, vegetarisch, Allergien..."
                     rows={2}
+                    maxLength={500}
                   />
                 </div>
               </CardContent>
@@ -488,6 +489,7 @@ export function BookingForm({
                           }
                           placeholder="z.B. Kinderbett wird benötigt, vegetarisch, Allergien..."
                           rows={2}
+                          maxLength={500}
                         />
                       </div>
                     </CardContent>

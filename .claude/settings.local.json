@@ -21,7 +21,17 @@
       "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
       "Bash(npm install:*)",
       "Bash(export 'PATH=/c/Program Files/nodejs:$PATH')",
-      "Bash(rm -rf node_modules)"
+      "Bash(rm -rf node_modules)",
+      "WebFetch(domain:www.molotow-web.com)",
+      "WebFetch(domain:jweiland.net)",
+      "Bash(npx next:*)",
+      "Bash(npx tsc:*)",
+      "Bash(node -e \":*)",
+      "Bash(pip install:*)",
+      "Bash(python create_architektur_pdf.py)",
+      "Bash(python -c \":*)",
+      "Bash(python create_admin_anleitung_pdf.py)",
+      "Bash(awk '/^-/{old=$0} /^\\\\+/ && old { print old\"\\\\n\"$0\"\\\\n\"; old=\"\" }')"
     ]
   }
 }
