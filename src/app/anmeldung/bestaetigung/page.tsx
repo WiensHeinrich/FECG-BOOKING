@@ -107,7 +107,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
           {reservation.status === "storniert" ? (
             <>
               <XCircle className="mx-auto h-16 w-16 text-red-500" />
-              <h1 className="mt-4 text-3xl font-bold">Reservierung storniert</h1>
+              <h1 className="page-title mt-4">Reservierung storniert</h1>
               <p className="mt-2 text-muted-foreground">
                 Diese Reservierung wurde storniert.
               </p>
@@ -115,7 +115,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
           ) : reservation.status === "bestaetigt" ? (
             <>
               <CheckCircle2 className="mx-auto h-16 w-16 text-[#00ADD6]" />
-              <h1 className="mt-4 text-3xl font-bold">Buchung bestätigt!</h1>
+              <h1 className="page-title mt-4">Buchung bestätigt!</h1>
               <p className="mt-2 text-muted-foreground">
                 Ihre Zahlung ist eingegangen. Wir freuen uns auf Sie!
               </p>
@@ -123,7 +123,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
           ) : (
             <>
               <CheckCircle2 className="mx-auto h-16 w-16 text-[#00ADD6]" />
-              <h1 className="mt-4 text-3xl font-bold">Reservierung erfolgreich!</h1>
+              <h1 className="page-title mt-4">Reservierung erfolgreich!</h1>
               <p className="mt-2 text-muted-foreground">
                 Ihre Reservierung wurde erstellt. Bitte überweisen Sie den Gesamtbetrag
                 aus Hauspreis und Kurtaxe bis spätestens zum angegebenen Datum.

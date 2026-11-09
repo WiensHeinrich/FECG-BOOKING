@@ -1,23 +1,26 @@
 import { getActiveEvent } from "@/lib/queries/events";
 import { getAvailability, getHouseTypes } from "@/lib/queries/houses";
-import { getRegistrationInfo } from "@/lib/utils/registration";
-import { Hero } from "@/components/home/hero";
-import { FactBar } from "@/components/home/fact-bar";
-import { Highlights } from "@/components/home/highlights";
-import { Accommodations } from "@/components/home/accommodations";
-import { Steps } from "@/components/home/steps";
-import { Verse } from "@/components/home/verse";
-import { RegistrationCta } from "@/components/home/registration-cta";
+import { getNights } from "@/lib/utils/pricing";
+import { ARRIVAL_TIME, DEPARTURE_TIME } from "@/lib/config/stay-times";
+import {
+  Benefits,
+  ClosingCta,
+  Experiences,
+  Hero,
+  Prepared,
+  StaysPreview,
+  Verse,
+} from "@/components/home/sections";
 
 export default async function HomePage() {
   const event = await getActiveEvent();
 
   if (!event) {
     return (
-      <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
+      <div className="site-container flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">Aktuell keine Freizeit geplant</h1>
-          <p className="mt-2 text-muted-foreground">
+          <h1 className="page-title">Aktuell keine Freizeit geplant</h1>
+          <p className="mt-3 text-muted-foreground">
             Sobald eine neue Gemeindefreizeit geplant ist, finden Sie hier alle Informationen.
           </p>
         </div>
@@ -27,29 +30,24 @@ export default async function HomePage() {
 
   const [houseTypes, availability] = await Promise.all([
     getHouseTypes(event.id),
-    getAvailability(event.id),
+    getAvailability(event.id).catch(() => null),
   ]);
-
-  const registration = getRegistrationInfo(event);
+  const nights = getNights(event.start_date, event.end_date);
 
   return (
     <div>
-      <Hero
-        event={event}
-        status={registration.status}
-        daysUntilStart={registration.daysUntilStart}
-      />
-      <FactBar event={event} registration={registration} />
-      <Highlights />
-      <Accommodations
-        event={event}
-        houseTypes={houseTypes}
-        availability={availability}
-        registrationOpen={registration.status === "open"}
-      />
-      <Steps reservationValidityDays={event.reservation_validity_days} />
+      <Hero event={event} nights={nights} />
+      <Benefits nights={nights} />
+      <StaysPreview houseTypes={houseTypes} availability={availability} nights={nights} />
+      <Experiences />
       <Verse />
-      <RegistrationCta event={event} registration={registration} />
+      <Prepared arrival={ARRIVAL_TIME} departure={DEPARTURE_TIME} />
+      <ClosingCta
+        title="Seid ihr dabei?"
+        text="Findet eure Unterkunft und meldet euch gemeinsam an."
+        href="/unterkuenfte"
+        label="Unterkunft auswählen"
+      />
     </div>
   );
 }

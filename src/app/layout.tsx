@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/lib/config/site";
 import { getActiveEvent } from "@/lib/queries/events";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -44,15 +38,11 @@ export default async function RootLayout({
 
   return (
     <html lang="de">
-      <body className={`${geistSans.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         <div className="flex min-h-screen flex-col">
           <Header title={title} />
           <main className="flex-1">{children}</main>
-          <Footer
-            title={title}
-            contactEmail={event?.contact_email ?? siteConfig.contactEmail}
-            contactPhone={event?.contact_phone}
-          />
+          <Footer contactEmail={event?.contact_email ?? siteConfig.contactEmail} />
         </div>
         <Toaster />
       </body>

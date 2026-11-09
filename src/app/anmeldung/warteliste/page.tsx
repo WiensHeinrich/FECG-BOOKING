@@ -20,7 +20,7 @@ export default async function WaitelistePage({
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 text-center">
           <Clock className="mx-auto h-16 w-16 text-amber-500" />
-          <h1 className="mt-4 text-3xl font-bold">Auf der Warteliste</h1>
+          <h1 className="page-title mt-4">Auf der Warteliste</h1>
           <p className="mt-2 text-muted-foreground">
             Sie wurden erfolgreich auf die Warteliste gesetzt.
           </p>

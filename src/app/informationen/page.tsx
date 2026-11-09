@@ -1,37 +1,22 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Car,
-  Check,
-  Clock,
-  FileDown,
-  FileText,
-  X,
-} from "lucide-react";
+import { ArrowRight, Car, Check, Clock, FileDown, FileText, MapPin, X } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
-import { Button } from "@/components/ui/button";
 import { ImagePreview } from "@/components/ui/image-preview";
+import { PageHead } from "@/components/site/section";
 import { getActiveEvent } from "@/lib/queries/events";
 import { getPublishedDocuments } from "@/lib/queries/documents";
-import { formatFileSize } from "@/lib/utils/format";
-import { getRegistrationInfo } from "@/lib/utils/registration";
+import { formatCurrency, formatFileSize } from "@/lib/utils/format";
+import { ratesFromEvent } from "@/lib/utils/pricing";
+import { ARRIVAL_TIME_LONG, DEPARTURE_TIME_LONG } from "@/lib/config/stay-times";
 
 export const metadata: Metadata = {
-  title: "Informationen",
+  title: "Gut zu wissen",
   description:
-    "An- und Abreise, Ausstattung der Unterkünfte, Mitbringliste, Gemeinschaftseinrichtungen und Grundrisse für die Gemeindefreizeit im Feriendorf Eckenhof Schramberg.",
+    "Anreise, Abreise, Zahlung, Ausstattung der Unterkünfte, Packliste, Gemeinschaftseinrichtungen und Grundrisse für die Gemeindefreizeit im Feriendorf Eckenhof Schramberg.",
 };
-
-const sections = [
-  { id: "anreise", label: "An- und Abreise" },
-  { id: "ausstattung", label: "Ausstattung" },
-  { id: "mitbringen", label: "Mitbringen" },
-  { id: "einrichtungen", label: "Einrichtungen" },
-  { id: "grundrisse", label: "Grundrisse" },
-];
 
 const vorhanden = [
   "Kaffeemaschine (Filtertüten bitte mitbringen)",
@@ -124,352 +109,278 @@ export default async function InformationenPage() {
 
   if (!event) {
     return (
-      <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
+      <div className="site-container flex min-h-[60vh] items-center justify-center">
         <p className="text-muted-foreground">Keine aktive Freizeit gefunden.</p>
       </div>
     );
   }
 
   const documents = await getPublishedDocuments(event.id);
-  const registration = getRegistrationInfo(event);
+  const rates = ratesFromEvent(event);
   const arrivalDay = format(new Date(event.start_date), "EEEE, d. MMMM yyyy", { locale: de });
   const departureDay = format(new Date(event.end_date), "EEEE, d. MMMM yyyy", { locale: de });
+  const locationShort = event.location.replace(/^Feriendorf\s+/i, "");
+
+  const faq = [
+    {
+      q: "Was müssen wir mitbringen?",
+      a: "Handtücher, Toilettenpapier, Spülmittel, Spültücher, Müllbeutel und Filtertüten für die Kaffeemaschine. Bettwäsche ist inklusive. Die vollständige Packliste steht weiter unten.",
+    },
+    {
+      q: "Wie bezahlen wir unsere Unterkunft?",
+      a: `Hauspreis und Kurtaxe werden zusammen vorab überwiesen. Nach der Reservierung seht ihr Gesamtbetrag, Bankverbindung und Verwendungszweck auf der Bestätigungsseite und per E-Mail. Die Reservierung bleibt ${event.reservation_validity_days} Tage gültig und wird mit dem Zahlungseingang verbindlich. Die Kurtaxe (${formatCurrency(rates.adultRate)} pro Person und Tag ab ${rates.adultMinAge} Jahren, ${formatCurrency(rates.childRate)} von ${rates.childMinAge} bis ${rates.adultMinAge - 1} Jahren) führt das Freizeitteam gesammelt an das Feriendorf ab.`,
+    },
+    {
+      q: "Wie funktioniert die Anreise ins autofreie Dorf?",
+      a: "Parkplätze befinden sich in der Nähe des Feriendorfs. Fahrzeuge dürfen nicht ins Dorf. Für den Gepäcktransport stehen Bollerwagen zur Verfügung.",
+    },
+    {
+      q: "Was ist mit der Verpflegung und dem genauen Programm?",
+      a: "Wir versorgen uns selbst und kochen gemeinsam in der Großküche des Feriendorfs. Die genauen Informationen zu Verpflegung und Programm ergänzt das Freizeitteam rechtzeitig vor der Freizeit.",
+    },
+    {
+      q: "Können wir mit mehr Personen als Betten anreisen?",
+      a: `Pro Unterkunft könnt ihr bis zu ${rates.maxExtraBeds} Zustellbetten für ${formatCurrency(rates.extraBedPricePerDay)} pro Bett und Tag dazubuchen. Ein Doppelbett kann auch von zwei Personen genutzt werden, dann ist kein Zustellbett nötig.`,
+    },
+  ];
 
   return (
     <div>
-      {/* Kopfbereich */}
-      <section className="border-b bg-secondary/40">
-        <div className="container mx-auto px-4 py-12 md:py-16">
-          <div className="mx-auto max-w-4xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              {event.title}
+      <PageHead
+        kicker="Entspannt vorbereitet"
+        title="Gut zu wissen."
+        text="Die wichtigsten Antworten zur Freizeit an einem Ort. Kurze Informationen zuerst, Einzelheiten direkt darunter."
+      />
+
+      {/* Ankommen, Ziel, Abreise */}
+      <section id="anreise" className="site-container scroll-mt-6 py-[30px] wide:py-[37px]">
+        <div className="grid gap-6 wide:grid-cols-3 wide:gap-[25px]">
+          <article className="border-b border-border pb-5 wide:border-0 wide:pb-0">
+            <Clock className="mb-3 h-[22px] w-[22px] text-primary" aria-hidden="true" />
+            <h2 className="mb-[7px] text-[15px] font-semibold">Ankommen</h2>
+            <p className="text-small">
+              {arrivalDay}
+              <br />
+              {ARRIVAL_TIME_LONG.replace(/^ab/, "Ab")}
             </p>
-            <h1 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-              Alles Wichtige auf einen Blick
-            </h1>
-            <p className="mt-4 max-w-2xl leading-relaxed text-muted-foreground">
-              Hier finden Sie alle Informationen rund um die Freizeit im Feriendorf Eckenhof
-              Schramberg: Anreise, Ausstattung, was Sie mitbringen sollten und die Grundrisse
-              der Unterkünfte.
+          </article>
+          <article className="border-b border-border pb-5 wide:border-0 wide:pb-0">
+            <MapPin className="mb-3 h-[22px] w-[22px] text-primary" aria-hidden="true" />
+            <h2 className="mb-[7px] text-[15px] font-semibold">Unser Ziel</h2>
+            <p className="text-small">
+              {event.location}
+              {event.location_address && (
+                <>
+                  <br />
+                  {event.location_address}
+                </>
+              )}
             </p>
-            <nav className="mt-6 flex flex-wrap gap-2" aria-label="Abschnitte">
-              {sections.map((s) => (
-                <a
-                  key={s.id}
-                  href={`#${s.id}`}
-                  className="rounded-full border bg-card px-3.5 py-1.5 text-sm font-medium text-foreground/80 transition-colors hover:border-primary/40 hover:text-primary"
-                >
-                  {s.label}
-                </a>
-              ))}
-            </nav>
+            {event.location_url && (
+              <a
+                href={event.location_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-link mt-2 inline-block"
+              >
+                Route in Google Maps öffnen →
+              </a>
+            )}
+          </article>
+          <article className="border-b border-border pb-5 wide:border-0 wide:pb-0">
+            <Car className="mb-3 h-[22px] w-[22px] text-primary" aria-hidden="true" />
+            <h2 className="mb-[7px] text-[15px] font-semibold">Abreise</h2>
+            <p className="text-small">
+              {departureDay}
+              <br />
+              {DEPARTURE_TIME_LONG.replace(/^bis/, "Bis")}
+            </p>
+          </article>
+        </div>
+
+        {/* FAQ */}
+        <div id="faq" className="mt-7 scroll-mt-6 border-t border-border">
+          {faq.map((item) => (
+            <details key={item.q} className="group border-b border-border py-[14px] text-[14px]">
+              <summary className="cursor-pointer list-none font-semibold marker:content-none [&::-webkit-details-marker]:hidden">
+                <span className="mr-2 inline-block text-primary transition-transform group-open:rotate-90" aria-hidden="true">
+                  ▸
+                </span>
+                {item.q}
+              </summary>
+              <p className="mt-[10px] max-w-[74ch] pl-5 text-muted-foreground">{item.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* Ausstattung */}
+      <section id="ausstattung" className="site-container scroll-mt-6 border-t border-border py-[30px] wide:py-[37px]">
+        <p className="kicker mb-[9px]">In jeder Unterkunft</p>
+        <h2 className="display-2 mb-[22px]">Ausstattung der Unterkünfte</h2>
+        <div className="grid gap-5 wide:grid-cols-[1fr_1.15fr] wide:items-start">
+          <Image
+            src="/images/kueche.webp"
+            alt="Illustration: Küche im Ferienhaus"
+            width={1200}
+            height={581}
+            sizes="(min-width: 721px) 45vw, 100vw"
+            className="h-[220px] w-full rounded-2xl object-cover wide:h-full wide:max-h-[420px]"
+          />
+          <div className="grid gap-4 sm:grid-cols-2 wide:grid-cols-1">
+            <Checklist title="Vorhanden" items={vorhanden} positive />
+            <Checklist title="Nicht vorhanden" items={nichtVorhanden} />
           </div>
         </div>
       </section>
 
-      <div className="container mx-auto px-4">
-        <div className="mx-auto max-w-4xl">
-          {/* An- und Abreise */}
-          <section id="anreise" className="scroll-mt-24 py-12 md:py-16">
-            <SectionTitle
-              eyebrow="Ankommen und Abfahren"
-              title="An- und Abreise"
-            />
-            <div className="mt-8 grid gap-5 md:grid-cols-2">
-              <TimeCard
-                image="/images/anreise.webp"
-                title="Anreise"
-                day={arrivalDay}
-                time="ab 17:00 Uhr"
-              />
-              <TimeCard
-                image="/images/abreise.webp"
-                title="Abreise"
-                day={departureDay}
-                time="bis spätestens 12:00 Uhr"
-              />
-            </div>
-            <div className="mt-5 flex gap-4 rounded-2xl border bg-card p-5 shadow-sm">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Car className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-semibold">Mit dem Auto</h3>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                  {event.location_address ?? "Feriendorf Eckenhof, Schramberg-Sulgen"}. Das
-                  Feriendorf ist autofrei, Fahrzeuge sind im Dorf nicht erlaubt. Parkplätze
-                  befinden sich in der Nähe. Für den Gepäcktransport stehen Bollerwagen zur
-                  Verfügung.
-                </p>
-                {event.location_url && (
-                  <a
-                    href={event.location_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 inline-block text-sm font-semibold text-primary underline-offset-4 hover:underline"
-                  >
-                    Route in Google Maps öffnen
-                  </a>
-                )}
-              </div>
-            </div>
-          </section>
-
-          {/* Ausstattung */}
-          <section id="ausstattung" className="scroll-mt-24 border-t py-12 md:py-16">
-            <SectionTitle
-              eyebrow="In jeder Unterkunft"
-              title="Ausstattung der Unterkünfte"
-            />
-            <div className="mt-8 grid gap-6 md:grid-cols-[1fr_1.15fr] md:items-start">
-              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-md md:aspect-[4/5]">
-                <Image
-                  src="/images/kueche.webp"
-                  alt="Küche im Ferienhaus"
-                  fill
-                  sizes="(min-width: 768px) 40vw, 100vw"
-                  className="object-cover object-center"
-                />
-              </div>
-              <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-1">
-                <ChecklistCard title="Vorhanden" items={vorhanden} positive />
-                <ChecklistCard title="Nicht vorhanden" items={nichtVorhanden} />
-              </div>
-            </div>
-          </section>
-
-          {/* Mitbringen */}
-          <section id="mitbringen" className="scroll-mt-24 border-t py-12 md:py-16">
-            <SectionTitle eyebrow="Packliste" title="Bitte mitbringen" />
-            <div className="mt-8 grid gap-6 md:grid-cols-[1.15fr_1fr] md:items-start">
-              <div className="rounded-2xl border bg-card p-6 shadow-sm">
-                <ul className="grid gap-3 sm:grid-cols-2">
-                  {mitbringen.map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed">
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <Check className="h-3 w-3" />
-                      </span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-md md:aspect-[4/3]">
-                <Image
-                  src="/images/mitbringen.webp"
-                  alt="Küche mit Vorräten"
-                  fill
-                  sizes="(min-width: 768px) 40vw, 100vw"
-                  className="object-cover object-center"
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* Gemeinschaftseinrichtungen */}
-          <section id="einrichtungen" className="scroll-mt-24 border-t py-12 md:py-16">
-            <SectionTitle
-              eyebrow="Im Feriendorf"
-              title="Gemeinschaftseinrichtungen"
-            />
-            <div className="mt-8 grid gap-5 sm:grid-cols-2">
-              {einrichtungen.map((e) => (
-                <article
-                  key={e.title}
-                  className="group overflow-hidden rounded-2xl border bg-card shadow-sm transition-shadow hover:shadow-lg"
-                >
-                  <div className="relative aspect-[2/1] overflow-hidden">
-                    <Image
-                      src={e.image}
-                      alt={e.title}
-                      fill
-                      sizes="(min-width: 640px) 50vw, 100vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-semibold">{e.title}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{e.text}</p>
-                  </div>
-                </article>
+      {/* Packliste */}
+      <section id="mitbringen" className="site-container scroll-mt-6 border-t border-border py-[30px] wide:py-[37px]">
+        <p className="kicker mb-[9px]">Packliste</p>
+        <h2 className="display-2 mb-[22px]">Was kommt ins Gepäck?</h2>
+        <div className="grid gap-5 wide:grid-cols-[1.15fr_1fr] wide:items-start">
+          <div className="panel">
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {mitbringen.map((item) => (
+                <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed">
+                  <Check className="mt-[3px] h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                  {item}
+                </li>
               ))}
-            </div>
-          </section>
+            </ul>
+          </div>
+          <Image
+            src="/images/mitbringen.webp"
+            alt="Illustration: Küche mit Vorräten"
+            width={1200}
+            height={581}
+            sizes="(min-width: 721px) 40vw, 100vw"
+            className="h-[200px] w-full rounded-2xl object-cover wide:h-[260px]"
+          />
+        </div>
+      </section>
 
-          {/* Grundrisse und Dokumente */}
-          <section id="grundrisse" className="scroll-mt-24 border-t py-12 md:py-16">
-            <SectionTitle
-              eyebrow="Zum Anschauen und Herunterladen"
-              title="Grundrisse und Dokumente"
-            />
-            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {grundrisse.map((g) => (
-                <article
-                  key={g.title}
-                  className="flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm"
-                >
-                  <div className="relative aspect-[4/3] bg-white">
-                    <Image
-                      src={g.image}
-                      alt={g.title}
-                      fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-contain p-3"
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <h3 className="font-semibold">{g.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{g.text}</p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      <ImagePreview src={g.image} alt={g.title} />
-                      {g.download && (
-                        <Button asChild variant="outline" size="sm" className="gap-1.5">
-                          <a href={g.download} download>
-                            <FileDown className="h-4 w-4" />
-                            Download
-                          </a>
-                        </Button>
+      {/* Gemeinschaftseinrichtungen */}
+      <section id="einrichtungen" className="site-container scroll-mt-6 border-t border-border py-[30px] wide:py-[37px]">
+        <p className="kicker mb-[9px]">Im Feriendorf</p>
+        <h2 className="display-2 mb-[22px]">Gemeinschaftseinrichtungen</h2>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {einrichtungen.map((e) => (
+            <article key={e.title} className="overflow-hidden rounded-2xl border border-border bg-card">
+              <Image
+                src={e.image}
+                alt={e.title}
+                width={1000}
+                height={481}
+                sizes="(min-width: 640px) 50vw, 100vw"
+                className="aspect-[2/1] w-full object-cover"
+              />
+              <div className="p-5">
+                <h3 className="text-[17px] font-semibold leading-[1.35]">{e.title}</h3>
+                <p className="mt-1.5 text-[13px] leading-[1.7] text-muted-foreground">{e.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* Grundrisse und Dokumente */}
+      <section id="grundrisse" className="site-container scroll-mt-6 border-t border-border py-[30px] wide:py-[37px]">
+        <p className="kicker mb-[9px]">Zum Anschauen und Herunterladen</p>
+        <h2 className="display-2 mb-[22px]">Grundrisse und Dokumente</h2>
+        <div className="grid gap-4 sm:grid-cols-2 wide:grid-cols-3">
+          {grundrisse.map((g) => (
+            <article key={g.title} className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card">
+              <div className="relative aspect-[4/3] bg-white">
+                <Image
+                  src={g.image}
+                  alt={g.title}
+                  fill
+                  sizes="(min-width: 721px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-contain p-3"
+                />
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                <h3 className="text-[17px] font-semibold leading-[1.35]">{g.title}</h3>
+                <p className="mt-1 text-[13px] text-muted-foreground">{g.text}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <ImagePreview src={g.image} alt={g.title} />
+                  {g.download && (
+                    <a href={g.download} download className="btn-secondary min-h-0 px-3 py-1.5 text-[13px]">
+                      <FileDown className="h-4 w-4" aria-hidden="true" />
+                      Download
+                    </a>
+                  )}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {documents.length > 0 && (
+          <div className="mt-8">
+            <h3 className="text-[17px] font-semibold">Weitere Dokumente</h3>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {documents.map((doc) => (
+                <li key={doc.id}>
+                  <a
+                    href={doc.file_url}
+                    download
+                    className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/50"
+                  >
+                    <FileText className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+                    <span className="min-w-0">
+                      <span className="block font-medium">{doc.title}</span>
+                      {doc.description && (
+                        <span className="mt-0.5 block text-[13px] text-muted-foreground">{doc.description}</span>
                       )}
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            {documents.length > 0 && (
-              <div className="mt-10">
-                <h3 className="text-lg font-semibold">Weitere Dokumente</h3>
-                <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {documents.map((doc) => (
-                    <li key={doc.id}>
-                      <a
-                        href={doc.file_url}
-                        download
-                        className="flex items-start gap-3 rounded-xl border bg-card p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
-                      >
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                          <FileText className="h-5 w-5" />
+                      {doc.file_size_bytes && (
+                        <span className="mt-1 block text-[12px] text-muted-foreground">
+                          {formatFileSize(doc.file_size_bytes)}
                         </span>
-                        <span className="min-w-0">
-                          <span className="block font-medium">{doc.title}</span>
-                          {doc.description && (
-                            <span className="mt-0.5 block text-sm text-muted-foreground">
-                              {doc.description}
-                            </span>
-                          )}
-                          {doc.file_size_bytes && (
-                            <span className="mt-1 block text-xs text-muted-foreground">
-                              {formatFileSize(doc.file_size_bytes)}
-                            </span>
-                          )}
-                        </span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </section>
-
-          {/* Abschluss */}
-          <section className="border-t py-12 md:py-16">
-            <div className="flex flex-col items-center justify-between gap-5 rounded-2xl bg-primary/10 px-6 py-8 text-center md:flex-row md:text-left">
-              <div>
-                <h2 className="text-xl font-bold">Noch Fragen?</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Schreiben Sie uns an{" "}
-                  <a
-                    href={`mailto:${event.contact_email}`}
-                    className="font-semibold text-primary underline-offset-4 hover:underline"
-                  >
-                    {event.contact_email}
+                      )}
+                    </span>
                   </a>
-                  {event.contact_phone && <> oder rufen Sie an: {event.contact_phone}</>}.
-                </p>
-              </div>
-              {registration.status === "open" && (
-                <Button asChild size="lg" className="gap-2 shrink-0">
-                  <Link href="/anmeldung">
-                    Zur Anmeldung
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </section>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
+
+      <div className="site-container">
+        <div className="mb-[25px] flex flex-col items-start gap-[18px] rounded-2xl bg-sage p-[22px] wide:mb-[30px] wide:flex-row wide:items-center wide:justify-between wide:p-[25px]">
+          <div>
+            <h2 className="font-serif text-[29px] font-normal leading-[1.15] tracking-[-0.5px]">Noch Fragen?</h2>
+            <p className="text-small mt-2">
+              <a href={`mailto:${event.contact_email}`} className="hover:text-primary">
+                {event.contact_email}
+              </a>
+              {event.contact_phone && <> · {event.contact_phone}</>}
+            </p>
+          </div>
+          <Link href="/unterkuenfte" className="btn-primary shrink-0">
+            Unterkünfte ansehen
+            <ArrowRight className="h-[17px] w-[17px]" aria-hidden="true" />
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
+function Checklist({ title, items, positive = false }: { title: string; items: string[]; positive?: boolean }) {
   return (
-    <div>
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{eyebrow}</p>
-      <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">{title}</h2>
-    </div>
-  );
-}
-
-function TimeCard({
-  image,
-  title,
-  day,
-  time,
-}: {
-  image: string;
-  title: string;
-  day: string;
-  time: string;
-}) {
-  return (
-    <article className="overflow-hidden rounded-2xl border bg-card shadow-sm">
-      <div className="relative aspect-[2/1]">
-        <Image
-          src={image}
-          alt={title}
-          fill
-          sizes="(min-width: 768px) 50vw, 100vw"
-          className="object-cover"
-        />
-      </div>
-      <div className="p-5">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="mt-1 text-sm text-muted-foreground">{day}</p>
-        <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
-          <Clock className="h-4 w-4" />
-          {time}
-        </p>
-      </div>
-    </article>
-  );
-}
-
-function ChecklistCard({
-  title,
-  items,
-  positive = false,
-}: {
-  title: string;
-  items: string[];
-  positive?: boolean;
-}) {
-  return (
-    <div className="rounded-2xl border bg-card p-5 shadow-sm">
-      <h3 className="font-semibold">{title}</h3>
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <h3 className="text-[15px] font-semibold">{title}</h3>
       <ul className="mt-3 space-y-2">
         {items.map((item) => (
-          <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed">
-            <span
-              className={
-                positive
-                  ? "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"
-                  : "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground"
-              }
-            >
-              {positive ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-            </span>
+          <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed">
+            {positive ? (
+              <Check className="mt-[3px] h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+            ) : (
+              <X className="mt-[3px] h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+            )}
             <span className={positive ? "" : "text-muted-foreground"}>{item}</span>
           </li>
         ))}

@@ -1,23 +1,28 @@
 import type { Metadata } from "next";
 import { getActiveEvent } from "@/lib/queries/events";
-import { getHouseTypes } from "@/lib/queries/houses";
-import { getAvailability } from "@/lib/queries/houses";
-import { BookingForm } from "@/components/booking/booking-form";
+import { getAvailability, getHouseTypes } from "@/lib/queries/houses";
+import { BookingWizard } from "@/components/booking/booking-wizard";
 import { getRegistrationInfo } from "@/lib/utils/registration";
 import { ratesFromEvent } from "@/lib/utils/pricing";
-import { formatCurrency, formatDateBerlin } from "@/lib/utils/format";
+import { formatDateBerlin } from "@/lib/utils/format";
+import { PageHead } from "@/components/site/section";
 
 export const metadata: Metadata = {
   title: "Anmeldung",
-  description: "Melden Sie sich für die Gemeindefreizeit an und reservieren Sie Ihr Ferienhaus.",
+  description: "Melden Sie sich für die Gemeindefreizeit an und reservieren Sie Ihre Unterkunft.",
 };
 
-export default async function AnmeldungPage() {
+interface Props {
+  searchParams: Promise<{ unterkunft?: string }>;
+}
+
+export default async function AnmeldungPage({ searchParams }: Props) {
   const event = await getActiveEvent();
+  const { unterkunft } = await searchParams;
 
   if (!event) {
     return (
-      <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
+      <div className="site-container flex min-h-[60vh] items-center justify-center">
         <p className="text-muted-foreground">Keine aktive Freizeit gefunden.</p>
       </div>
     );
@@ -27,10 +32,10 @@ export default async function AnmeldungPage() {
 
   if (registration.status !== "open") {
     return (
-      <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">Anmeldung nicht möglich</h1>
-          <p className="mt-2 text-muted-foreground">
+      <div className="site-container flex min-h-[60vh] items-center justify-center">
+        <div className="max-w-[60ch] text-center">
+          <h1 className="page-title">Anmeldung nicht möglich</h1>
+          <p className="mt-3 text-muted-foreground">
             {registration.status === "upcoming"
               ? `Die Anmeldung startet am ${formatDateBerlin(event.registration_start)}.`
               : "Die Anmeldefrist ist leider abgelaufen."}
@@ -42,34 +47,33 @@ export default async function AnmeldungPage() {
 
   const [houseTypes, availability] = await Promise.all([
     getHouseTypes(event.id),
-    getAvailability(event.id),
+    getAvailability(event.id).catch(() => null),
   ]);
 
   const rates = ratesFromEvent(event);
+  const initial = unterkunft
+    ? houseTypes.find((ht) => ht.slug === unterkunft || ht.id === unterkunft)
+    : undefined;
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="mx-auto max-w-4xl">
-        <h1 className="text-3xl font-bold">Anmeldung</h1>
-        <p className="mt-2 text-muted-foreground">
-          Wählen Sie Ihre Unterkunft und tragen Sie alle Gäste ein. Zum Hauspreis kommt die
-          Kurtaxe von {formatCurrency(rates.adultRate)} pro Person und Tag ab {rates.adultMinAge} Jahren
-          und {formatCurrency(rates.childRate)} für Kinder von {rates.childMinAge} bis {rates.adultMinAge - 1} Jahren.
-          Beides wird zusammen vorab überwiesen.
-        </p>
-
-        <div className="mt-8">
-          <BookingForm
-            eventId={event.id}
-            eventStartDate={event.start_date}
-            eventEndDate={event.end_date}
-            houseTypes={houseTypes}
-            availability={availability}
-            reservationValidityDays={event.reservation_validity_days}
-            rates={rates}
-          />
-        </div>
-      </div>
+    <div>
+      <PageHead
+        kicker="Schön, dass ihr dabei seid"
+        title="Ein paar Angaben. Dann seid ihr dabei."
+        text="Wählt eure Unterkunft und tragt alle Mitreisenden ein. Vor dem Absenden könnt ihr alles noch einmal prüfen."
+      />
+      <section className="site-container pb-[38px] pt-7">
+        <BookingWizard
+          eventId={event.id}
+          eventStartDate={event.start_date}
+          eventEndDate={event.end_date}
+          houseTypes={houseTypes}
+          availability={availability}
+          reservationValidityDays={event.reservation_validity_days}
+          rates={rates}
+          initialHouseTypeId={initial?.id ?? null}
+        />
+      </section>
     </div>
   );
 }
