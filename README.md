@@ -23,7 +23,7 @@ Buchungssystem fuer die Gemeindefreizeit der FECG Trossingen e.V. auf Basis von 
 1. Abhaengigkeiten installieren:
 
 ```bash
-pnpm install
+npm install
 ```
 
 2. Umgebungsvariablen anlegen:
@@ -42,7 +42,7 @@ cp .env.example .env.local
 4. Entwicklungsserver starten:
 
 ```bash
-pnpm dev
+npm run dev
 ```
 
 Die Anwendung laeuft danach unter [http://localhost:3000](http://localhost:3000).
