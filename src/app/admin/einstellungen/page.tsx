@@ -12,6 +12,18 @@ import { Save } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { Event } from "@/lib/types/database";
 
+function parseAmount(value: FormDataEntryValue | null): number | undefined {
+  if (value === null || value === "") return undefined;
+  const n = Number(String(value).replace(",", "."));
+  return Number.isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : undefined;
+}
+
+function parseWhole(value: FormDataEntryValue | null): number | undefined {
+  if (value === null || value === "") return undefined;
+  const n = Number(value);
+  return Number.isInteger(n) && n >= 0 ? n : undefined;
+}
+
 function toDateTimeLocalValue(value: string) {
   const date = new Date(value);
   const timezoneOffset = date.getTimezoneOffset() * 60_000;
@@ -65,6 +77,12 @@ export default function EinstellungenPage() {
       bank_iban: form.get("bank_iban") as string,
       bank_bic: form.get("bank_bic") as string,
       bank_reference_prefix: form.get("bank_reference_prefix") as string,
+      tourist_tax_adult_rate: parseAmount(form.get("tourist_tax_adult_rate")),
+      tourist_tax_child_rate: parseAmount(form.get("tourist_tax_child_rate")),
+      tourist_tax_child_min_age: parseWhole(form.get("tourist_tax_child_min_age")),
+      tourist_tax_adult_min_age: parseWhole(form.get("tourist_tax_adult_min_age")),
+      extra_bed_price_per_day: parseAmount(form.get("extra_bed_price_per_day")),
+      max_extra_beds: parseWhole(form.get("max_extra_beds")),
     });
 
     if (result.error) {
@@ -189,6 +207,48 @@ export default function EinstellungenPage() {
                 defaultValue={event.contact_phone || ""}
               />
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Kurtaxe und Zustellbetten */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Kurtaxe und Zustellbetten</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="tourist_tax_adult_rate">Kurtaxe Erwachsene (Euro pro Person und Tag)</Label>
+              <Input id="tourist_tax_adult_rate" name="tourist_tax_adult_rate" type="number" step="0.01" min="0"
+                defaultValue={event.tourist_tax_adult_rate ?? 2.6} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tourist_tax_adult_min_age">Erwachsenentarif ab Alter (Jahre)</Label>
+              <Input id="tourist_tax_adult_min_age" name="tourist_tax_adult_min_age" type="number" step="1" min="0"
+                defaultValue={event.tourist_tax_adult_min_age ?? 17} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tourist_tax_child_rate">Kurtaxe Kinder (Euro pro Person und Tag)</Label>
+              <Input id="tourist_tax_child_rate" name="tourist_tax_child_rate" type="number" step="0.01" min="0"
+                defaultValue={event.tourist_tax_child_rate ?? 1.5} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="tourist_tax_child_min_age">Kindertarif ab Alter (Jahre, darunter frei)</Label>
+              <Input id="tourist_tax_child_min_age" name="tourist_tax_child_min_age" type="number" step="1" min="0"
+                defaultValue={event.tourist_tax_child_min_age ?? 6} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="extra_bed_price_per_day">Zustellbett (Euro pro Bett und Tag)</Label>
+              <Input id="extra_bed_price_per_day" name="extra_bed_price_per_day" type="number" step="0.01" min="0"
+                defaultValue={event.extra_bed_price_per_day ?? 19} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="max_extra_beds">Maximale Zustellbetten pro Unterkunft</Label>
+              <Input id="max_extra_beds" name="max_extra_beds" type="number" step="1" min="0"
+                defaultValue={event.max_extra_beds ?? 2} />
+            </div>
+            <p className="text-xs text-muted-foreground sm:col-span-2">
+              Die Werte gelten für neue Reservierungen. Das Alter wird zum Freizeitbeginn berechnet.
+            </p>
           </CardContent>
         </Card>
 

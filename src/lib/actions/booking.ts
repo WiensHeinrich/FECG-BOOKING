@@ -1,33 +1,57 @@
 "use server";
 
+import { after } from "next/server";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   bookingFormSchema,
   type BookingFormData,
+  type BookingFormInput,
 } from "@/lib/validations/booking";
-import { redirect } from "next/navigation";
 import { sendEmail } from "@/lib/email/send";
-import { reservationConfirmationEmail, adminNewReservationEmail } from "@/lib/email/templates";
+import {
+  reservationConfirmationEmail,
+  adminNewReservationEmail,
+  type PriceBreakdown,
+} from "@/lib/email/templates";
 import { ADMIN_EMAIL } from "@/lib/email/resend";
-import { createAdminClient } from "@/lib/supabase/admin";
+import type { Reservation } from "@/lib/types/database";
 
-async function sendReservationEmail(
-  data: BookingFormData,
-  result: { id: string; payment_reference: string; expires_at: string; confirmation_token: string }
-) {
+interface ReservationResult {
+  id: string;
+  payment_reference: string;
+  expires_at: string;
+  confirmation_token: string;
+}
+
+async function sendReservationEmails(data: BookingFormData, result: ReservationResult) {
   const supabase = createAdminClient();
 
-  // Event- und Haustyp-Daten für die E-Mail laden
-  const [{ data: event }, { data: houseType }] = await Promise.all([
-    supabase.from("events").select("bank_account_holder, bank_iban, bank_bic").eq("id", data.event_id).single(),
-    supabase.from("house_types").select("name, price_per_house").eq("id", data.house_type_id).single(),
+  const [{ data: event }, { data: houseType }, { data: reservation }] = await Promise.all([
+    supabase
+      .from("events")
+      .select("bank_account_holder, bank_iban, bank_bic")
+      .eq("id", data.event_id)
+      .single(),
+    supabase.from("house_types").select("name").eq("id", data.house_type_id).single(),
+    supabase
+      .from("reservations")
+      .select("*, house:houses!inner(house_number, label)")
+      .eq("id", result.id)
+      .single(),
   ]);
 
-  if (!event || !houseType) {
-    console.error("[Email] Missing data - event:", !!event, "houseType:", !!houseType);
+  if (!event || !houseType || !reservation) {
+    console.error("[Email] Daten für Reservierungsmail fehlen", {
+      event: !!event,
+      houseType: !!houseType,
+      reservation: !!reservation,
+    });
     return;
   }
 
+  const r = reservation as Reservation & { house: { house_number: number; label: string | null } };
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const confirmationUrl = `${siteUrl}/anmeldung/bestaetigung?id=${result.id}&token=${encodeURIComponent(result.confirmation_token)}`;
 
@@ -40,6 +64,14 @@ async function sendReservationEmail(
     dietary_notes: g.dietary_notes || null,
   }));
 
+  const breakdown: PriceBreakdown = {
+    accommodationPrice: r.accommodation_price,
+    touristTax: r.tourist_tax,
+    extraBeds: r.extra_beds ?? 0,
+    extraBedTotal: r.extra_bed_total,
+    nights: r.pricing_nights,
+  };
+
   const email = reservationConfirmationEmail({
     firstName: data.contact_first_name,
     lastName: data.contact_last_name,
@@ -47,8 +79,9 @@ async function sendReservationEmail(
     contactPhone: data.contact_phone ?? null,
     contactGender: data.contact_gender ?? null,
     houseTypeName: houseType.name,
-    houseLabel: `Haus`,
-    totalPrice: houseType.price_per_house,
+    houseLabel: r.house.label || `Haus ${r.house.house_number}`,
+    totalPrice: r.total_price,
+    breakdown,
     paymentReference: result.payment_reference,
     expiresAt: result.expires_at,
     bankAccountHolder: event.bank_account_holder,
@@ -60,7 +93,6 @@ async function sendReservationEmail(
 
   await sendEmail({ to: data.contact_email, ...email });
 
-  // Admin-Benachrichtigung
   const adminEmail = adminNewReservationEmail({
     firstName: data.contact_first_name,
     lastName: data.contact_last_name,
@@ -68,18 +100,24 @@ async function sendReservationEmail(
     phone: data.contact_phone ?? null,
     contactGender: data.contact_gender ?? null,
     houseTypeName: houseType.name,
-    totalPrice: houseType.price_per_house,
+    totalPrice: r.total_price,
+    breakdown,
     paymentReference: result.payment_reference,
     guests: guestData,
   });
   await sendEmail({ to: ADMIN_EMAIL, ...adminEmail });
 }
 
-export async function createReservation(formData: BookingFormData) {
+export async function createReservation(formData: BookingFormInput) {
   const parsed = bookingFormSchema.safeParse(formData);
 
   if (!parsed.success) {
-    return { error: "Ungültige Eingaben. Bitte überprüfen Sie Ihre Daten." };
+    const first = parsed.error.issues[0];
+    return {
+      error: first?.message
+        ? `Bitte überprüfen Sie Ihre Eingaben: ${first.message}`
+        : "Ungültige Eingaben. Bitte überprüfen Sie Ihre Daten.",
+    };
   }
 
   if (
@@ -93,41 +131,40 @@ export async function createReservation(formData: BookingFormData) {
   const data = parsed.data;
   const supabase = await createClient();
 
-  const { data: result, error } = await supabase.rpc(
-    "create_public_reservation",
-    {
-      p_event_id: data.event_id,
-      p_house_type_id: data.house_type_id,
-      p_contact_first_name: data.contact_first_name,
-      p_contact_last_name: data.contact_last_name,
-      p_contact_email: data.contact_email,
-      p_contact_phone: data.contact_phone ?? null,
-      p_contact_gender: data.contact_gender ?? null,
-      p_contact_birth_date: data.contact_birth_date ?? null,
-      p_contact_dietary_notes: data.contact_dietary_notes ?? null,
-      p_guests: data.guests,
-    }
-  );
+  const { data: result, error } = await supabase.rpc("create_public_reservation", {
+    p_event_id: data.event_id,
+    p_house_type_id: data.house_type_id,
+    p_contact_first_name: data.contact_first_name,
+    p_contact_last_name: data.contact_last_name,
+    p_contact_email: data.contact_email,
+    p_contact_phone: data.contact_phone ?? null,
+    p_contact_gender: data.contact_gender ?? null,
+    p_contact_birth_date: data.contact_birth_date || null,
+    p_contact_dietary_notes: data.contact_dietary_notes ?? null,
+    p_guests: data.guests,
+    p_extra_beds: data.extra_beds,
+    p_rules_accepted: data.rules_accepted,
+  });
 
   if (error) {
     console.error("RPC create_public_reservation error:", error.message, error.code, error.details);
     return { error: `Reservierung fehlgeschlagen: ${error.message}` };
   }
 
-  if (result?.error || !result?.id || !result?.confirmation_token) {
+  const reservation = result as (ReservationResult & { error?: string }) | null;
+
+  if (reservation?.error || !reservation?.id || !reservation?.confirmation_token) {
     console.error("RPC result error:", result);
     return {
-      error:
-        result?.error || "Reservierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      error: reservation?.error || "Reservierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
     };
   }
 
-  // E-Mail senden (async, blockiert nicht den Redirect)
-  sendReservationEmail(data, result).catch(console.error);
+  // E-Mails erst nach der Antwort versenden, damit der Redirect nicht wartet,
+  // der Versand aber trotzdem sicher zu Ende läuft.
+  after(() => sendReservationEmails(data, reservation).catch(console.error));
 
   redirect(
-    `/anmeldung/bestaetigung?id=${result.id}&token=${encodeURIComponent(
-      result.confirmation_token
-    )}`
+    `/anmeldung/bestaetigung?id=${reservation.id}&token=${encodeURIComponent(reservation.confirmation_token)}`
   );
 }

@@ -8,11 +8,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Plus, Trash2, AlertCircle, X, UserCheck } from "lucide-react";
+import { Loader2, Plus, Trash2, AlertCircle, X, UserCheck, BedDouble } from "lucide-react";
 import { HouseTypeCard } from "./house-type-card";
 import { createReservation } from "@/lib/actions/booking";
 import { joinWaitlist } from "@/lib/actions/waitlist";
 import { formatCurrency } from "@/lib/utils/format";
+import {
+  calculateBookingPrice,
+  getAgeAtDate,
+  type PricingRates,
+} from "@/lib/utils/pricing";
 import type { HouseType, Availability } from "@/lib/types/database";
 import type { GuestData } from "@/lib/validations/booking";
 
@@ -23,19 +28,10 @@ interface BookingFormProps {
   houseTypes: HouseType[];
   availability: Availability[];
   reservationValidityDays: number;
+  rates: PricingRates;
 }
 
-function getAgeAtDate(birthDate: string, targetDate: string): number | null {
-  const birth = new Date(birthDate);
-  const target = new Date(targetDate);
-  if (isNaN(birth.getTime()) || isNaN(target.getTime())) return null;
-  let age = target.getFullYear() - birth.getFullYear();
-  const monthDiff = target.getMonth() - birth.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && target.getDate() < birth.getDate())) {
-    age--;
-  }
-  return age;
-}
+const CHILD_AGE_LIMIT = 14;
 
 const emptyGuest: GuestData = {
   first_name: "",
@@ -54,10 +50,8 @@ export function BookingForm({
   houseTypes,
   availability,
   reservationValidityDays,
+  rates,
 }: BookingFormProps) {
-  const nights = Math.max(1, Math.round(
-    (new Date(eventEndDate).getTime() - new Date(eventStartDate).getTime()) / (1000 * 60 * 60 * 24)
-  ));
   const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null);
   const [contact, setContact] = useState({
     first_name: "",
@@ -69,12 +63,13 @@ export function BookingForm({
     dietary_notes: "",
   });
   const [guests, setGuests] = useState<GuestData[]>([{ ...emptyGuest }]);
-  const [waitlistGuestCount, setWaitlistGuestCount] = useState(1);
+  const [extraBeds, setExtraBeds] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const contactSectionRef = useRef<HTMLElement>(null);
+
   // Sanfter Scroll zur Kontaktsektion nach Auswahl, nicht ganz nach oben,
   // damit die ausgewählte Unterkunft noch sichtbar bleibt
   function scrollToContactSection() {
@@ -93,12 +88,16 @@ export function BookingForm({
   );
   const isSoldOut = (selectedAvailability?.available_count ?? 0) <= 0;
 
+  const maxGuests = selectedType ? selectedType.max_guests + rates.maxExtraBeds : 1;
+  const minGuests = selectedType ? Math.max(selectedType.max_guests - 1, 1) : 1;
+
   function selectHouseType(houseType: HouseType) {
     setSelectedTypeId(houseType.id);
     setError(null);
+    setExtraBeds(0);
     scrollToContactSection();
     const min = Math.max(houseType.max_guests - 1, 1);
-    const max = houseType.max_guests + 2;
+    const max = houseType.max_guests + rates.maxExtraBeds;
     setGuests((prev) => {
       const trimmed = prev.slice(0, max);
       if (trimmed.length >= min) return trimmed;
@@ -108,13 +107,7 @@ export function BookingForm({
       }
       return padded;
     });
-    setWaitlistGuestCount((prev) =>
-      Math.min(Math.max(prev, min), max)
-    );
   }
-
-  const maxGuests = selectedType ? selectedType.max_guests + 2 : 1;
-  const minGuests = selectedType ? Math.max(selectedType.max_guests - 1, 1) : 1;
 
   function addGuest() {
     if (guests.length >= maxGuests) return;
@@ -126,17 +119,37 @@ export function BookingForm({
     setGuests((prev) => prev.filter((_, i) => i !== index));
   }
 
-  function updateGuest(
-    index: number,
-    field: keyof GuestData,
-    value: string | boolean
-  ) {
+  function updateGuest(index: number, field: keyof GuestData, value: string | boolean) {
     setGuests((prev) =>
       prev.map((g, i) => (i === index ? { ...g, [field]: value } : g))
     );
   }
 
-  async function handleReservationSubmit(formData: FormData) {
+  function updateGuestBirthDate(index: number, value: string) {
+    const age = getAgeAtDate(value, eventStartDate);
+    setGuests((prev) =>
+      prev.map((g, i) =>
+        i === index
+          ? { ...g, birth_date: value, is_child: age !== null && age < CHILD_AGE_LIMIT }
+          : g
+      )
+    );
+  }
+
+  const price = selectedType
+    ? calculateBookingPrice({
+        housePrice: selectedType.price_per_house,
+        startDate: eventStartDate,
+        endDate: eventEndDate,
+        guests,
+        extraBeds,
+        rates,
+      })
+    : null;
+
+  const guestsWithoutBirthDate = guests.filter((g) => !g.birth_date).length;
+
+  async function handleReservationSubmit() {
     setError(null);
 
     if (!selectedTypeId || !selectedType) {
@@ -153,11 +166,25 @@ export function BookingForm({
       }
     }
 
-    const requiredMin = Math.max(selectedType.max_guests - 1, 1);
-    if (guests.length < requiredMin) {
+    if (guests.length < minGuests) {
       setError(
-        `Bitte tragen Sie mindestens ${requiredMin} Gäste ein. Das ${selectedType.name} ist für ${selectedType.max_guests} Personen ausgelegt.`
+        `Bitte tragen Sie mindestens ${minGuests} Gäste ein. Das ${selectedType.name} ist für ${selectedType.max_guests} Personen ausgelegt.`
       );
+      return;
+    }
+
+    const futureBirthDate = guests.find(
+      (g) => g.birth_date && getAgeAtDate(g.birth_date, eventStartDate) === null
+    );
+    if (futureBirthDate) {
+      setError(
+        `Bitte prüfen Sie das Geburtsdatum von ${futureBirthDate.first_name || "einem Gast"}.`
+      );
+      return;
+    }
+
+    if (!rulesAccepted) {
+      setError("Bitte akzeptieren Sie die Regeln der Gemeindefreizeit.");
       return;
     }
 
@@ -172,6 +199,8 @@ export function BookingForm({
       contact_birth_date: contact.birth_date || undefined,
       contact_dietary_notes: contact.dietary_notes || undefined,
       guests: guests.map((g, i) => ({ ...g, sort_order: i })),
+      extra_beds: extraBeds,
+      rules_accepted: true as const,
     };
 
     startTransition(async () => {
@@ -182,7 +211,7 @@ export function BookingForm({
     });
   }
 
-  async function handleWaitlistSubmit(formData: FormData) {
+  async function handleWaitlistSubmit() {
     setError(null);
 
     if (!selectedTypeId || !selectedType) {
@@ -208,6 +237,8 @@ export function BookingForm({
       }
     });
   }
+
+  const childAgeLabel = `${rates.childMinAge} bis ${rates.adultMinAge - 1} J.`;
 
   return (
     <div className="space-y-8">
@@ -244,24 +275,32 @@ export function BookingForm({
             <Card className="mt-4">
               <CardContent className="grid gap-5 pt-6 md:grid-cols-2">
                 <div className="space-y-1.5">
-                  <Label>Vorname *</Label>
+                  <Label htmlFor="contact_first_name">Vorname *</Label>
                   <Input
+                    id="contact_first_name"
+                    autoComplete="given-name"
                     value={contact.first_name}
                     onChange={(e) => setContact((c) => ({ ...c, first_name: e.target.value }))}
+                    maxLength={100}
                     required
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Nachname *</Label>
+                  <Label htmlFor="contact_last_name">Nachname *</Label>
                   <Input
+                    id="contact_last_name"
+                    autoComplete="family-name"
                     value={contact.last_name}
                     onChange={(e) => setContact((c) => ({ ...c, last_name: e.target.value }))}
+                    maxLength={100}
                     required
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>E-Mail *</Label>
+                  <Label htmlFor="contact_email">E-Mail *</Label>
                   <Input
+                    id="contact_email"
+                    autoComplete="email"
                     value={contact.email}
                     onChange={(e) => setContact((c) => ({ ...c, email: e.target.value }))}
                     type="email"
@@ -269,17 +308,20 @@ export function BookingForm({
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Telefon</Label>
+                  <Label htmlFor="contact_phone">Telefon</Label>
                   <Input
+                    id="contact_phone"
+                    autoComplete="tel"
                     value={contact.phone}
                     onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
                     type="tel"
+                    maxLength={50}
                   />
                 </div>
                 <div className="space-y-1.5">
                   <Label>Geschlecht *</Label>
                   <div className="flex gap-4 pt-1">
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className="flex cursor-pointer items-center gap-2">
                       <input
                         type="radio"
                         name="contact_gender"
@@ -290,7 +332,7 @@ export function BookingForm({
                       />
                       <span className="text-sm">Männlich</span>
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className="flex cursor-pointer items-center gap-2">
                       <input
                         type="radio"
                         name="contact_gender"
@@ -303,9 +345,11 @@ export function BookingForm({
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Geburtsdatum</Label>
+                  <Label htmlFor="contact_birth_date">Geburtsdatum</Label>
                   <Input
+                    id="contact_birth_date"
                     type="date"
+                    autoComplete="bday"
                     value={contact.birth_date}
                     onChange={(e) => setContact((c) => ({ ...c, birth_date: e.target.value }))}
                   />
@@ -314,7 +358,7 @@ export function BookingForm({
                     if (age === null) return null;
                     if (age < 18) {
                       return (
-                        <p className="mt-1 text-xs text-red-600 font-medium">
+                        <p className="mt-1 text-xs font-medium text-red-600">
                           Die Kontaktperson muss mindestens 18 Jahre alt sein ({age} Jahre zum Freizeitbeginn).
                         </p>
                       );
@@ -326,9 +370,10 @@ export function BookingForm({
                     );
                   })()}
                 </div>
-                <div className="md:col-span-2 space-y-1.5">
-                  <Label>Hinweise / Bemerkungen</Label>
+                <div className="space-y-1.5 md:col-span-2">
+                  <Label htmlFor="contact_notes">Hinweise / Bemerkungen</Label>
                   <Textarea
+                    id="contact_notes"
                     value={contact.dietary_notes}
                     onChange={(e) => setContact((c) => ({ ...c, dietary_notes: e.target.value }))}
                     placeholder="z.B. Kinderbett wird benötigt, vegetarisch, Allergien..."
@@ -343,166 +388,196 @@ export function BookingForm({
           <Separator className="my-8" />
 
           <section>
-            <h2 className="text-xl font-semibold">3. Gäste eintragen{isSoldOut ? " (Warteliste)" : ""}</h2>
+            <h2 className="text-xl font-semibold">
+              3. Gäste eintragen{isSoldOut ? " (Warteliste)" : ""}
+            </h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {isSoldOut
-                ? `Dieser Unterkunftstyp ist aktuell ausgebucht. Tragen Sie trotzdem alle Gäste ein — so können wir Ihre Anmeldung direkt übernehmen, sobald eine Unterkunft frei wird.`
-                : `Tragen Sie alle Personen ein, die im ${selectedType.name} übernachten (mind. ${Math.max(selectedType.max_guests - 1, 1)}, max. ${selectedType.max_guests + 2} Personen).`
-              }
+                ? "Dieser Unterkunftstyp ist aktuell ausgebucht. Tragen Sie trotzdem alle Gäste ein, so können wir Ihre Anmeldung direkt übernehmen, sobald eine Unterkunft frei wird."
+                : `Tragen Sie alle Personen ein, die im ${selectedType.name} übernachten (mind. ${minGuests}, max. ${maxGuests} Personen). Das Geburtsdatum brauchen wir für die Kurtaxe.`}
             </p>
 
-              <div className="mt-4 space-y-4">
-                {guests.map((guest, index) => (
-                  <Card key={index}>
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-sm font-medium">
-                          Gast {index + 1}
-                        </CardTitle>
-                        <div className="flex items-center gap-1">
-                          {index === 0 && (
-                            <Button
-                              type="button"
-                              size="sm"
-                              className="h-8 gap-1.5 text-xs bg-[#00ADD6] text-white hover:bg-[#0095b8]"
-                              onClick={() => {
-                                setGuests((prev) =>
-                                  prev.map((g, i) =>
-                                    i === 0
-                                      ? {
-                                          ...g,
-                                          first_name: contact.first_name,
-                                          last_name: contact.last_name,
-                                          gender: (contact.gender as "maennlich" | "weiblich") || undefined,
-                                          birth_date: contact.birth_date || "",
-                                          is_child: (() => {
-                                            const age = getAgeAtDate(contact.birth_date, eventStartDate);
-                                            return age !== null && age < 14;
-                                          })(),
-                                          dietary_notes: contact.dietary_notes || "",
-                                        }
-                                      : g
-                                  )
-                                );
-                              }}
-                            >
-                              <UserCheck className="h-3.5 w-3.5" />
-                              Aus Kontaktperson übernehmen
-                            </Button>
-                          )}
-                          {guests.length > minGuests && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() => removeGuest(index)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
+            <div className="mt-4 space-y-4">
+              {guests.map((guest, index) => (
+                <Card key={index}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-sm font-medium">Gast {index + 1}</CardTitle>
+                      <div className="flex items-center gap-1">
+                        {index === 0 && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            className="h-8 gap-1.5 text-xs"
+                            onClick={() => {
+                              const age = getAgeAtDate(contact.birth_date, eventStartDate);
+                              setGuests((prev) =>
+                                prev.map((g, i) =>
+                                  i === 0
+                                    ? {
+                                        ...g,
+                                        first_name: contact.first_name,
+                                        last_name: contact.last_name,
+                                        gender:
+                                          (contact.gender as "maennlich" | "weiblich") || undefined,
+                                        birth_date: contact.birth_date || "",
+                                        is_child: age !== null && age < CHILD_AGE_LIMIT,
+                                        dietary_notes: contact.dietary_notes || "",
+                                      }
+                                    : g
+                                )
+                              );
+                            }}
+                          >
+                            <UserCheck className="h-3.5 w-3.5" />
+                            Aus Kontaktperson übernehmen
+                          </Button>
+                        )}
+                        {guests.length > minGuests && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            aria-label={`Gast ${index + 1} entfernen`}
+                            onClick={() => removeGuest(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
-                    </CardHeader>
-                    <CardContent className="grid gap-5 md:grid-cols-2">
-                      <div className="space-y-1.5">
-                        <Label>Vorname *</Label>
-                        <Input
-                          value={guest.first_name}
-                          onChange={(e) =>
-                            updateGuest(index, "first_name", e.target.value)
-                          }
-                          required
-                        />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="grid gap-5 md:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label htmlFor={`guest_${index}_first_name`}>Vorname *</Label>
+                      <Input
+                        id={`guest_${index}_first_name`}
+                        value={guest.first_name}
+                        onChange={(e) => updateGuest(index, "first_name", e.target.value)}
+                        maxLength={100}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor={`guest_${index}_last_name`}>Nachname *</Label>
+                      <Input
+                        id={`guest_${index}_last_name`}
+                        value={guest.last_name}
+                        onChange={(e) => updateGuest(index, "last_name", e.target.value)}
+                        maxLength={100}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label>Geschlecht *</Label>
+                      <div className="flex gap-4 pt-1">
+                        <label className="flex cursor-pointer items-center gap-2">
+                          <input
+                            type="radio"
+                            name={`guest_gender_${index}`}
+                            checked={guest.gender === "maennlich"}
+                            onChange={() => updateGuest(index, "gender", "maennlich")}
+                            required
+                            className="h-4 w-4 accent-primary"
+                          />
+                          <span className="text-sm">Männlich</span>
+                        </label>
+                        <label className="flex cursor-pointer items-center gap-2">
+                          <input
+                            type="radio"
+                            name={`guest_gender_${index}`}
+                            checked={guest.gender === "weiblich"}
+                            onChange={() => updateGuest(index, "gender", "weiblich")}
+                            className="h-4 w-4 accent-primary"
+                          />
+                          <span className="text-sm">Weiblich</span>
+                        </label>
                       </div>
-                      <div className="space-y-1.5">
-                        <Label>Nachname *</Label>
-                        <Input
-                          value={guest.last_name}
-                          onChange={(e) =>
-                            updateGuest(index, "last_name", e.target.value)
-                          }
-                          required
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label>Geschlecht *</Label>
-                        <div className="flex gap-4 pt-1">
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="radio"
-                              name={`guest_gender_${index}`}
-                              checked={guest.gender === "maennlich"}
-                              onChange={() => updateGuest(index, "gender", "maennlich")}
-                              required
-                              className="h-4 w-4 accent-primary"
-                            />
-                            <span className="text-sm">Männlich</span>
-                          </label>
-                          <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                              type="radio"
-                              name={`guest_gender_${index}`}
-                              checked={guest.gender === "weiblich"}
-                              onChange={() => updateGuest(index, "gender", "weiblich")}
-                              className="h-4 w-4 accent-primary"
-                            />
-                            <span className="text-sm">Weiblich</span>
-                          </label>
-                        </div>
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label>Geburtsdatum</Label>
-                        <Input
-                          type="date"
-                          value={guest.birth_date ?? ""}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            updateGuest(index, "birth_date", val);
-                            const age = getAgeAtDate(val, eventStartDate);
-                            updateGuest(index, "is_child", age !== null && age < 14);
-                          }}
-                        />
-                        {guest.birth_date && (() => {
-                          const age = getAgeAtDate(guest.birth_date, eventStartDate);
-                          if (age === null) return null;
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor={`guest_${index}_birth_date`}>Geburtsdatum *</Label>
+                      <Input
+                        id={`guest_${index}_birth_date`}
+                        type="date"
+                        value={guest.birth_date ?? ""}
+                        max={eventStartDate}
+                        onChange={(e) => updateGuestBirthDate(index, e.target.value)}
+                        required={!isSoldOut}
+                      />
+                      {guest.birth_date && (() => {
+                        const age = getAgeAtDate(guest.birth_date, eventStartDate);
+                        if (age === null) {
                           return (
-                            <p className={`mt-1 text-xs ${age < 14 ? "text-amber-700" : "text-muted-foreground"}`}>
-                              {age < 14
-                                ? `Kind — ${age} Jahre zum Freizeitbeginn`
-                                : `${age} Jahre zum Freizeitbeginn`}
+                            <p className="mt-1 text-xs font-medium text-red-600">
+                              Das Geburtsdatum liegt nach dem Freizeitbeginn.
                             </p>
                           );
-                        })()}
-                      </div>
-                      <div className="md:col-span-2 space-y-1.5">
-                        <Label>Hinweise / Bemerkungen</Label>
-                        <Textarea
-                          value={guest.dietary_notes ?? ""}
-                          onChange={(e) =>
-                            updateGuest(index, "dietary_notes", e.target.value)
-                          }
-                          placeholder="z.B. Kinderbett wird benötigt, vegetarisch, Allergien..."
-                          rows={2}
-                          maxLength={500}
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                        }
+                        return (
+                          <p className={`mt-1 text-xs ${age < CHILD_AGE_LIMIT ? "text-amber-700" : "text-muted-foreground"}`}>
+                            {age < CHILD_AGE_LIMIT
+                              ? `Kind, ${age} Jahre zum Freizeitbeginn`
+                              : `${age} Jahre zum Freizeitbeginn`}
+                          </p>
+                        );
+                      })()}
+                    </div>
+                    <div className="space-y-1.5 md:col-span-2">
+                      <Label htmlFor={`guest_${index}_notes`}>Hinweise / Bemerkungen</Label>
+                      <Textarea
+                        id={`guest_${index}_notes`}
+                        value={guest.dietary_notes ?? ""}
+                        onChange={(e) => updateGuest(index, "dietary_notes", e.target.value)}
+                        placeholder="z.B. Kinderbett wird benötigt, vegetarisch, Allergien..."
+                        rows={2}
+                        maxLength={500}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
 
-                {guests.length < selectedType.max_guests + 2 && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full gap-2"
-                    onClick={addGuest}
+              {guests.length < maxGuests && (
+                <Button type="button" variant="outline" className="w-full gap-2" onClick={addGuest}>
+                  <Plus className="h-4 w-4" />
+                  Weiteren Gast hinzufügen
+                </Button>
+              )}
+            </div>
+
+            {/* Zustellbetten */}
+            {!isSoldOut && rates.maxExtraBeds > 0 && (
+              <Card className="mt-4">
+                <CardContent className="flex flex-col gap-4 pt-6 sm:flex-row sm:items-start">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <BedDouble className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1 space-y-1.5">
+                    <Label htmlFor="extra_beds">Zustellbetten</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Das {selectedType.name} hat {selectedType.max_guests} feste Schlafplätze.
+                      Brauchen Sie mehr, können Sie bis zu {rates.maxExtraBeds} Zustellbetten für{" "}
+                      {formatCurrency(rates.extraBedPricePerDay)} pro Bett und Tag dazubuchen.
+                      Ein Doppelbett kann auch von zwei Personen genutzt werden, dann ist kein
+                      Zustellbett nötig.
+                    </p>
+                  </div>
+                  <select
+                    id="extra_beds"
+                    value={extraBeds}
+                    onChange={(e) => setExtraBeds(Number(e.target.value))}
+                    className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm sm:w-40"
                   >
-                    <Plus className="h-4 w-4" />
-                    Weiteren Gast hinzufügen
-                  </Button>
-                )}
-              </div>
+                    {Array.from({ length: rates.maxExtraBeds + 1 }, (_, n) => (
+                      <option key={n} value={n}>
+                        {n === 0 ? "Kein Zustellbett" : `${n} Zustellbett${n > 1 ? "en" : ""}`}
+                      </option>
+                    ))}
+                  </select>
+                </CardContent>
+              </Card>
+            )}
           </section>
 
           <Separator className="my-8" />
@@ -511,84 +586,90 @@ export function BookingForm({
             <h2 className="text-xl font-semibold">Zusammenfassung</h2>
             <Card className="mt-4">
               <CardContent className="pt-6">
-                {(() => {
-                  const guestAges = guests.map((g) =>
-                    g.birth_date ? getAgeAtDate(g.birth_date, eventStartDate) : null
-                  );
-                  const adults = guestAges.filter((a) => a === null || a >= 18).length;
-                  const children10to17 = guestAges.filter((a) => a !== null && a >= 10 && a < 18).length;
-                  const childrenUnder10 = guestAges.filter((a) => a !== null && a >= 0 && a < 10).length;
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Unterkunft</span>
+                    <span className="font-medium">{selectedType.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Anzahl Gäste</span>
+                    <span className="font-medium">{guests.length}</span>
+                  </div>
 
-                  const kurtaxeAdults = adults * 1.80 * nights;
-                  const kurtaxeChildren = children10to17 * 0.90 * nights;
-                  const kurtaxeTotal = kurtaxeAdults + kurtaxeChildren;
-
-                  return (
-                    <div className="space-y-2 text-sm">
+                  {!isSoldOut && price && (
+                    <>
+                      <Separator />
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Unterkunft</span>
-                        <span className="font-medium">{selectedType.name}</span>
+                        <span className="text-muted-foreground">
+                          Hauspreis ({price.nights} {price.nights === 1 ? "Nacht" : "Nächte"})
+                        </span>
+                        <span className="font-medium">{formatCurrency(price.accommodationPrice)}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Anzahl Gäste</span>
-                        <span className="font-medium">{guests.length}</span>
-                      </div>
-                      {!isSoldOut && (
-                        <>
-                          <Separator />
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Hauspreis</span>
-                            <span className="font-medium">{formatCurrency(selectedType.price_per_house)}</span>
-                          </div>
-
-                          {/* Kurtaxe Aufschlüsselung */}
-                          <div className="rounded-lg bg-muted/50 p-3 space-y-1.5">
-                            <p className="text-xs font-semibold text-foreground">
-                              Kurtaxe ({nights} {nights === 1 ? "Tag" : "Tage"}, vor Ort zu zahlen)
-                            </p>
-                            {adults > 0 && (
-                              <div className="flex justify-between text-xs text-muted-foreground">
-                                <span>{adults}x Erwachsene (1,80 €/Tag)</span>
-                                <span>{formatCurrency(kurtaxeAdults)}</span>
-                              </div>
-                            )}
-                            {children10to17 > 0 && (
-                              <div className="flex justify-between text-xs text-muted-foreground">
-                                <span>{children10to17}x Kinder 10–17 J. (0,90 €/Tag)</span>
-                                <span>{formatCurrency(kurtaxeChildren)}</span>
-                              </div>
-                            )}
-                            {childrenUnder10 > 0 && (
-                              <div className="flex justify-between text-xs text-muted-foreground">
-                                <span>{childrenUnder10}x Kinder unter 10</span>
-                                <span>frei</span>
-                              </div>
-                            )}
-                            <div className="flex justify-between text-xs font-medium pt-1 border-t border-border/50">
-                              <span>Kurtaxe gesamt</span>
-                              <span>{formatCurrency(kurtaxeTotal)}</span>
-                            </div>
-                          </div>
-
-                          <Separator />
-                          <div className="flex justify-between text-base font-semibold">
-                            <span>Gesamtkosten</span>
-                            <span>{formatCurrency(selectedType.price_per_house + kurtaxeTotal)}</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            Hauspreis {formatCurrency(selectedType.price_per_house)} + Kurtaxe {formatCurrency(kurtaxeTotal)} — der Gesamtbetrag von {formatCurrency(selectedType.price_per_house + kurtaxeTotal)} ist vorab zu überweisen.
-                          </p>
-                        </>
+                      {price.extraBeds > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">
+                            {price.extraBeds}x Zustellbett ({formatCurrency(rates.extraBedPricePerDay)}/Tag)
+                          </span>
+                          <span className="font-medium">{formatCurrency(price.extraBedTotal)}</span>
+                        </div>
                       )}
 
-                      <p className="mt-4 text-xs text-muted-foreground">
-                        {isSoldOut
-                          ? "Der Eintrag wird auf der Warteliste gespeichert. Sobald eine passende Unterkunft frei wird, kann das Freizeitteam Sie kontaktieren."
-                          : `Nach dem Absenden werden die Zahlungsdaten direkt auf der Bestätigungsseite angezeigt. Die Reservierung bleibt ${reservationValidityDays} Tage gültig.`}
+                      <div className="space-y-1.5 rounded-lg bg-muted/50 p-3">
+                        <p className="text-xs font-semibold text-foreground">
+                          Kurtaxe ({price.nights} {price.nights === 1 ? "Tag" : "Tage"})
+                        </p>
+                        {price.adults > 0 && (
+                          <div className="flex justify-between text-xs text-muted-foreground">
+                            <span>
+                              {price.adults}x ab {rates.adultMinAge} J. ({formatCurrency(rates.adultRate)}/Tag)
+                            </span>
+                            <span>{formatCurrency(price.adultTax)}</span>
+                          </div>
+                        )}
+                        {price.children > 0 && (
+                          <div className="flex justify-between text-xs text-muted-foreground">
+                            <span>
+                              {price.children}x Kinder {childAgeLabel} ({formatCurrency(rates.childRate)}/Tag)
+                            </span>
+                            <span>{formatCurrency(price.childTax)}</span>
+                          </div>
+                        )}
+                        {price.exempt > 0 && (
+                          <div className="flex justify-between text-xs text-muted-foreground">
+                            <span>{price.exempt}x Kinder unter {rates.childMinAge} J.</span>
+                            <span>frei</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between border-t border-border/50 pt-1 text-xs font-medium">
+                          <span>Kurtaxe gesamt</span>
+                          <span>{formatCurrency(price.touristTax)}</span>
+                        </div>
+                        {guestsWithoutBirthDate > 0 && (
+                          <p className="text-xs text-amber-700">
+                            Ohne Geburtsdatum rechnen wir mit dem Erwachsenentarif.
+                          </p>
+                        )}
+                      </div>
+
+                      <Separator />
+                      <div className="flex justify-between text-base font-semibold">
+                        <span>Gesamtbetrag</span>
+                        <span>{formatCurrency(price.total)}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Der Gesamtbetrag aus Hauspreis
+                        {price.extraBeds > 0 ? ", Zustellbetten" : ""} und Kurtaxe ist vorab zu
+                        überweisen. Die Kurtaxe führt der Verein gesammelt an das Feriendorf ab.
                       </p>
-                    </div>
-                  );
-                })()}
+                    </>
+                  )}
+
+                  <p className="mt-4 text-xs text-muted-foreground">
+                    {isSoldOut
+                      ? "Der Eintrag wird auf der Warteliste gespeichert. Sobald eine passende Unterkunft frei wird, kann das Freizeitteam Sie kontaktieren."
+                      : `Nach dem Absenden werden die Zahlungsdaten direkt auf der Bestätigungsseite angezeigt. Die Reservierung bleibt ${reservationValidityDays} Tage gültig.`}
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </section>
@@ -609,7 +690,7 @@ export function BookingForm({
               onChange={(e) => setRulesAccepted(e.target.checked)}
               className="mt-1 h-5 w-5 shrink-0 cursor-pointer rounded border-border accent-primary"
             />
-            <label htmlFor="rules-accepted" className="text-sm text-muted-foreground cursor-pointer">
+            <label htmlFor="rules-accepted" className="cursor-pointer text-sm text-muted-foreground">
               Hiermit akzeptiere ich die{" "}
               <button
                 type="button"
@@ -617,23 +698,17 @@ export function BookingForm({
                 className="font-semibold text-primary underline underline-offset-4 hover:text-primary/80"
               >
                 Regeln der Gemeindefreizeit
-              </button>.
+              </button>
+              .
             </label>
           </div>
 
           <div className="mt-4">
-            <Button
-              type="submit"
-              size="lg"
-              className="w-full"
-              disabled={isPending || !rulesAccepted}
-            >
+            <Button type="submit" size="lg" className="w-full" disabled={isPending || !rulesAccepted}>
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {isSoldOut
-                    ? "Wartelisteneintrag wird erstellt..."
-                    : "Reservierung wird erstellt..."}
+                  {isSoldOut ? "Wartelisteneintrag wird erstellt..." : "Reservierung wird erstellt..."}
                 </>
               ) : isSoldOut ? (
                 "Auf Warteliste setzen"
@@ -650,16 +725,21 @@ export function BookingForm({
               onClick={() => setShowRules(false)}
             >
               <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="rules-title"
                 className="relative flex max-h-[85vh] w-full max-w-2xl flex-col rounded-2xl bg-card shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between border-b px-6 py-4">
-                  <h3 className="text-lg font-semibold">Regeln der Gemeindefreizeit</h3>
-                  <Button variant="ghost" size="icon" onClick={() => setShowRules(false)}>
+                  <h3 id="rules-title" className="text-lg font-semibold">
+                    Regeln der Gemeindefreizeit
+                  </h3>
+                  <Button variant="ghost" size="icon" aria-label="Schließen" onClick={() => setShowRules(false)}>
                     <X className="h-5 w-5" />
                   </Button>
                 </div>
-                <div className="flex-1 overflow-y-auto px-6 py-4 text-sm leading-relaxed text-foreground/80 space-y-4">
+                <div className="flex-1 space-y-4 overflow-y-auto px-6 py-4 text-sm leading-relaxed text-foreground/80">
                   <p className="font-semibold text-foreground">Die Teilnahmebedingungen zur Gemeindefreizeit sind für jeden Teilnehmer verbindlich. Mit der Anmeldung erklären sich die Teilnehmer mit den folgenden Regeln einverstanden.</p>
 
                   <h4 className="font-bold text-foreground">&sect;1 Freizeitleitung</h4>
@@ -699,10 +779,10 @@ export function BookingForm({
                   <p>Nur durch die Erlaubnis der Freizeitleitung dürfen die Regeln geändert werden. Hierbei handelt es sich jedoch nicht um grundlegende Regeln.</p>
 
                   <h4 className="font-bold text-foreground">&sect;13 Zahlung</h4>
-                  <p>Die Zahlung des Hausbeitrags erfolgt per Überweisung innerhalb von 14 Tagen nach Reservierung.</p>
+                  <p>Die Zahlung des Hausbeitrags und der Kurtaxe erfolgt per Überweisung innerhalb von {reservationValidityDays} Tagen nach Reservierung. Die Kurtaxe führt der Verein gesammelt an das Feriendorf ab.</p>
 
                   <h4 className="font-bold text-foreground">&sect;14 Stornierung</h4>
-                  <p>Eine Stornierung ist grundsätzlich nicht möglich. Sollte ein Teilnehmer nicht mehr teilnehmen können, muss er eigenständig für Ersatz sorgen. Alternativ kann die Freizeitleitung kontaktiert werden — wir werden gemeinsam versuchen, einen Ersatz zu finden.</p>
+                  <p>Eine Stornierung ist grundsätzlich nicht möglich. Sollte ein Teilnehmer nicht mehr teilnehmen können, muss er eigenständig für Ersatz sorgen. Alternativ kann die Freizeitleitung kontaktiert werden, wir werden gemeinsam versuchen, einen Ersatz zu finden.</p>
 
                   <h4 className="font-bold text-foreground">&sect;15 Kinder und Jugendliche</h4>
                   <p>Kinder unter 12 Jahren müssen von einem Erziehungsberechtigten begleitet werden. Die Aufsichtspflicht liegt bei den Eltern bzw. Erziehungsberechtigten.</p>
@@ -715,7 +795,7 @@ export function BookingForm({
                       setShowRules(false);
                     }}
                   >
-                    Gelesen & Akzeptieren
+                    Gelesen und akzeptieren
                   </Button>
                 </div>
               </div>

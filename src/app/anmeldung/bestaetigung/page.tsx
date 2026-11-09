@@ -80,6 +80,11 @@ export default async function BestaetigungPage({ searchParams }: Props) {
         status: string;
         payment_status: string;
         guests_json: GuestInfo[];
+        accommodation_price?: number | null;
+        tourist_tax?: number | null;
+        extra_beds?: number | null;
+        extra_bed_total?: number | null;
+        pricing_nights?: number | null;
       }
     | undefined;
 
@@ -120,8 +125,8 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               <CheckCircle2 className="mx-auto h-16 w-16 text-[#00ADD6]" />
               <h1 className="mt-4 text-3xl font-bold">Reservierung erfolgreich!</h1>
               <p className="mt-2 text-muted-foreground">
-                Ihre Reservierung wurde erstellt. Bitte überweisen Sie den Betrag
-                bis spätestens zum angegebenen Datum.
+                Ihre Reservierung wurde erstellt. Bitte überweisen Sie den Gesamtbetrag
+                aus Hauspreis und Kurtaxe bis spätestens zum angegebenen Datum.
               </p>
             </>
           )}
@@ -138,8 +143,28 @@ export default async function BestaetigungPage({ searchParams }: Props) {
                   {reservation.house_type_name} – {reservation.house_label}
                 </span>
               </div>
+              {reservation.accommodation_price !== null && reservation.accommodation_price !== undefined && (
+                <>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">
+                      Hauspreis ({reservation.pricing_nights ?? 1} {(reservation.pricing_nights ?? 1) === 1 ? "Nacht" : "Nächte"})
+                    </span>
+                    <span>{formatCurrency(reservation.accommodation_price)}</span>
+                  </div>
+                  {(reservation.extra_beds ?? 0) > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{reservation.extra_beds}x Zustellbett</span>
+                      <span>{formatCurrency(reservation.extra_bed_total ?? 0)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Kurtaxe</span>
+                    <span>{formatCurrency(reservation.tourist_tax ?? 0)}</span>
+                  </div>
+                </>
+              )}
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Betrag</span>
+                <span className="text-muted-foreground">Gesamtbetrag</span>
                 <span className="font-semibold">
                   {formatCurrency(reservation.total_price)}
                 </span>

@@ -42,6 +42,7 @@ export default async function HomePage() {
       <FactBar event={event} registration={registration} />
       <Highlights />
       <Accommodations
+        event={event}
         houseTypes={houseTypes}
         availability={availability}
         registrationOpen={registration.status === "open"}

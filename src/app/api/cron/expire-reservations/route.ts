@@ -3,11 +3,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email/send";
 import { paymentReminderEmail } from "@/lib/email/templates";
 import { ADMIN_EMAIL } from "@/lib/email/resend";
+import { escapeHtml } from "@/lib/utils/html";
 
 export async function GET(request: NextRequest) {
-  // Cron-Secret pruefen
+  // Cron-Secret prüfen. Ohne gesetztes Secret wird der Aufruf immer abgelehnt,
+  // damit der Endpunkt nie versehentlich offen ist.
+  const secret = process.env.CRON_SECRET;
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!secret || secret.length < 16 || authHeader !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -91,16 +94,16 @@ export async function GET(request: NextRequest) {
         const ht = r.house as unknown as { house_type: { name: string } };
         const expiryDate = new Date(r.expires_at).toLocaleDateString("de-DE");
         return `<tr>
-          <td style="padding:6px;border-bottom:1px solid #eee;">${r.contact_first_name} ${r.contact_last_name}</td>
-          <td style="padding:6px;border-bottom:1px solid #eee;">${r.contact_email}</td>
-          <td style="padding:6px;border-bottom:1px solid #eee;">${ht.house_type.name}</td>
+          <td style="padding:6px;border-bottom:1px solid #eee;">${escapeHtml(r.contact_first_name)} ${escapeHtml(r.contact_last_name)}</td>
+          <td style="padding:6px;border-bottom:1px solid #eee;">${escapeHtml(r.contact_email)}</td>
+          <td style="padding:6px;border-bottom:1px solid #eee;">${escapeHtml(ht.house_type.name)}</td>
           <td style="padding:6px;border-bottom:1px solid #eee;">${expiryDate}</td>
         </tr>`;
       });
 
       await sendEmail({
         to: ADMIN_EMAIL,
-        subject: `⚠️ ${overdueToNotify.length} überfällige Reservierung(en) — Zahlung ausstehend`,
+        subject: `${overdueToNotify.length} überfällige Reservierung(en): Zahlung ausstehend`,
         html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">
           <h2 style="color:#b45309;">Überfällige Reservierungen</h2>
           <p>Die folgenden Reservierungen haben die Zahlungsfrist überschritten und wurden <strong>nicht automatisch storniert</strong>. Bitte prüfe den Zahlungseingang und storniere ggf. manuell im Admin-Dashboard.</p>

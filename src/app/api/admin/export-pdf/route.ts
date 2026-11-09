@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { requireAdminAccess } from "@/lib/auth/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Reservation, Guest, House, HouseType } from "@/lib/types/database";
+import { escapeHtml as esc } from "@/lib/utils/html";
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("de-DE", {
@@ -97,7 +98,7 @@ export async function GET() {
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Zahlungsübersicht – ${event.title}</title>
+  <title>Zahlungsübersicht – ${esc(event.title)}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -207,7 +208,7 @@ export async function GET() {
   <div class="header">
     <div>
       <h1>FECG Trossingen e.V.</h1>
-      <div class="subtitle">Zahlungsübersicht – ${event.title}</div>
+      <div class="subtitle">Zahlungsübersicht – ${esc(event.title)}</div>
     </div>
     <div class="date">
       Erstellt am ${today}<br>
@@ -232,7 +233,7 @@ export async function GET() {
 
   <div class="bank-info">
     <strong>Bankverbindung:</strong>
-    ${event.bank_account_holder} · IBAN: ${event.bank_iban}${event.bank_bic ? ` · BIC: ${event.bank_bic}` : ""}
+    ${esc(event.bank_account_holder)} · IBAN: ${esc(event.bank_iban)}${event.bank_bic ? ` · BIC: ${esc(event.bank_bic)}` : ""}
   </div>
 
   <table>
@@ -254,9 +255,9 @@ export async function GET() {
           (r, i) => `
         <tr>
           <td>${i + 1}</td>
-          <td class="mono">${r.payment_reference}</td>
-          <td>${r.contact_first_name} ${r.contact_last_name}</td>
-          <td>${r.house.house_type.name}<br><span style="color:#666;font-size:9px">${r.house.label || "Haus " + r.house.house_number}</span></td>
+          <td class="mono">${esc(r.payment_reference)}</td>
+          <td>${esc(r.contact_first_name)} ${esc(r.contact_last_name)}</td>
+          <td>${esc(r.house.house_type.name)}<br><span style="color:#666;font-size:9px">${esc(r.house.label || "Haus " + r.house.house_number)}</span></td>
           <td>${r.guests.length}</td>
           <td class="text-right"><strong>${formatCurrency(r.total_price)}</strong></td>
           <td>${
@@ -272,7 +273,7 @@ export async function GET() {
   </table>
 
   <div class="footer">
-    ${event.title} · ${event.location} · FECG Trossingen e.V. · Erstellt am ${today}
+    ${esc(event.title)} · ${esc(event.location)} · FECG Trossingen e.V. · Erstellt am ${today}
   </div>
 
   <script>

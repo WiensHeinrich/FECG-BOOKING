@@ -27,6 +27,13 @@ export interface Event {
   is_active: boolean
   hero_image_url: string | null
   additional_info: Record<string, unknown>
+  // Kurtaxe und Zustellbetten (Migration 012)
+  tourist_tax_adult_rate: number
+  tourist_tax_child_rate: number
+  tourist_tax_child_min_age: number
+  tourist_tax_adult_min_age: number
+  extra_bed_price_per_day: number
+  max_extra_beds: number
   created_at: string
   updated_at: string
 }
@@ -71,6 +78,13 @@ export interface Reservation {
   status: ReservationStatus
   payment_status: PaymentStatus
   total_price: number
+  // Preisaufteilung (Migration 012); null bei Reservierungen vor der Umstellung
+  accommodation_price: number | null
+  tourist_tax: number | null
+  extra_beds: number
+  extra_bed_total: number | null
+  pricing_nights: number | null
+  rules_accepted_at: string | null
   payment_reference: string
   reserved_at: string
   expires_at: string

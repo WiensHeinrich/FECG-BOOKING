@@ -20,11 +20,17 @@ export const mockEvent: Event = {
   bank_iban: "DE89 3704 0044 0532 0130 00",
   bank_bic: "COBADEFFXXX",
   bank_reference_prefix: "GF2027",
-  contact_email: "freizeit@fecg-trossingen.de",
-  contact_phone: "+49 7425 12345",
+  contact_email: "kontakt@fecg-trossingen-gemeindefreizeit.de",
+  contact_phone: null,
   is_active: true,
   hero_image_url: null,
   additional_info: {},
+  tourist_tax_adult_rate: 2.6,
+  tourist_tax_child_rate: 1.5,
+  tourist_tax_child_min_age: 6,
+  tourist_tax_adult_min_age: 17,
+  extra_bed_price_per_day: 19,
+  max_extra_beds: 2,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
 };
@@ -38,7 +44,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Geräumiges Ferienhaus für Familien mit bis zu 6 Personen. Drei Schlafzimmer, Küche, Bad mit Dusche und Terrasse.",
     max_guests: 6,
-    price_per_house: 335.27,
+    price_per_house: 341.53,
     price_per_person: null,
     total_quantity: 22,
     features: ["3 Schlafzimmer", "Küche", "Bad mit Dusche", "Terrasse", "WLAN", "Kaffeemaschine", "Kühlschrank", "Bettwäsche inkl.", "Kinderbett verfügbar"],
@@ -54,7 +60,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Großes Ferienhaus für Gruppen mit bis zu 10 Personen. Drei Schlafzimmer, Küche mit Backofen und Spülmaschine.",
     max_guests: 10,
-    price_per_house: 420.55,
+    price_per_house: 427.03,
     price_per_person: null,
     total_quantity: 3,
     features: ["3 Schlafzimmer", "Küche mit Backofen", "Spülmaschine", "Bad mit Dusche", "Terrasse", "WLAN", "Kaffeemaschine", "Kühlschrank", "Bettwäsche inkl."],
@@ -70,7 +76,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Gästehaus mit 2 Zimmern (2-Bett + 3-Bett) und 2 Bädern. Ideal für Familien oder kleine Gruppen.",
     max_guests: 5,
-    price_per_house: 307.17,
+    price_per_house: 313.03,
     price_per_person: null,
     total_quantity: 10,
     features: ["2 Zimmer", "2 Bäder", "Küche", "WLAN", "Kaffeemaschine", "Kühlschrank", "Bettwäsche inkl.", "Kinderbett verfügbar"],
@@ -86,7 +92,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Gästehaus mit 4-Bett-Zimmer und eigenem Bad. Kompakt und gemütlich.",
     max_guests: 4,
-    price_per_house: 223.35,
+    price_per_house: 227.53,
     price_per_person: null,
     total_quantity: 1,
     features: ["1 Zimmer", "1 Bad", "Küche", "WLAN", "Kaffeemaschine", "Kühlschrank", "Bettwäsche inkl."],
@@ -102,7 +108,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Apartment für bis zu 4 Personen. Eigenes Bad und Küche.",
     max_guests: 4,
-    price_per_house: 223.35,
+    price_per_house: 227.53,
     price_per_person: null,
     total_quantity: 1,
     features: ["1 Zimmer", "Eigenes Bad", "Küche", "WLAN", "Kaffeemaschine", "Kühlschrank", "Bettwäsche inkl."],
@@ -118,7 +124,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Größere Villa für bis zu 6 Personen. Drei Zimmer mit eigenem Bad.",
     max_guests: 6,
-    price_per_house: 317.83,
+    price_per_house: 323.48,
     price_per_person: null,
     total_quantity: 1,
     features: ["3 Zimmer", "Eigenes Bad", "Küche", "WLAN", "Kaffeemaschine", "Kühlschrank", "Bettwäsche inkl."],

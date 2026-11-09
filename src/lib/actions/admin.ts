@@ -290,6 +290,12 @@ export async function updateEventSettings(
     bank_iban?: string;
     bank_bic?: string;
     bank_reference_prefix?: string;
+    tourist_tax_adult_rate?: number;
+    tourist_tax_child_rate?: number;
+    tourist_tax_child_min_age?: number;
+    tourist_tax_adult_min_age?: number;
+    extra_bed_price_per_day?: number;
+    max_extra_beds?: number;
   }
 ) {
   await requireAdminAccess();
@@ -306,6 +312,8 @@ export async function updateEventSettings(
 
   revalidatePath("/admin/einstellungen");
   revalidatePath("/");
+  revalidatePath("/anmeldung");
+  revalidatePath("/informationen");
   return { success: true };
 }
 
@@ -440,8 +448,18 @@ export async function convertWaitlistToReservation(waitlistEntryId: string) {
     });
     });
 
-    await supabase.from("guests").insert(guestRows);
+    const { error: guestsError } = await supabase.from("guests").insert(guestRows);
+    if (guestsError) {
+      console.error("Insert guests error:", guestsError);
+    }
   }
+
+  // Gesamtbetrag nach Preisberechnung in der Datenbank (Hauspreis + Kurtaxe) neu laden
+  const { data: priced } = await supabase
+    .from("reservations")
+    .select("total_price, accommodation_price, tourist_tax, extra_beds, extra_bed_total, pricing_nights")
+    .eq("id", reservationId)
+    .single();
 
   // 6. Warteliste-Eintrag als umgewandelt markieren
   await supabase
@@ -476,7 +494,16 @@ export async function convertWaitlistToReservation(waitlistEntryId: string) {
     contactGender: entry.contact_gender ?? null,
     houseTypeName: ht.name,
     houseLabel: freeHouse.label || `Haus ${freeHouse.house_number}`,
-    totalPrice: ht.price_per_house,
+    totalPrice: priced?.total_price ?? ht.price_per_house,
+    breakdown: priced
+      ? {
+          accommodationPrice: priced.accommodation_price,
+          touristTax: priced.tourist_tax,
+          extraBeds: priced.extra_beds ?? 0,
+          extraBedTotal: priced.extra_bed_total,
+          nights: priced.pricing_nights,
+        }
+      : null,
     paymentReference,
     expiresAt: expiresAt.toISOString(),
     bankAccountHolder: event.bank_account_holder,

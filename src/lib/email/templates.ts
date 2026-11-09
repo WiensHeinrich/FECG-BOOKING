@@ -100,6 +100,30 @@ function formatBirthDate(date: string | undefined | null) {
   });
 }
 
+export interface PriceBreakdown {
+  accommodationPrice: number | null;
+  touristTax: number | null;
+  extraBeds: number;
+  extraBedTotal: number | null;
+  nights: number | null;
+}
+
+/** Preiszeilen für E-Mails: Hauspreis, Zustellbetten, Kurtaxe, Gesamtbetrag */
+function priceRows(totalPrice: number, breakdown?: PriceBreakdown | null) {
+  if (!breakdown || breakdown.accommodationPrice === null || breakdown.accommodationPrice === undefined) {
+    return row("Gesamtbetrag", `<strong>${formatEuro(totalPrice)}</strong>`);
+  }
+  const nights = breakdown.nights ?? 1;
+  return [
+    row("Hauspreis", formatEuro(breakdown.accommodationPrice)),
+    breakdown.extraBeds > 0
+      ? row(`Zustellbetten (${breakdown.extraBeds} x ${nights} ${nights === 1 ? "Tag" : "Tage"})`, formatEuro(breakdown.extraBedTotal ?? 0))
+      : "",
+    row(`Kurtaxe (${nights} ${nights === 1 ? "Tag" : "Tage"})`, formatEuro(breakdown.touristTax ?? 0)),
+    row("Gesamtbetrag", `<strong>${formatEuro(totalPrice)}</strong>`),
+  ].join("");
+}
+
 export interface GuestEmailData {
   first_name: string;
   last_name: string;
@@ -140,6 +164,7 @@ export function reservationConfirmationEmail(data: {
   houseTypeName: string;
   houseLabel: string;
   totalPrice: number;
+  breakdown?: PriceBreakdown | null;
   paymentReference: string;
   expiresAt: string;
   bankAccountHolder: string;
@@ -162,13 +187,13 @@ export function reservationConfirmationEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Ihre Reservierung wurde erfolgreich erstellt! Bitte überweisen Sie den Betrag bis zum <strong>${expiryDate}</strong>.</p>
+      <p>Ihre Reservierung wurde erfolgreich erstellt! Bitte überweisen Sie den Gesamtbetrag (Hauspreis und Kurtaxe) bis zum <strong>${expiryDate}</strong>.</p>
 
       <div style="${cardStyle}">
         <h3 style="margin-top: 0; color: #00ADD6;">Ihre Reservierung</h3>
         <table style="width: 100%; border-collapse: collapse;">
           ${row("Unterkunft", `${esc(data.houseTypeName)} - ${esc(data.houseLabel)}`)}
-          ${row("Betrag", formatEuro(data.totalPrice))}
+          ${priceRows(data.totalPrice, data.breakdown)}
           ${row("Gültig bis", expiryDate)}
         </table>
       </div>
@@ -222,6 +247,7 @@ export function adminNewReservationEmail(data: {
   contactGender: string | null;
   houseTypeName: string;
   totalPrice: number;
+  breakdown?: PriceBreakdown | null;
   paymentReference: string;
   guests: GuestEmailData[];
 }) {
@@ -242,7 +268,7 @@ export function adminNewReservationEmail(data: {
           ${data.phone ? row("Telefon", esc(data.phone)) : ""}
           ${data.contactGender ? row("Geschlecht", formatGender(data.contactGender)) : ""}
           ${row("Unterkunft", esc(data.houseTypeName))}
-          ${row("Betrag", formatEuro(data.totalPrice))}
+          ${priceRows(data.totalPrice, data.breakdown)}
           ${row("Verwendungszweck", `<strong>${esc(data.paymentReference)}</strong>`)}
         </table>
       </div>

@@ -57,4 +57,5 @@ Fuer lokale Testdaten gibt es `supabase/seed.sql`.
 
 - Adminzugriffe setzen einen Eintrag in `admin_users` voraus.
 - Die oeffentliche Reservierungsbestaetigung funktioniert ueber einen tokenisierten Link und nicht mehr allein ueber die Reservierungs-ID.
-- `RESEND_API_KEY` und `CRON_SECRET` sind in `.env.example` vorbereitet, aber im aktuellen Stand noch nicht aktiv verdrahtet.
+- `RESEND_API_KEY` wird für alle Bestätigungs- und Erinnerungsmails benötigt, `CRON_SECRET` für den täglichen Erinnerungsjob (`vercel.json`). Ohne gesetztes `CRON_SECRET` lehnt der Cron-Endpunkt jeden Aufruf ab.
+- Preise, Kurtaxe und Zustellbetten werden in der Datenbank berechnet (Migration 012). Die Tarife pflegt der Admin unter Einstellungen, die Hauspreise unter Häuser.

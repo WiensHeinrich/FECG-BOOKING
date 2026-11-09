@@ -68,7 +68,16 @@ export default async function ReservationDetailPage({
             <CardTitle className="text-base">Zahlung</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <Row label="Betrag" value={formatCurrency(r.total_price)} />
+            {r.accommodation_price !== null && r.accommodation_price !== undefined && (
+              <>
+                <Row label="Hauspreis" value={formatCurrency(r.accommodation_price)} />
+                {(r.extra_beds ?? 0) > 0 && (
+                  <Row label="Zustellbetten" value={`${r.extra_beds}x, ${formatCurrency(r.extra_bed_total ?? 0)}`} />
+                )}
+                <Row label="Kurtaxe" value={formatCurrency(r.tourist_tax ?? 0)} />
+              </>
+            )}
+            <Row label="Gesamtbetrag" value={formatCurrency(r.total_price)} />
             <Row label="Referenz" value={r.payment_reference} />
             <Row label="Status" value={r.payment_status === "eingegangen" ? "Bezahlt" : "Ausstehend"} />
             {r.payment_confirmed_at && (

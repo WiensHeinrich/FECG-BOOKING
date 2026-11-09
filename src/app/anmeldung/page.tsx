@@ -3,6 +3,9 @@ import { getActiveEvent } from "@/lib/queries/events";
 import { getHouseTypes } from "@/lib/queries/houses";
 import { getAvailability } from "@/lib/queries/houses";
 import { BookingForm } from "@/components/booking/booking-form";
+import { getRegistrationInfo } from "@/lib/utils/registration";
+import { ratesFromEvent } from "@/lib/utils/pricing";
+import { formatCurrency, formatDateBerlin } from "@/lib/utils/format";
 
 export const metadata: Metadata = {
   title: "Anmeldung",
@@ -20,19 +23,16 @@ export default async function AnmeldungPage() {
     );
   }
 
-  const now = new Date();
-  const registrationOpen =
-    new Date(event.registration_start) <= now &&
-    now <= new Date(event.registration_end);
+  const registration = getRegistrationInfo(event);
 
-  if (!registrationOpen) {
+  if (registration.status !== "open") {
     return (
       <div className="container mx-auto flex min-h-[60vh] items-center justify-center px-4">
         <div className="text-center">
           <h1 className="text-2xl font-bold">Anmeldung nicht möglich</h1>
           <p className="mt-2 text-muted-foreground">
-            {now < new Date(event.registration_start)
-              ? `Die Anmeldung startet am ${new Date(event.registration_start).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" })}.`
+            {registration.status === "upcoming"
+              ? `Die Anmeldung startet am ${formatDateBerlin(event.registration_start)}.`
               : "Die Anmeldefrist ist leider abgelaufen."}
           </p>
         </div>
@@ -45,12 +45,17 @@ export default async function AnmeldungPage() {
     getAvailability(event.id),
   ]);
 
+  const rates = ratesFromEvent(event);
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="mx-auto max-w-4xl">
         <h1 className="text-3xl font-bold">Anmeldung</h1>
         <p className="mt-2 text-muted-foreground">
-          Wählen Sie Ihre Unterkunft und tragen Sie alle Gäste ein.
+          Wählen Sie Ihre Unterkunft und tragen Sie alle Gäste ein. Zum Hauspreis kommt die
+          Kurtaxe von {formatCurrency(rates.adultRate)} pro Person und Tag ab {rates.adultMinAge} Jahren
+          und {formatCurrency(rates.childRate)} für Kinder von {rates.childMinAge} bis {rates.adultMinAge - 1} Jahren.
+          Beides wird zusammen vorab überwiesen.
         </p>
 
         <div className="mt-8">
@@ -61,6 +66,7 @@ export default async function AnmeldungPage() {
             houseTypes={houseTypes}
             availability={availability}
             reservationValidityDays={event.reservation_validity_days}
+            rates={rates}
           />
         </div>
       </div>

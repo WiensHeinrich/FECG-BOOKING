@@ -3,18 +3,22 @@ import Link from "next/link";
 import { ArrowRight, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { Availability, HouseType } from "@/lib/types/database";
+import type { Availability, Event, HouseType } from "@/lib/types/database";
 import { formatCurrency } from "@/lib/utils/format";
+import { ratesFromEvent } from "@/lib/utils/pricing";
 import { cn } from "@/lib/utils";
 
 interface AccommodationsProps {
+  event: Event;
   houseTypes: HouseType[];
   availability: Availability[];
   registrationOpen: boolean;
 }
 
-export function Accommodations({ houseTypes, availability, registrationOpen }: AccommodationsProps) {
+export function Accommodations({ event, houseTypes, availability, registrationOpen }: AccommodationsProps) {
   if (houseTypes.length === 0) return null;
+
+  const rates = ratesFromEvent(event);
 
   const availableFor = (id: string) =>
     availability.find((a) => a.house_type_id === id)?.available_count ?? 0;
@@ -38,7 +42,10 @@ export function Accommodations({ houseTypes, availability, registrationOpen }: A
               eine eigene Küche, ein Bad und WLAN. Bettwäsche ist inklusive.
             </p>
             <p className="mt-3 text-sm text-muted-foreground">
-              Preise gelten pro Unterkunft für das gesamte Wochenende, zuzüglich Kurtaxe.
+              Preise gelten pro Unterkunft für das gesamte Wochenende. Dazu kommt die Kurtaxe von{" "}
+              {formatCurrency(rates.adultRate)} pro Person und Tag ab {rates.adultMinAge} Jahren und{" "}
+              {formatCurrency(rates.childRate)} für Kinder von {rates.childMinAge} bis {rates.adultMinAge - 1} Jahren,
+              die zusammen mit dem Hauspreis überwiesen wird.
               {totalAvailable > 0 && (
                 <>
                   {" "}
