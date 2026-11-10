@@ -132,27 +132,49 @@ export async function createReservation(formData: BookingFormInput) {
   const data = parsed.data;
   const supabase = await createClient();
 
-  const { data: result, error } = await supabase.rpc("create_public_reservation", {
-    p_event_id: data.event_id,
-    p_house_type_id: data.house_type_id,
-    p_contact_first_name: data.contact_first_name,
-    p_contact_last_name: data.contact_last_name,
-    p_contact_email: data.contact_email,
-    p_contact_phone: data.contact_phone ?? null,
-    p_contact_gender: data.contact_gender ?? null,
-    p_contact_birth_date: data.contact_birth_date || null,
-    p_contact_dietary_notes: data.contact_dietary_notes ?? null,
-    p_guests: data.guests,
-    p_extra_beds: data.extra_beds,
-    p_rules_accepted: data.rules_accepted,
-  });
+  const callRpc = () =>
+    supabase.rpc("create_public_reservation", {
+      p_event_id: data.event_id,
+      p_house_type_id: data.house_type_id,
+      p_contact_first_name: data.contact_first_name,
+      p_contact_last_name: data.contact_last_name,
+      p_contact_email: data.contact_email,
+      p_contact_phone: data.contact_phone ?? null,
+      p_contact_gender: data.contact_gender ?? null,
+      p_contact_birth_date: data.contact_birth_date || null,
+      p_contact_dietary_notes: data.contact_dietary_notes ?? null,
+      p_guests: data.guests,
+      p_extra_beds: data.extra_beds,
+      p_rules_accepted: data.rules_accepted,
+    });
+
+  // Buchen zwei Familien im selben Moment, greifen beide nach demselben Haus und die
+  // Datenbank lehnt die zweite Anfrage ab (23505). Ein neuer Versuch nimmt das nächste freie Haus.
+  let { data: result, error } = await callRpc();
+  for (let attempt = 0; attempt < 4 && error?.code === "23505"; attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, 80 + attempt * 120));
+    ({ data: result, error } = await callRpc());
+  }
 
   if (error) {
     console.error("RPC create_public_reservation error:", error.message, error.code, error.details);
-    return { error: `Reservierung fehlgeschlagen: ${error.message}` };
+    return {
+      error:
+        "Die Reservierung konnte gerade nicht gespeichert werden. Bitte versucht es in einem Moment noch einmal.",
+    };
   }
 
   const reservation = result as (ReservationResult & { error?: string }) | null;
+
+  if (reservation?.error === "Kein Haus verfügbar.") {
+    // Die Seite lädt die freien Plätze neu und bietet dann die Warteliste an
+    revalidatePath("/", "layout");
+    return {
+      error:
+        "Diese Unterkunft wurde gerade eben vergeben. Ihr könnt euch auf die Warteliste setzen oder eine andere Unterkunft wählen.",
+      soldOut: true,
+    };
+  }
 
   if (reservation?.error || !reservation?.id || !reservation?.confirmation_token) {
     console.error("RPC result error:", result);

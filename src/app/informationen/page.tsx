@@ -84,7 +84,7 @@ const einrichtungen = [
 const grundrisse = [
   {
     title: "Übersichtsplan",
-    text: "Lageplan des gesamten Feriendorfs",
+    text: "Lageplan des gesamten Feriendorfs. Zum Anklicken gibt es ihn auf der Seite Unterkünfte.",
     image: "/docs/uebersichtsplan-eckenhof.jpg",
     download: "/docs/uebersichtsplan-eckenhof.jpg",
   },

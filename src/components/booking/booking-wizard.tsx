@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AlertCircle, ArrowRight, CalendarDays, Loader2, Plus, Trash2 } from "lucide-react";
 import { createReservation } from "@/lib/actions/booking";
 import { joinWaitlist } from "@/lib/actions/waitlist";
@@ -10,6 +11,7 @@ import { formatCurrency, formatDateRange } from "@/lib/utils/format";
 import {
   calculateBookingPrice,
   getAgeAtDate,
+  getNights,
   type PricingRates,
 } from "@/lib/utils/pricing";
 import type { Availability, HouseType } from "@/lib/types/database";
@@ -83,6 +85,7 @@ export function BookingWizard({
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const formRef = useRef<HTMLFormElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -264,12 +267,14 @@ export function BookingWizard({
           });
       if (result?.error) {
         setError(result.error);
+        // Unterkunft inzwischen vergeben: freie Plätze neu laden, dann erscheint die Warteliste
+        if ("soldOut" in result && result.soldOut) router.refresh();
         setTimeout(scrollToTop, 50);
       }
     });
   }
 
-  const nights = price?.nights ?? 1;
+  const nights = price?.nights ?? getNights(eventStartDate, eventEndDate);
   const dateLabel = formatDateRange(eventStartDate, eventEndDate);
 
   return (
@@ -402,7 +407,7 @@ export function BookingWizard({
                   e.preventDefault();
                   reviewStep();
                 }}
-                noValidate={false}
+                noValidate
               >
                 <h2 className="panel-title mb-[11px]">Wer kommt mit?</h2>
                 <p className="text-small">

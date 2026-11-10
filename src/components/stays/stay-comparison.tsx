@@ -221,7 +221,7 @@ export function StayComparison({
                 className="btn-secondary"
               >
                 <FileDown className="h-[17px] w-[17px]" aria-hidden="true" />
-                Grundriss (PDF)
+                {getFloorPlan(detail.slug)?.endsWith(".pdf") ? "Grundriss (PDF)" : "Grundriss ansehen"}
               </a>
             )}
             <Link href="/informationen#grundrisse" className="text-link">

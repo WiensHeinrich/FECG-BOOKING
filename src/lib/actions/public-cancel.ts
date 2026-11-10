@@ -2,6 +2,7 @@
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { sendEmail } from "@/lib/email/send";
 import { cancellationEmail } from "@/lib/email/templates";
 import { ADMIN_EMAIL } from "@/lib/email/resend";
@@ -105,10 +106,9 @@ export async function publicCancelReservation(
     houseTypeName: ht.house_type.name,
     reason: fullReason,
   });
-  sendEmail({ to: reservation.contact_email, ...email }).catch(console.error);
 
   // 6. Info-E-Mail an Admin
-  sendEmail({
+  const adminMail = {
     to: ADMIN_EMAIL,
     subject: `Selbst-Stornierung: ${reservation.contact_first_name} — ${ht.house_type.name}`,
     html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;">
@@ -117,7 +117,13 @@ export async function publicCancelReservation(
       <p><strong>Grund:</strong> ${escHtml(fullReason)}</p>
       <p style="color:#666;font-size:13px;">Das Haus wurde automatisch wieder freigegeben.</p>
     </div>`,
-  }).catch(console.error);
+  };
+
+  // Versand nach der Antwort, aber sicher zu Ende geführt
+  after(async () => {
+    await sendEmail({ to: reservation.contact_email, ...email }).catch(console.error);
+    await sendEmail(adminMail).catch(console.error);
+  });
 
   revalidatePath("/admin");
   revalidatePath("/admin/reservierungen");

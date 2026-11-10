@@ -140,7 +140,9 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Unterkunft</span>
                 <span className="font-medium">
-                  {reservation.house_type_name} – {reservation.house_label}
+                  {reservation.house_label && reservation.house_label !== reservation.house_type_name
+                    ? `${reservation.house_type_name} – ${reservation.house_label}`
+                    : reservation.house_type_name}
                 </span>
               </div>
               {reservation.accommodation_price !== null && reservation.accommodation_price !== undefined && (
@@ -248,30 +250,43 @@ export default async function BestaetigungPage({ searchParams }: Props) {
 
             <Separator className="my-4" />
 
+            {reservation.status === "storniert" && (
+              <div className="rounded-md border border-red-200 bg-red-50 p-4 text-base text-red-800">
+                <p className="font-semibold">Diese Reservierung ist storniert.</p>
+                <p className="mt-1">
+                  Bitte überweisen Sie nichts mehr. Die Unterkunft ist wieder freigegeben, eine
+                  Bestätigung der Stornierung kommt per E-Mail. Falls Sie bereits überwiesen haben,
+                  melden Sie sich bitte beim Freizeitteam.
+                </p>
+              </div>
+            )}
+
+            {reservation.status === "reserviert" && (
+              <>
             {/* Überweisungsdaten */}
             <h2 className="font-semibold">Überweisungsdaten</h2>
             <div className="mt-4 space-y-2 rounded-md bg-muted p-4 text-base">
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
                 <span className="text-muted-foreground">Empfänger</span>
                 <span>{reservation.bank_account_holder}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
                 <span className="text-muted-foreground">IBAN</span>
                 <span>{reservation.bank_iban.replace(/\s/g, "").replace(/(.{4})/g, "$1 ").trim()}</span>
               </div>
               {reservation.bank_bic && (
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
                   <span className="text-muted-foreground">BIC</span>
                   <span>{reservation.bank_bic}</span>
                 </div>
               )}
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
                 <span className="text-muted-foreground">Verwendungszweck</span>
-                <span className="font-semibold">
+                <span className="break-words font-semibold">
                   {reservation.payment_reference}
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
                 <span className="text-muted-foreground">Betrag</span>
                 <span className="font-semibold">
                   {formatCurrency(reservation.total_price)}
@@ -283,6 +298,14 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               Bitte geben Sie unbedingt den <strong>Verwendungszweck</strong> an, damit wir Ihre
               Zahlung zuordnen können.
             </p>
+              </>
+            )}
+
+            {reservation.status === "bestaetigt" && (
+              <p className="text-base text-muted-foreground">
+                Ihre Zahlung ist eingegangen, es ist nichts weiter zu tun.
+              </p>
+            )}
 
             {/* Stornierungsmöglichkeit für den Gast */}
             {reservation.status === "reserviert" && (

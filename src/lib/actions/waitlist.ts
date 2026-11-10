@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { z } from "zod/v4";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { sendEmail } from "@/lib/email/send";
 import { waitlistConfirmationEmail, adminNewWaitlistEmail } from "@/lib/email/templates";
 import { ADMIN_EMAIL } from "@/lib/email/resend";
@@ -26,7 +27,7 @@ const waitlistSchema = z.object({
   contact_email: z.email(),
   contact_phone: z.string().optional(),
   contact_gender: z.enum(["maennlich", "weiblich"]).optional(),
-  guest_count: z.number().min(1).max(10),
+  guest_count: z.number().min(1).max(50),
   guests: z.array(guestSchema).optional(),
 });
 
@@ -97,7 +98,6 @@ export async function joinWaitlist(formData: WaitlistFormData) {
     position: result.position,
     guests: emailGuests,
   });
-  sendEmail({ to: data.contact_email, ...guestEmail }).catch(console.error);
 
   // 2. Info-E-Mail an Admin
   const adminEmail = adminNewWaitlistEmail({
@@ -111,7 +111,12 @@ export async function joinWaitlist(formData: WaitlistFormData) {
     guestCount: data.guest_count,
     guests: emailGuests,
   });
-  sendEmail({ to: ADMIN_EMAIL, ...adminEmail }).catch(console.error);
+
+  // Versand nach der Antwort, aber sicher zu Ende geführt (wie bei der Reservierung)
+  after(async () => {
+    await sendEmail({ to: data.contact_email, ...guestEmail }).catch(console.error);
+    await sendEmail({ to: ADMIN_EMAIL, ...adminEmail }).catch(console.error);
+  });
 
   redirect(`/anmeldung/warteliste?position=${result.position}`);
 }
