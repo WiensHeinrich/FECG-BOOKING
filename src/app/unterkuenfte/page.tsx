@@ -43,7 +43,7 @@ export default async function UnterkuenftePage() {
           <CoverImage
             src="/images/ferienhaus.webp"
             alt="Holzveranda mit Sitzplatz und Blick ins Grüne."
-            sizes="(min-width: 721px) 50vw, 100vw"
+            sizes="(min-width: 1120px) 500px, (min-width: 721px) 50vw, 100vw"
             className="h-[180px] rounded-xl wide:h-[205px]"
             imageClassName="object-[50%_75%]"
           />

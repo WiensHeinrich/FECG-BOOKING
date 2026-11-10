@@ -337,9 +337,9 @@ export function BookingWizard({
             <Image
               src="/images/ferienhaus.webp"
               alt=""
-              width={1536}
-              height={1024}
-              sizes="(min-width: 721px) 30vw, 0px"
+              width={1080}
+              height={720}
+              sizes="(min-width: 1120px) 330px, (min-width: 721px) 30vw, 1px"
               className="my-[13px] hidden h-[120px] w-full rounded-[9px] object-cover object-[50%_75%] wide:block"
             />
 

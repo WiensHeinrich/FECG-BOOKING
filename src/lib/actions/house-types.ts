@@ -28,6 +28,7 @@ export async function updateHouseType(
 
   revalidatePath("/admin/haeuser");
   revalidatePath("/anmeldung");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -71,6 +72,7 @@ export async function createHouseType(data: {
 
   revalidatePath("/admin/haeuser");
   revalidatePath("/anmeldung");
+  revalidatePath("/", "layout");
   return { success: true, id: houseType.id };
 }
 
@@ -110,6 +112,7 @@ export async function deleteHouseType(id: string) {
 
   revalidatePath("/admin/haeuser");
   revalidatePath("/anmeldung");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -150,6 +153,7 @@ export async function addHouse(houseTypeId: string) {
 
   revalidatePath("/admin/haeuser");
   revalidatePath("/anmeldung");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -188,5 +192,6 @@ export async function removeHouse(houseId: string, houseTypeId: string) {
 
   revalidatePath("/admin/haeuser");
   revalidatePath("/anmeldung");
+  revalidatePath("/", "layout");
   return { success: true };
 }

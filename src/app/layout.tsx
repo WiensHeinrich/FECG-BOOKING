@@ -21,6 +21,10 @@ const bodyFont = DM_Sans({
   display: "swap",
 });
 
+// Öffentliche Seiten werden zwischengespeichert und höchstens alle 60 Sekunden neu erzeugt.
+// Nach Buchungen und Änderungen im Admin werden sie sofort aktualisiert (revalidatePath).
+export const revalidate = 60;
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {

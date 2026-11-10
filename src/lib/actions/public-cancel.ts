@@ -124,6 +124,7 @@ export async function publicCancelReservation(
   revalidatePath("/admin/haeuser");
   revalidatePath("/admin/warteliste");
   revalidatePath("/anmeldung");
+  revalidatePath("/", "layout");
 
   return { success: true };
 }

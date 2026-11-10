@@ -10,13 +10,17 @@ export async function getHouseTypes(eventId: string): Promise<HouseType[]> {
     return mockHouseTypes.filter((ht) => ht.event_id === eventId);
   }
 
-  const { createClient } = await import("@/lib/supabase/server");
-  const supabase = await createClient();
-  const { data } = await supabase
+  const { createPublicClient } = await import("@/lib/supabase/public");
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
     .from("house_types")
     .select("*")
     .eq("event_id", eventId)
     .order("sort_order");
+
+  if (error) {
+    throw new Error(`Unterkünfte konnten nicht geladen werden: ${error.message}`);
+  }
 
   return data ?? [];
 }
@@ -26,11 +30,15 @@ export async function getAvailability(eventId: string): Promise<Availability[]> 
     return mockAvailability;
   }
 
-  const { createClient } = await import("@/lib/supabase/server");
-  const supabase = await createClient();
-  const { data } = await supabase.rpc("get_availability", {
+  const { createPublicClient } = await import("@/lib/supabase/public");
+  const supabase = createPublicClient();
+  const { data, error } = await supabase.rpc("get_availability", {
     p_event_id: eventId,
   });
+
+  if (error) {
+    throw new Error(`Verfügbarkeit konnte nicht geladen werden: ${error.message}`);
+  }
 
   return data ?? [];
 }

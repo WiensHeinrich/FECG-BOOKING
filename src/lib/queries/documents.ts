@@ -10,8 +10,8 @@ export async function getPublishedDocuments(eventId: string): Promise<Document[]
     return mockDocuments.filter((d) => d.event_id === eventId);
   }
 
-  const { createClient } = await import("@/lib/supabase/server");
-  const supabase = await createClient();
+  const { createPublicClient } = await import("@/lib/supabase/public");
+  const supabase = createPublicClient();
   const { data } = await supabase
     .from("documents")
     .select("*")

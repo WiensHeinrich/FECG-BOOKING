@@ -141,7 +141,15 @@ export default async function InformationenPage() {
   const faq = [
     {
       q: "Was müssen wir mitbringen?",
-      a: "Handtücher, Seife, Geschirrtücher, Putzlappen, Spülmittel, Müllbeutel, Toilettenpapier und Filtertüten Größe 4 für die Kaffeemaschine. Bettwäsche ist inklusive. Die vollständige Packliste steht weiter unten.",
+      a: (
+        <>
+          Handtücher, Seife, Geschirrtücher, Putzlappen, Spülmittel, Müllbeutel, Toilettenpapier und
+          Filtertüten Größe 4 für die Kaffeemaschine. Bettwäsche ist inklusive.{" "}
+          <a href="#mitbringen" className="font-semibold text-primary underline underline-offset-4 hover:text-primary/85">
+            Zur vollständigen Packliste
+          </a>
+        </>
+      ),
     },
     {
       q: "Wie bezahlen wir unsere Unterkunft?",
@@ -149,7 +157,7 @@ export default async function InformationenPage() {
     },
     {
       q: "Wie funktioniert die Anreise ins autofreie Dorf?",
-      a: `Für das Navi: ${event.location_address ?? "Dr.-Helmut-Junghans-Straße 50, 78713 Schramberg-Sulgen"}. Das Feriendorf ist ausgeschildert. Parkplätze befinden sich in der Nähe, Fahrzeuge dürfen nicht ins Dorf. Für das Gepäck stehen Ziehwagen bereit.`,
+      a: `Für das Navi: ${event.location_address ?? "Dr.-Helmut-Junghans-Straße 50, 78713 Schramberg-Sulgen"}. Das Feriendorf ist ausgeschildert. Parkplätze befinden sich in der Nähe, Fahrzeuge dürfen nicht ins Dorf.`,
     },
     {
       q: "Können wir mit der Bahn anreisen?",
@@ -157,7 +165,7 @@ export default async function InformationenPage() {
     },
     {
       q: "Was ist mit der Verpflegung und dem genauen Programm?",
-      a: "Wir versorgen uns selbst und kochen gemeinsam in der Großküche des Feriendorfs. Die genauen Informationen zu Verpflegung und Programm ergänzt das Freizeitteam rechtzeitig vor der Freizeit.",
+      a: "Für das Essen sorgt die Gemeinde: Es gibt Frühstück, Mittagessen und Abendessen, die Kosten dafür übernimmt die Gemeinde. Unterkunft und Kurtaxe zahlt jede Familie selbst. Das genaue Programm ergänzt das Freizeitteam rechtzeitig vor der Freizeit.",
     },
     {
       q: "Können wir mit mehr Personen als Betten anreisen?",
@@ -251,7 +259,7 @@ export default async function InformationenPage() {
           <CoverImage
             src="/images/kueche.webp"
             alt="Filterkaffeemaschine, Geschirr und Besteck auf einer Holzarbeitsfläche."
-            sizes="(min-width: 721px) 45vw, 100vw"
+            sizes="(min-width: 1120px) 480px, (min-width: 721px) 45vw, 100vw"
             className="h-[220px] rounded-2xl wide:h-[420px]"
             imageClassName="object-[25%_55%]"
           />
@@ -280,9 +288,9 @@ export default async function InformationenPage() {
           <Image
             src="/images/mitbringen.webp"
             alt="Handtücher, Spültuch, Spülmittel und Kaffeefilter liegen zum Einpacken bereit."
-            width={1280}
-            height={853}
-            sizes="(min-width: 721px) 40vw, 100vw"
+            width={1080}
+            height={720}
+            sizes="(min-width: 1120px) 470px, (min-width: 721px) 40vw, 100vw"
             className="h-[200px] w-full rounded-2xl object-cover object-[50%_70%] wide:h-[260px]"
           />
         </div>
@@ -298,7 +306,7 @@ export default async function InformationenPage() {
               <CoverImage
                 src={e.image}
                 alt={e.alt}
-                sizes="(min-width: 640px) 50vw, 100vw"
+                sizes="(min-width: 1120px) 525px, (min-width: 640px) 50vw, 100vw"
                 className="aspect-[2/1]"
                 imageClassName={e.position}
               />
@@ -323,7 +331,7 @@ export default async function InformationenPage() {
                   src={g.image}
                   alt={g.title}
                   fill
-                  sizes="(min-width: 721px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  sizes="(min-width: 1120px) 345px, (min-width: 721px) 33vw, (min-width: 640px) 50vw, 100vw"
                   className="object-contain p-3"
                 />
               </div>

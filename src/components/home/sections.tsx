@@ -62,8 +62,8 @@ export function Hero({ event, nights }: { event: Event; nights: number }) {
         <Image
           src="/images/anreise.webp"
           alt="Eine Familie geht von hinten gesehen auf einem Wiesenweg am Waldrand."
-          width={1536}
-          height={1024}
+          width={1280}
+          height={853}
           priority
           sizes="(min-width: 1120px) 1060px, 100vw"
           className="h-[300px] w-full rounded-[4px_4px_42px_4px] object-cover object-[65%_70%] wide:h-[400px] wide:rounded-[4px_4px_52px_4px] wide:object-[50%_75%] min-[1100px]:h-[440px]"
@@ -171,9 +171,9 @@ export function Experiences() {
               <Image
                 src={image}
                 alt={alt}
-                width={1200}
-                height={800}
-                sizes="(min-width: 721px) 50vw, 100vw"
+                width={1080}
+                height={720}
+                sizes="(min-width: 1120px) 510px, (min-width: 721px) 50vw, 100vw"
                 className={
                   imageRight
                     ? "aspect-[3/2] w-full rounded-[16px_16px_16px_48px] object-cover wide:order-2"

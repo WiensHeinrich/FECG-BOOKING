@@ -1,6 +1,7 @@
 "use server";
 
 import { after } from "next/server";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -163,6 +164,9 @@ export async function createReservation(formData: BookingFormInput) {
   // E-Mails erst nach der Antwort versenden, damit der Redirect nicht wartet,
   // der Versand aber trotzdem sicher zu Ende läuft.
   after(() => sendReservationEmails(data, reservation).catch(console.error));
+
+  // Verfügbarkeit auf den zwischengespeicherten Seiten sofort aktualisieren
+  revalidatePath("/", "layout");
 
   redirect(
     `/anmeldung/bestaetigung?id=${reservation.id}&token=${encodeURIComponent(reservation.confirmation_token)}`

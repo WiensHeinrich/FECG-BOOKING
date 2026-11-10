@@ -27,6 +27,7 @@ export function Header({ title = siteConfig.name }: HeaderProps) {
             alt="FECG Trossingen"
             width={1200}
             height={447}
+            sizes="100px"
             priority
             className="h-auto w-[90px] wide:w-[100px]"
           />

@@ -10,8 +10,8 @@ export async function getActiveEvent(): Promise<Event | null> {
     return mockEvent;
   }
 
-  const { createClient } = await import("@/lib/supabase/server");
-  const supabase = await createClient();
+  const { createPublicClient } = await import("@/lib/supabase/public");
+  const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("events")
     .select("*")
@@ -19,7 +19,11 @@ export async function getActiveEvent(): Promise<Event | null> {
     .single();
 
   if (error) {
+    // PGRST116: keine aktive Freizeit vorhanden
+    if (error.code === "PGRST116") return null;
+    // Bei einer Störung lieber die letzte gültige Seite behalten als "keine Freizeit" zwischenspeichern
     console.error("getActiveEvent error:", error);
+    throw new Error(`Freizeit konnte nicht geladen werden: ${error.message}`);
   }
 
   return data;

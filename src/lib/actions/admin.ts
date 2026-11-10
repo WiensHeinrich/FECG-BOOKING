@@ -45,6 +45,7 @@ export async function confirmPayment(reservationId: string) {
 
   revalidatePath("/admin");
   revalidatePath("/admin/reservierungen");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -109,6 +110,7 @@ export async function cancelReservation(
   revalidatePath("/admin/reservierungen");
   revalidatePath("/admin/haeuser");
   revalidatePath("/admin/warteliste");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -159,6 +161,7 @@ export async function deleteReservation(reservationId: string) {
   revalidatePath("/admin/haeuser");
   revalidatePath("/admin/warteliste");
   revalidatePath("/anmeldung");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -189,6 +192,7 @@ export async function extendReservation(reservationId: string, days: number) {
   }
 
   revalidatePath("/admin/reservierungen");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -250,6 +254,7 @@ export async function revertReservationStatus(reservationId: string) {
   revalidatePath("/admin/reservierungen");
   revalidatePath("/admin/haeuser");
   revalidatePath("/admin/warteliste");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -270,6 +275,7 @@ export async function updateAdminNotes(
   }
 
   revalidatePath("/admin/reservierungen");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -314,6 +320,7 @@ export async function updateEventSettings(
   revalidatePath("/");
   revalidatePath("/anmeldung");
   revalidatePath("/informationen");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -331,6 +338,7 @@ export async function removeFromWaitlist(entryId: string) {
   }
 
   revalidatePath("/admin/warteliste");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
@@ -520,6 +528,7 @@ export async function convertWaitlistToReservation(waitlistEntryId: string) {
   revalidatePath("/admin/reservierungen");
   revalidatePath("/admin/haeuser");
   revalidatePath("/anmeldung");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 
