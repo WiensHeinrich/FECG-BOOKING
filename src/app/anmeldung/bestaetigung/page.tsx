@@ -117,7 +117,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               <CheckCircle2 className="mx-auto h-16 w-16 text-[#00ADD6]" />
               <h1 className="page-title mt-4">Buchung bestätigt!</h1>
               <p className="mt-2 text-muted-foreground">
-                Ihre Zahlung ist eingegangen. Wir freuen uns auf Sie!
+                Eure Zahlung ist eingegangen. Wir freuen uns auf euch!
               </p>
             </>
           ) : (
@@ -125,7 +125,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               <CheckCircle2 className="mx-auto h-16 w-16 text-[#00ADD6]" />
               <h1 className="page-title mt-4">Reservierung erfolgreich!</h1>
               <p className="mt-2 text-muted-foreground">
-                Ihre Reservierung wurde erstellt. Bitte überweisen Sie den Gesamtbetrag
+                Eure Reservierung wurde erstellt. Bitte überweist den Gesamtbetrag
                 aus Hauspreis und Kurtaxe bis spätestens zum angegebenen Datum.
               </p>
             </>
@@ -254,9 +254,9 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               <div className="rounded-md border border-red-200 bg-red-50 p-4 text-base text-red-800">
                 <p className="font-semibold">Diese Reservierung ist storniert.</p>
                 <p className="mt-1">
-                  Bitte überweisen Sie nichts mehr. Die Unterkunft ist wieder freigegeben, eine
-                  Bestätigung der Stornierung kommt per E-Mail. Falls Sie bereits überwiesen haben,
-                  melden Sie sich bitte beim Freizeitteam.
+                  Bitte überweist nichts mehr. Die Unterkunft ist wieder freigegeben, eine
+                  Bestätigung der Stornierung kommt per E-Mail. Falls ihr bereits überwiesen habt,
+                  meldet euch bitte beim Freizeitteam.
                 </p>
               </div>
             )}
@@ -295,7 +295,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
             </div>
 
             <p className="mt-4 text-sm text-muted-foreground">
-              Bitte geben Sie unbedingt den <strong>Verwendungszweck</strong> an, damit wir Ihre
+              Bitte gebt unbedingt den <strong>Verwendungszweck</strong> an, damit wir eure
               Zahlung zuordnen können.
             </p>
               </>
@@ -303,7 +303,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
 
             {reservation.status === "bestaetigt" && (
               <p className="text-base text-muted-foreground">
-                Ihre Zahlung ist eingegangen, es ist nichts weiter zu tun.
+                Eure Zahlung ist eingegangen, es ist nichts weiter zu tun.
               </p>
             )}
 

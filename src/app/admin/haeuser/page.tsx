@@ -12,7 +12,7 @@ export default async function HaeuserPage() {
       <div>
         <h1 className="text-2xl font-bold">Hausbelegung &amp; Verwaltung</h1>
         <p className="text-sm text-muted-foreground">
-          Klicken Sie auf &quot;Bearbeiten&quot; um Haustypen zu ändern, Häuser hinzuzufügen oder zu entfernen.
+          Über &quot;Bearbeiten&quot; lassen sich Haustypen ändern sowie Häuser hinzufügen oder entfernen.
         </p>
       </div>
 

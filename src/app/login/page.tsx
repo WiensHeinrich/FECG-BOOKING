@@ -42,7 +42,7 @@ function LoginForm() {
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">Admin-Login</CardTitle>
         <CardDescription>
-          Melden Sie sich an, um die Freizeit zu verwalten.
+          Bitte anmelden, um die Freizeit zu verwalten.
         </CardDescription>
       </CardHeader>
       <CardContent>

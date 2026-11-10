@@ -22,17 +22,17 @@ export default async function WaitelistePage({
           <Clock className="mx-auto h-16 w-16 text-amber-500" />
           <h1 className="page-title mt-4">Auf der Warteliste</h1>
           <p className="mt-2 text-muted-foreground">
-            Sie wurden erfolgreich auf die Warteliste gesetzt.
+            Ihr steht jetzt auf der Warteliste.
           </p>
         </div>
 
         <Card>
           <CardContent className="pt-6 text-center">
             <p className="text-base text-muted-foreground">
-              Ihr Eintrag wurde gespeichert
+              Euer Eintrag wurde gespeichert
               {position ? ` und auf Position ${position} einsortiert` : ""}.
-              Sobald eine passende Unterkunft frei wird, kann sich das
-              Freizeitteam bei Ihnen melden.
+              Sobald eine passende Unterkunft frei wird, meldet sich das
+              Freizeitteam bei euch.
             </p>
           </CardContent>
         </Card>

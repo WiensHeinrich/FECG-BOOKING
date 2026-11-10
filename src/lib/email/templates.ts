@@ -187,10 +187,10 @@ export function reservationConfirmationEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Ihre Reservierung wurde erfolgreich erstellt! Bitte überweisen Sie den Gesamtbetrag (Hauspreis und Kurtaxe) bis zum <strong>${expiryDate}</strong>.</p>
+      <p>Eure Reservierung wurde erfolgreich erstellt! Bitte überweist den Gesamtbetrag (Hauspreis und Kurtaxe) bis zum <strong>${expiryDate}</strong>.</p>
 
       <div style="${cardStyle}">
-        <h3 style="margin-top: 0; color: #00ADD6;">Ihre Reservierung</h3>
+        <h3 style="margin-top: 0; color: #00ADD6;">Eure Reservierung</h3>
         <table style="width: 100%; border-collapse: collapse;">
           ${row("Unterkunft", `${esc(data.houseTypeName)} - ${esc(data.houseLabel)}`)}
           ${priceRows(data.totalPrice, data.breakdown)}
@@ -222,7 +222,7 @@ export function reservationConfirmationEmail(data: {
       </div>
 
       <p style="font-size: 13px; color: #666;">
-        Bitte geben Sie unbedingt den <strong>Verwendungszweck</strong> an, damit wir Ihre Zahlung zuordnen können.
+        Bitte gebt unbedingt den <strong>Verwendungszweck</strong> an, damit wir eure Zahlung zuordnen können.
       </p>
 
       <p style="font-size: 13px; color: #666;">
@@ -291,14 +291,14 @@ export function bookingConfirmedEmail(data: {
   totalPrice: number;
 }) {
   return {
-    subject: `Zahlung bestätigt - Ihre Buchung ist sicher!`,
+    subject: `Zahlung bestätigt - eure Buchung ist sicher!`,
     html: `<div style="${baseStyle}">
       <div style="${headerStyle}">
         <h1 style="color: #00ADD6; margin: 0; font-size: 24px;">FECG Gemeindefreizeit 2027</h1>
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Ihre Zahlung ist eingegangen. Ihre Buchung ist damit bestätigt! 🎉</p>
+      <p>Eure Zahlung ist eingegangen. Eure Buchung ist damit bestätigt! 🎉</p>
 
       <div style="${cardStyle}">
         <table style="width: 100%; border-collapse: collapse;">
@@ -343,7 +343,7 @@ export function paymentReminderEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Ihre Reservierung für <strong>${esc(data.houseTypeName)}</strong> läuft am <strong>${expiryDate}</strong> ab. Bitte überweisen Sie den Betrag rechtzeitig, damit Ihre Buchung nicht verfällt.</p>
+      <p>Eure Reservierung für <strong>${esc(data.houseTypeName)}</strong> läuft am <strong>${expiryDate}</strong> ab. Bitte überweist den Betrag rechtzeitig, damit eure Buchung nicht verfällt.</p>
 
       <div style="${highlightStyle}">
         <h3 style="margin-top: 0; color: #00ADD6;">Überweisungsdaten</h3>
@@ -379,10 +379,10 @@ export function waitlistConfirmationEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Sie wurden erfolgreich auf die <strong>Warteliste</strong> für <strong>${esc(data.houseTypeName)}</strong> gesetzt.</p>
+      <p>Ihr wurdet erfolgreich auf die <strong>Warteliste</strong> für <strong>${esc(data.houseTypeName)}</strong> gesetzt.</p>
 
       <div style="${cardStyle}">
-        <h3 style="margin-top: 0; color: #00ADD6;">Ihre Warteliste-Position</h3>
+        <h3 style="margin-top: 0; color: #00ADD6;">Euer Platz auf der Warteliste</h3>
         <table style="width: 100%; border-collapse: collapse;">
           ${row("Unterkunftstyp", esc(data.houseTypeName))}
           ${row("Position", `<strong>Platz ${data.position}</strong>`)}
@@ -393,7 +393,7 @@ export function waitlistConfirmationEmail(data: {
 
       <div style="${highlightStyle}">
         <p style="margin: 0;"><strong>Wie geht es weiter?</strong></p>
-        <p style="margin: 8px 0 0 0;">Sobald eine Unterkunft dieses Typs frei wird, werden wir Sie benachrichtigen und Ihre Anmeldung in eine verbindliche Reservierung überführen. Sie erhalten dann eine E-Mail mit allen Zahlungsdaten.</p>
+        <p style="margin: 8px 0 0 0;">Sobald eine Unterkunft dieses Typs frei wird, benachrichtigen wir euch und überführen eure Anmeldung in eine verbindliche Reservierung. Ihr erhaltet dann eine E-Mail mit allen Zahlungsdaten.</p>
       </div>
 
       <div style="${footerStyle}">
@@ -461,15 +461,15 @@ export function cancellationEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Ihre Reservierung für <strong>${esc(data.houseTypeName)}</strong> wurde leider storniert.</p>
+      <p>Eure Reservierung für <strong>${esc(data.houseTypeName)}</strong> wurde leider storniert.</p>
 
       <div style="${highlightStyle}">
         <p style="margin: 0;"><strong>Grund der Stornierung:</strong></p>
         <p style="margin: 8px 0 0 0;">${esc(data.reason)}</p>
       </div>
 
-      <p>Falls Sie Fragen haben, wenden Sie sich bitte an das Organisationsteam.</p>
-      <p>Falls noch Unterkünfte verfügbar sind, können Sie sich gerne erneut anmelden.</p>
+      <p>Falls ihr Fragen habt, wendet euch bitte an das Organisationsteam.</p>
+      <p>Falls noch Unterkünfte verfügbar sind, könnt ihr euch gerne erneut anmelden.</p>
 
       <div style="${footerStyle}">
         <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>
@@ -492,8 +492,8 @@ export function reservationExpiredEmail(data: {
       </div>
 
       <h2 style="margin-top: 0;">${greeting(data.firstName, data.contactGender)},</h2>
-      <p>Leider ist Ihre Reservierung für <strong>${esc(data.houseTypeName)}</strong> abgelaufen, da keine Zahlung eingegangen ist.</p>
-      <p>Falls noch Unterkünfte verfügbar sind, können Sie sich gerne erneut anmelden.</p>
+      <p>Leider ist eure Reservierung für <strong>${esc(data.houseTypeName)}</strong> abgelaufen, da keine Zahlung eingegangen ist.</p>
+      <p>Falls noch Unterkünfte verfügbar sind, könnt ihr euch gerne erneut anmelden.</p>
 
       <div style="${footerStyle}">
         <p>Mit freundlichen Grüßen,<br/>Das Organisationsteam<br/>FECG Trossingen e.V. &middot; Gemeindefreizeit</p>

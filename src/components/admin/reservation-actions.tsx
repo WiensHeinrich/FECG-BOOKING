@@ -57,11 +57,11 @@ export function ReservationActions({
 
   async function handleCancel() {
     if (!cancelReason) {
-      toast.error("Bitte wählen Sie einen Stornierungsgrund.");
+      toast.error("Bitte einen Stornierungsgrund wählen.");
       return;
     }
     if (cancelReason === "sonstiges" && !cancelDetails.trim()) {
-      toast.error("Bitte geben Sie den Grund der Stornierung ein.");
+      toast.error("Bitte den Grund der Stornierung eingeben.");
       return;
     }
 

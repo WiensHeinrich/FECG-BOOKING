@@ -8,6 +8,7 @@ import { sendEmail } from "@/lib/email/send";
 import { waitlistConfirmationEmail, adminNewWaitlistEmail } from "@/lib/email/templates";
 import { ADMIN_EMAIL } from "@/lib/email/resend";
 import type { GuestEmailData } from "@/lib/email/templates";
+import { dbMessage } from "@/lib/utils/db-messages";
 
 const guestSchema = z.object({
   first_name: z.string().min(1),
@@ -68,7 +69,7 @@ export async function joinWaitlist(formData: WaitlistFormData) {
   }
 
   if (result?.error || !result?.position) {
-    return { error: result?.error || "Warteliste-Eintrag fehlgeschlagen." };
+    return { error: dbMessage(result?.error) || "Warteliste-Eintrag fehlgeschlagen." };
   }
 
   // Haustyp-Name laden für E-Mails

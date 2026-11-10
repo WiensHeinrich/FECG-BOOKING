@@ -27,7 +27,7 @@ export const bookingFormSchema = z.object({
   contact_dietary_notes: z.string().max(500, "Hinweise dürfen maximal 500 Zeichen lang sein").optional(),
   guests: z.array(guestSchema).min(1, "Mindestens ein Gast erforderlich").max(50, "Zu viele Gäste"),
   extra_beds: z.number().int().min(0).max(5).default(0),
-  rules_accepted: z.literal(true, "Bitte akzeptieren Sie die Regeln der Gemeindefreizeit"),
+  rules_accepted: z.literal(true, "Bitte akzeptiert die Regeln der Gemeindefreizeit"),
 });
 
 export type BookingFormData = z.infer<typeof bookingFormSchema>;

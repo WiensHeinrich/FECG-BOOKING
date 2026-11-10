@@ -23,11 +23,11 @@ export function PublicCancelButton({
 
   function handleSubmit() {
     if (!reason) {
-      setError("Bitte wählen Sie einen Grund.");
+      setError("Bitte wählt einen Grund.");
       return;
     }
     if (reason === "sonstiges" && !details.trim()) {
-      setError("Bitte geben Sie den Grund der Stornierung ein.");
+      setError("Bitte gebt den Grund der Stornierung ein.");
       return;
     }
 
@@ -48,7 +48,7 @@ export function PublicCancelButton({
         <XCircle className="mx-auto h-8 w-8 text-red-500" />
         <p className="mt-2 font-semibold text-red-800">Reservierung storniert</p>
         <p className="mt-1 text-base text-red-600">
-          Sie erhalten eine Bestätigung per E-Mail.
+          Ihr erhaltet eine Bestätigung per E-Mail.
         </p>
       </div>
     );
@@ -58,7 +58,7 @@ export function PublicCancelButton({
     return (
       <div className="text-center">
         <p className="mb-2 text-sm text-muted-foreground">
-          Sie möchten Ihre Reservierung stornieren?
+          Ihr möchtet eure Reservierung stornieren?
         </p>
         <Button
           variant="ghost"
@@ -77,7 +77,7 @@ export function PublicCancelButton({
     <div className="rounded-md border border-red-200 bg-red-50/50 p-4 space-y-4">
       <h3 className="font-semibold text-red-800">Reservierung stornieren</h3>
       <p className="text-base text-muted-foreground">
-        Bitte teilen Sie uns den Grund der Stornierung mit.
+        Bitte teilt uns den Grund der Stornierung mit.
       </p>
 
       <div className="space-y-2">
@@ -123,7 +123,7 @@ export function PublicCancelButton({
         <Textarea
           value={details}
           onChange={(e) => setDetails(e.target.value)}
-          placeholder="Bitte beschreiben Sie den Grund..."
+          placeholder="Bitte beschreibt den Grund..."
           rows={2}
         />
       </div>

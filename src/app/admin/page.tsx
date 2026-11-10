@@ -24,7 +24,7 @@ export default async function AdminDashboard() {
       <div className="py-12 text-center">
         <h1 className="text-2xl font-bold">Kein aktives Event</h1>
         <p className="mt-2 text-muted-foreground">
-          Erstellen Sie ein Event in den Einstellungen.
+          Bitte zuerst ein Event in den Einstellungen anlegen.
         </p>
       </div>
     );

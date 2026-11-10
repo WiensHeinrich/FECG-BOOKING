@@ -18,6 +18,7 @@ import {
 } from "@/lib/email/templates";
 import { ADMIN_EMAIL } from "@/lib/email/resend";
 import type { Reservation } from "@/lib/types/database";
+import { dbMessage } from "@/lib/utils/db-messages";
 
 interface ReservationResult {
   id: string;
@@ -116,8 +117,8 @@ export async function createReservation(formData: BookingFormInput) {
     const first = parsed.error.issues[0];
     return {
       error: first?.message
-        ? `Bitte überprüfen Sie Ihre Eingaben: ${first.message}`
-        : "Ungültige Eingaben. Bitte überprüfen Sie Ihre Daten.",
+        ? `Bitte überprüft eure Eingaben: ${first.message}`
+        : "Ungültige Eingaben. Bitte überprüft eure Daten.",
     };
   }
 
@@ -179,7 +180,7 @@ export async function createReservation(formData: BookingFormInput) {
   if (reservation?.error || !reservation?.id || !reservation?.confirmation_token) {
     console.error("RPC result error:", result);
     return {
-      error: reservation?.error || "Reservierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      error: dbMessage(reservation?.error) || "Reservierung fehlgeschlagen. Bitte versucht es erneut.",
     };
   }
 

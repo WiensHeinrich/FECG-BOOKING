@@ -20,7 +20,7 @@ export default async function HomePage() {
         <div className="text-center">
           <h1 className="page-title">Aktuell keine Freizeit geplant</h1>
           <p className="mt-3 text-muted-foreground">
-            Sobald eine neue Gemeindefreizeit geplant ist, finden Sie hier alle Informationen.
+            Sobald eine neue Gemeindefreizeit geplant ist, findet ihr hier alle Informationen.
           </p>
         </div>
       </div>

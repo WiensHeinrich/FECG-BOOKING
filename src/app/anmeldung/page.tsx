@@ -9,7 +9,7 @@ import { PageHead } from "@/components/site/section";
 
 export const metadata: Metadata = {
   title: "Anmeldung",
-  description: "Melden Sie sich für die Gemeindefreizeit an und reservieren Sie Ihre Unterkunft.",
+  description: "Meldet euch für die Gemeindefreizeit an und reserviert eure Unterkunft.",
 };
 
 interface Props {

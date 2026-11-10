@@ -73,8 +73,8 @@ export default async function UnterkuenftePage() {
         <p className="kicker mb-[9px]">Lageplan</p>
         <h2 className="display-2 mb-[9px]">Wo liegt welches Haus?</h2>
         <p className="mb-[22px] max-w-[62ch] text-muted-foreground">
-          Tippt ein Haus im Plan an, dann seht ihr, welche Unterkunft dahintersteckt. Über die Liste
-          lassen sich alle Häuser einer Art auf einmal hervorheben.
+          Tippt ein Haus im Plan an: Ihr seht sofort, welche Unterkunft es ist, und könnt sie direkt
+          buchen. Über die Farben unter dem Plan lassen sich alle Häuser einer Art hervorheben.
         </p>
         <SitePlan houseTypes={houseTypes} availability={availability} nights={nights} />
       </section>
