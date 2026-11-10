@@ -12,6 +12,7 @@ import { formatCurrency, formatDate } from "@/lib/utils/format";
 import Link from "next/link";
 import { FileDown } from "lucide-react";
 import { DeleteReservationButton } from "@/components/admin/delete-reservation-button";
+import { ClickableRow } from "@/components/admin/clickable-row";
 
 export default async function ReservierungenPage() {
   const event = await getActiveEventAdmin();
@@ -54,7 +55,7 @@ export default async function ReservierungenPage() {
             </TableHeader>
             <TableBody>
               {reservations.map((r) => (
-                <TableRow key={r.id}>
+                <ClickableRow key={r.id} href={`/admin/reservierungen/${r.id}`}>
                   <TableCell>
                     <Link
                       href={`/admin/reservierungen/${r.id}`}
@@ -89,13 +90,13 @@ export default async function ReservierungenPage() {
                       ? formatDate(r.expires_at)
                       : "–"}
                   </TableCell>
-                  <TableCell>
+                  <TableCell data-no-row-click="">
                     <DeleteReservationButton
                       reservationId={r.id}
                       name={`${r.contact_first_name} ${r.contact_last_name}`}
                     />
                   </TableCell>
-                </TableRow>
+                </ClickableRow>
               ))}
             </TableBody>
           </Table>

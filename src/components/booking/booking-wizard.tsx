@@ -145,12 +145,21 @@ export function BookingWizard({
   const effectiveGuests: GuestData[] =
     contactIsGuest && guests.length > 0 ? [contactGuest, ...guests.slice(1)] : guests;
 
+  // Die Kurtaxe hängt vom Alter ab. Solange beim Ausfüllen Geburtsdaten fehlen, zählen nur die
+  // Gäste mit Geburtsdatum, der Rest wird als "folgt" ausgewiesen (statt alle als Erwachsene zu rechnen).
+  // Die Kontaktperson ist volljährig und zählt auch ohne Geburtsdatum als Erwachsene.
+  const guestsWithBirth = effectiveGuests.filter(
+    (g, i) => (i === 0 && contactIsGuest) || getAgeAtDate(g.birth_date, eventStartDate) !== null
+  );
+  const missingBirth = effectiveGuests.length - guestsWithBirth.length;
+  const taxPending = step === 2 && missingBirth > 0;
+
   const price = selectedType
     ? calculateBookingPrice({
         housePrice: selectedType.price_per_house,
         startDate: eventStartDate,
         endDate: eventEndDate,
-        guests: effectiveGuests,
+        guests: taxPending ? guestsWithBirth : effectiveGuests,
         extraBeds,
         rates,
       })
@@ -457,18 +466,34 @@ export function BookingWizard({
                     {price.exempt > 0 && (
                       <Row label={`${price.exempt}x Kinder unter ${rates.childMinAge} Jahren`} value="kostenfrei" />
                     )}
+                    {taxPending && (
+                      <Row
+                        label={
+                          guestsWithBirth.length === 0
+                            ? "Kurtaxe · je nach Alter der Gäste"
+                            : `Kurtaxe · ${missingBirth} ${missingBirth === 1 ? "Geburtsdatum fehlt" : "Geburtsdaten fehlen"} noch`
+                        }
+                        value="folgt"
+                      />
+                    )}
                   </div>
                   <div className="mt-[15px] flex items-center justify-between gap-4 border-t border-border pt-4">
-                    <span>Gesamtbetrag</span>
+                    <span>{taxPending ? "Zwischensumme" : "Gesamtbetrag"}</span>
                     <strong className="text-[30px] font-medium tracking-[-0.7px]">{formatCurrency(price.total)}</strong>
                   </div>
-                  <p className="pt-3 text-[14px] leading-[1.7] text-muted-foreground">
-                    Inklusive Kurtaxe. Der Gesamtbetrag wird vorab überwiesen, die Kurtaxe führt das
-                    Freizeitteam gesammelt an das Feriendorf ab.
-                    {effectiveGuests.some((g) => !g.birth_date) && (
-                      <> Ohne Geburtsdatum rechnen wir mit dem Erwachsenentarif.</>
-                    )}
-                  </p>
+                  {taxPending ? (
+                    <p className="pt-3 text-[14px] leading-[1.7] text-muted-foreground">
+                      Dazu kommt die Kurtaxe. Sie richtet sich nach dem Alter und wird hier ergänzt, sobald
+                      ihr die Geburtsdaten eintragt: ab {rates.adultMinAge} Jahren{" "}
+                      {formatCurrency(rates.adultRate)}, von {rates.childMinAge} bis {rates.adultMinAge - 1}{" "}
+                      Jahren {formatCurrency(rates.childRate)} pro Nacht, jüngere Kinder sind frei.
+                    </p>
+                  ) : (
+                    <p className="pt-3 text-[14px] leading-[1.7] text-muted-foreground">
+                      Inklusive Kurtaxe. Der Gesamtbetrag wird vorab überwiesen, die Kurtaxe führt das
+                      Freizeitteam gesammelt an das Feriendorf ab.
+                    </p>
+                  )}
                 </>
               )
             )}
