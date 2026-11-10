@@ -9,7 +9,7 @@ import { StayComparison } from "@/components/stays/stay-comparison";
 export const metadata: Metadata = {
   title: "Unterkünfte",
   description:
-    "Ferienhäuser, Gästehaus und Apartments im Feriendorf Eckenhof Schramberg im Vergleich: Belegung, Ausstattung und Hauspreise für die Gemeindefreizeit.",
+    "Ferienhäuser, Gästehaus und Villa im Feriendorf Eckenhof Schramberg im Vergleich: Belegung, Ausstattung und Hauspreise für die Gemeindefreizeit.",
 };
 
 export default async function UnterkuenftePage() {
@@ -35,7 +35,7 @@ export default async function UnterkuenftePage() {
       <PageHead
         kicker="Euer Wochenende im Schwarzwald"
         title="Hier ist Platz für euch."
-        text="Ferienhaus, Gästehaus oder Apartment: Vergleicht die Unterkünfte in Ruhe und nehmt eure Auswahl direkt mit in die Anmeldung."
+        text="Ferienhaus, Gästehaus oder Villa: Vergleicht die Unterkünfte in Ruhe und nehmt eure Auswahl direkt mit in die Anmeldung."
       />
 
       <section className="site-container mt-6 wide:mt-[26px]">
