@@ -48,7 +48,6 @@ const mitbringen = [
   "Toilettenpapier",
   "Filtertüten Größe 4 für die Kaffeemaschine",
   "Sandspielzeug für den Sandkasten",
-  "Eigenes Datenvolumen, falls ihr arbeiten oder Filme schauen wollt",
 ];
 
 const einrichtungen = [
