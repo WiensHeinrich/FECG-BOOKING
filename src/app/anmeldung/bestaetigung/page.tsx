@@ -145,6 +145,12 @@ export default async function BestaetigungPage({ searchParams }: Props) {
                     : reservation.house_type_name}
                 </span>
               </div>
+              {reservation.status !== "storniert" && reservation.status !== "abgelaufen" && (
+                <p className="text-sm text-muted-foreground">
+                  Wir bemühen uns, euch genau dieses Haus zu geben. Ein Anspruch auf eine bestimmte
+                  Hausnummer besteht jedoch nicht.
+                </p>
+              )}
               {reservation.accommodation_price !== null && reservation.accommodation_price !== undefined && (
                 <>
                   <div className="flex justify-between">

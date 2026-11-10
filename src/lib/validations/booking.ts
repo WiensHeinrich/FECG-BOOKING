@@ -18,6 +18,8 @@ export const guestSchema = z.object({
 export const bookingFormSchema = z.object({
   event_id: z.guid(),
   house_type_id: z.guid(),
+  /** Wunschhaus aus dem Lageplan, ohne Angabe teilt das System ein Haus zu */
+  house_id: z.guid().optional(),
   contact_first_name: z.string().trim().min(1, "Vorname ist erforderlich").max(100, "Vorname zu lang (max. 100 Zeichen)"),
   contact_last_name: z.string().trim().min(1, "Nachname ist erforderlich").max(100, "Nachname zu lang (max. 100 Zeichen)"),
   contact_email: z.email("Bitte gültige E-Mail-Adresse eingeben").max(254, "E-Mail-Adresse zu lang"),

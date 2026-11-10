@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { CoverImage } from "@/components/site/cover-image";
 import { getActiveEvent } from "@/lib/queries/events";
-import { getAvailability, getHouseTypes } from "@/lib/queries/houses";
+import { getAvailability, getHouseStatus, getHouseTypes } from "@/lib/queries/houses";
 import { getNights, ratesFromEvent } from "@/lib/utils/pricing";
 import { PageHead } from "@/components/site/section";
 import { StayComparison } from "@/components/stays/stay-comparison";
@@ -24,9 +24,10 @@ export default async function UnterkuenftePage() {
     );
   }
 
-  const [houseTypes, availability] = await Promise.all([
+  const [houseTypes, availability, houseStatus] = await Promise.all([
     getHouseTypes(event.id),
     getAvailability(event.id).catch(() => null),
+    getHouseStatus(event.id).catch(() => null),
   ]);
   const nights = getNights(event.start_date, event.end_date);
   const rates = ratesFromEvent(event);
@@ -73,10 +74,17 @@ export default async function UnterkuenftePage() {
         <p className="kicker mb-[9px]">Lageplan</p>
         <h2 className="display-2 mb-[9px]">Wo liegt welches Haus?</h2>
         <p className="mb-[22px] max-w-[62ch] text-muted-foreground">
-          Tippt ein Haus im Plan an: Ihr seht sofort, welche Unterkunft es ist, und könnt sie direkt
-          buchen. Über die Farben unter dem Plan lassen sich alle Häuser einer Art hervorheben.
+          {houseStatus
+            ? "Tippt ein Haus im Plan an: Ihr seht sofort, welche Unterkunft es ist, und könnt genau dieses Haus buchen. So können auch befreundete Familien nebeneinander wohnen. Graue Häuser sind schon vergeben."
+            : "Tippt ein Haus im Plan an: Ihr seht sofort, welche Unterkunft es ist, und könnt sie direkt buchen."}{" "}
+          Über die Farben unter dem Plan lassen sich alle Häuser einer Art hervorheben.
         </p>
-        <SitePlan houseTypes={houseTypes} availability={availability} nights={nights} />
+        <SitePlan
+          houseTypes={houseTypes}
+          availability={availability}
+          houseStatus={houseStatus}
+          nights={nights}
+        />
       </section>
     </div>
   );

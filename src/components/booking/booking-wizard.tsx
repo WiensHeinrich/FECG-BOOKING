@@ -14,10 +14,11 @@ import {
   getNights,
   type PricingRates,
 } from "@/lib/utils/pricing";
-import type { Availability, HouseType } from "@/lib/types/database";
+import type { Availability, HouseStatus, HouseType } from "@/lib/types/database";
 import type { GuestData } from "@/lib/validations/booking";
 import { StayComparison } from "@/components/stays/stay-comparison";
-import { nightsLabel } from "@/lib/utils/stay";
+import { HOUSE_WISH_NOTE, nightsLabel } from "@/lib/utils/stay";
+import { AvailabilityBadge } from "@/components/stays/availability-badge";
 import { RulesContent } from "./rules-content";
 import { cn } from "@/lib/utils";
 
@@ -27,9 +28,13 @@ interface BookingWizardProps {
   eventEndDate: string;
   houseTypes: HouseType[];
   availability: Availability[] | null;
+  /** Belegung je Haus für die feste Hauswahl, null = Hauswahl nicht verfügbar */
+  houseStatus?: HouseStatus[] | null;
   reservationValidityDays: number;
   rates: PricingRates;
   initialHouseTypeId?: string | null;
+  /** im Lageplan gewähltes Haus (Hausnummer innerhalb der Unterkunftsart) */
+  initialHouseNumber?: number | null;
 }
 
 type Gender = "" | "maennlich" | "weiblich";
@@ -58,14 +63,25 @@ export function BookingWizard({
   eventEndDate,
   houseTypes,
   availability,
+  houseStatus = null,
   reservationValidityDays,
   rates,
   initialHouseTypeId = null,
+  initialHouseNumber = null,
 }: BookingWizardProps) {
   const initialType = houseTypes.find((ht) => ht.id === initialHouseTypeId) ?? null;
+  const initialHouse =
+    initialType && initialHouseNumber !== null
+      ? (houseStatus?.find(
+          (h) => h.house_type_id === initialType.id && h.house_number === initialHouseNumber
+        ) ?? null)
+      : null;
 
   const [step, setStep] = useState<Step>(initialType ? 2 : 1);
   const [selectedTypeId, setSelectedTypeId] = useState<string | null>(initialType?.id ?? null);
+  const [selectedHouseId, setSelectedHouseId] = useState<string | null>(
+    initialHouse?.is_free ? initialHouse.house_id : null
+  );
   const [contact, setContact] = useState({
     first_name: "",
     last_name: "",
@@ -83,7 +99,11 @@ export function BookingWizard({
   const [openGuests, setOpenGuests] = useState<Set<number>>(() => new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]));
   const [extraBeds, setExtraBeds] = useState(0);
   const [rulesAccepted, setRulesAccepted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    initialHouse && !initialHouse.is_free
+      ? `${initialHouse.label} ist leider schon vergeben. Wählt unter „Wunschhaus“ ein anderes Haus oder lasst euch eines zuteilen.`
+      : null
+  );
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -97,6 +117,17 @@ export function BookingWizard({
       : null
     : null;
   const isSoldOut = availableCount !== null && availableCount <= 0;
+
+  // Feste Hauswahl: nur bei Arten mit mehreren Häusern und solange etwas frei ist
+  const typeHouses = selectedType
+    ? (houseStatus ?? [])
+        .filter((h) => h.house_type_id === selectedType.id)
+        .sort((a, b) => a.house_number - b.house_number)
+    : [];
+  const canPickHouse = !isSoldOut && typeHouses.length > 1;
+  const selectedHouse = canPickHouse
+    ? (typeHouses.find((h) => h.house_id === selectedHouseId && h.is_free) ?? null)
+    : null;
   const range = selectedType ? guestRange(selectedType, rates.maxExtraBeds) : { min: 1, max: 1 };
 
   // Gast 1 wird aus der Kontaktperson abgeleitet, solange das Häkchen gesetzt ist
@@ -137,6 +168,7 @@ export function BookingWizard({
   }
 
   function selectHouseType(houseType: HouseType) {
+    if (houseType.id !== selectedTypeId) setSelectedHouseId(null);
     setSelectedTypeId(houseType.id);
     setExtraBeds(0);
     const { min, max } = guestRange(houseType, rates.maxExtraBeds);
@@ -254,6 +286,7 @@ export function BookingWizard({
         : await createReservation({
             event_id: eventId,
             house_type_id: selectedType.id,
+            house_id: selectedHouse?.house_id,
             contact_first_name: contact.first_name,
             contact_last_name: contact.last_name,
             contact_email: contact.email,
@@ -266,6 +299,16 @@ export function BookingWizard({
             rules_accepted: true as const,
           });
       if (result?.error) {
+        if ("houseTaken" in result && result.houseTaken) {
+          // Wunschhaus inzwischen vergeben: Auswahl zurücksetzen und Belegung neu laden
+          setError(
+            `${selectedHouse?.label ?? "Das gewählte Haus"} wurde gerade eben vergeben. Wählt unter „Wunschhaus“ ein anderes Haus oder lasst euch eines zuteilen.`
+          );
+          setSelectedHouseId(null);
+          router.refresh();
+          setTimeout(scrollToTop, 50);
+          return;
+        }
         setError(result.error);
         // Unterkunft inzwischen vergeben: freie Plätze neu laden, dann erscheint die Warteliste
         if ("soldOut" in result && result.soldOut) router.refresh();
@@ -335,10 +378,44 @@ export function BookingWizard({
           <aside className="panel order-first wide:order-last" aria-label="Zusammenfassung">
             <p className="kicker mb-3 tracking-[0.12em]">Euer Wochenende</p>
             <h3 className="text-[19px] font-semibold leading-[1.35]">{selectedType.name}</h3>
+            {availableCount !== null && (
+              <AvailabilityBadge
+                free={Math.max(availableCount, 0)}
+                total={selectedType.total_quantity}
+                className="mt-2"
+              />
+            )}
             <p className="text-small mt-2">
               {dateLabel} · {guests.length} {guests.length === 1 ? "Gast" : "Gäste"}
               {extraBeds > 0 && <> · {extraBeds} {extraBeds === 1 ? "Zustellbett" : "Zustellbetten"}</>}
             </p>
+            {canPickHouse && (
+              <div className="mt-[14px] rounded-lg bg-sage p-[13px]">
+                <label htmlFor="wunschhaus" className="field-label">
+                  Wunschhaus
+                </label>
+                <select
+                  id="wunschhaus"
+                  className="field-input mt-2 w-full"
+                  value={selectedHouse?.house_id ?? ""}
+                  onChange={(e) => setSelectedHouseId(e.target.value || null)}
+                >
+                  <option value="">Kein Wunsch, bitte zuteilen</option>
+                  {typeHouses.map((h) => (
+                    <option key={h.house_id} value={h.house_id} disabled={!h.is_free}>
+                      {h.label}
+                      {h.is_free ? "" : " (vergeben)"}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-2 text-[13px] leading-[1.5] text-muted-foreground">
+                  {HOUSE_WISH_NOTE}{" "}
+                  <Link href="/unterkuenfte#lageplan" target="_blank" className="text-link text-[13px]">
+                    Lageplan ansehen
+                  </Link>
+                </p>
+              </div>
+            )}
             <Image
               src="/images/ferienhaus.webp"
               alt=""
@@ -665,7 +742,12 @@ export function BookingWizard({
                     <CalendarDays className="mr-1.5 inline h-4 w-4 text-primary" aria-hidden="true" />
                     {dateLabel} · {nightsLabel(nights)}
                   </li>
-                  <li>{selectedType.name}</li>
+                  <li>
+                    {selectedType.name}
+                    {canPickHouse && (
+                      <> · {selectedHouse ? `Wunschhaus: ${selectedHouse.label}` : "Haus wird zugeteilt"}</>
+                    )}
+                  </li>
                   <li>
                     {guests.length} {guests.length === 1 ? "Mitreisender" : "Mitreisende"}:{" "}
                     {effectiveGuests.map((g, i) => guestSummary(g, i).name).join(", ")}

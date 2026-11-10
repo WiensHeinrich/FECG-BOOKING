@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getActiveEvent } from "@/lib/queries/events";
-import { getAvailability, getHouseTypes } from "@/lib/queries/houses";
+import { getAvailability, getHouseStatus, getHouseTypes } from "@/lib/queries/houses";
 import { BookingWizard } from "@/components/booking/booking-wizard";
 import { getRegistrationInfo } from "@/lib/utils/registration";
 import { ratesFromEvent } from "@/lib/utils/pricing";
@@ -13,12 +13,12 @@ export const metadata: Metadata = {
 };
 
 interface Props {
-  searchParams: Promise<{ unterkunft?: string }>;
+  searchParams: Promise<{ unterkunft?: string; haus?: string }>;
 }
 
 export default async function AnmeldungPage({ searchParams }: Props) {
   const event = await getActiveEvent();
-  const { unterkunft } = await searchParams;
+  const { unterkunft, haus } = await searchParams;
 
   if (!event) {
     return (
@@ -45,10 +45,12 @@ export default async function AnmeldungPage({ searchParams }: Props) {
     );
   }
 
-  const [houseTypes, availability] = await Promise.all([
+  const [houseTypes, availability, houseStatus] = await Promise.all([
     getHouseTypes(event.id),
     getAvailability(event.id).catch(() => null),
+    getHouseStatus(event.id).catch(() => null),
   ]);
+  const houseNumber = haus && /^\d{1,3}$/.test(haus) ? Number(haus) : null;
 
   const rates = ratesFromEvent(event);
   const initial = unterkunft
@@ -69,9 +71,11 @@ export default async function AnmeldungPage({ searchParams }: Props) {
           eventEndDate={event.end_date}
           houseTypes={houseTypes}
           availability={availability}
+          houseStatus={houseStatus}
           reservationValidityDays={event.reservation_validity_days}
           rates={rates}
           initialHouseTypeId={initial?.id ?? null}
+          initialHouseNumber={initial ? houseNumber : null}
         />
       </section>
     </div>

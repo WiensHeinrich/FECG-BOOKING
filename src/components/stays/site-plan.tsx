@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, X } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/format";
-import { nightsLabel } from "@/lib/utils/stay";
+import { HOUSE_WISH_NOTE, nightsLabel } from "@/lib/utils/stay";
 import { getFloorPlan } from "@/lib/config/floor-plans";
-import type { Availability, HouseType } from "@/lib/types/database";
+import type { Availability, HouseStatus, HouseType } from "@/lib/types/database";
+import { AvailabilityBadge } from "./availability-badge";
 import { cn } from "@/lib/utils";
 
 /**
@@ -17,7 +18,9 @@ const PLAN_WIDTH = 847;
 const PLAN_HEIGHT = 717;
 const INK = "#263e36";
 const PAPER = "#fffdf8";
-const DIMMED = "#e4e1d6";
+/** vergebene Häuser sind grau */
+const TAKEN_FILL = "#dcdad1";
+const TAKEN_INK = "#757c77";
 
 type GroupKey = "a" | "b" | "c" | "g" | "v";
 
@@ -58,6 +61,8 @@ interface Spot {
   /** Beschriftung im Plan, mehrere Zeilen möglich */
   text: string[];
   fontSize?: number;
+  /** Hausnummer, wenn die Fläche genau ein buchbares Haus ist */
+  houseNumber?: number;
 }
 
 const house = (n: number, group: GroupKey, points: string, cx: number, cy: number): Spot => ({
@@ -68,6 +73,7 @@ const house = (n: number, group: GroupKey, points: string, cx: number, cy: numbe
   cx,
   cy,
   text: [String(n)],
+  houseNumber: n,
 });
 
 const SPOTS: Spot[] = [
@@ -134,11 +140,13 @@ function boundsOf(points: string) {
 interface SitePlanProps {
   houseTypes: HouseType[];
   availability: Availability[] | null;
+  /** Belegung je Haus, null = feste Hauswahl nicht verfügbar */
+  houseStatus: HouseStatus[] | null;
   nights: number;
 }
 
-export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
-  /** über die Farbliste hervorgehobene Art, alle anderen Häuser werden grau */
+export function SitePlan({ houseTypes, availability, houseStatus, nights }: SitePlanProps) {
+  /** über die Farbliste hervorgehobene Art, alle anderen Häuser werden blass */
   const [filterGroup, setFilterGroup] = useState<GroupKey | null>(null);
   const [activeSpot, setActiveSpot] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -189,12 +197,39 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
     return a ? { free: Math.max(a.available_count, 0), total: a.total_quantity } : null;
   }
 
-  function availabilityText(ht: HouseType) {
-    const a = freeCount(ht);
-    if (!a) return null;
-    if (a.free <= 0) return "Ausgebucht, Warteliste möglich";
-    return `${a.free} von ${a.total} frei`;
+  /** Das einzelne Haus hinter einer Fläche, wenn die feste Hauswahl verfügbar ist */
+  function houseOf(s: Spot) {
+    if (!houseStatus || s.houseNumber === undefined) return null;
+    const type = typesOf(groupByKey.get(s.group)!)[0];
+    if (!type) return null;
+    return houseStatus.find((h) => h.house_type_id === type.id && h.house_number === s.houseNumber) ?? null;
   }
+
+  /** true = vergeben (grau), false = frei, null = unbekannt */
+  function isTaken(s: Spot): boolean | null {
+    if (s.houseNumber !== undefined) {
+      const h = houseOf(s);
+      return h ? !h.is_free : null;
+    }
+    // Gebäude mit mehreren Wohnungen: erst grau, wenn gar nichts mehr frei ist
+    const counts = typesOf(groupByKey.get(s.group)!).map(freeCount);
+    if (counts.length === 0 || counts.some((c) => c === null)) return null;
+    return counts.every((c) => c!.free <= 0);
+  }
+
+  const spotHouse = spot ? houseOf(spot) : null;
+  const spotTaken = spot ? isTaken(spot) === true : false;
+  const calloutNote = !spot
+    ? null
+    : !houseStatus
+      ? "Ihr bucht eine Unterkunft dieser Art. Ein Anspruch auf genau dieses Haus besteht nicht, die Nummer wird automatisch vergeben."
+      : spotHouse
+        ? spotHouse.is_free
+          ? HOUSE_WISH_NOTE
+          : null
+        : spot.id === "gaestehaus" && !spotTaken
+          ? "Eure Wunschwohnung (G1 bis G10) wählt ihr in der Anmeldung. Ein Anspruch auf eine bestimmte Wohnung besteht jedoch nicht."
+          : null;
 
   function selectSpot(s: Spot) {
     setFilterGroup(null);
@@ -284,6 +319,8 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
               const group = groupByKey.get(s.group)!;
               const selected = s.id === activeSpot;
               const dimmed = filterGroup !== null && filterGroup !== s.group;
+              const taken = isTaken(s) === true;
+              const stateLabel = isTaken(s) === null ? "" : taken ? ", vergeben" : ", frei";
               const fontSize = s.fontSize ?? 12.5;
               const lineHeight = fontSize * 1.15;
               const firstLine = s.cy - ((s.text.length - 1) * lineHeight) / 2;
@@ -294,7 +331,8 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
                   tabIndex={0}
                   data-plan-spot=""
                   aria-pressed={selected}
-                  aria-label={`${s.label}: ${titleOf(group)}`}
+                  aria-label={`${s.label}: ${titleOf(group)}${stateLabel}`}
+                  opacity={dimmed ? 0.3 : 1}
                   onClick={() => selectSpot(s)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -304,14 +342,14 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
                   }}
                   className="group/spot cursor-pointer outline-none"
                 >
-                  <title>{`${s.label}: ${titleOf(group)}`}</title>
+                  <title>{`${s.label}: ${titleOf(group)}${stateLabel}`}</title>
                   {selected && (
                     <polygon points={s.points} fill="none" stroke={INK} strokeWidth={6.5} strokeLinejoin="round" />
                   )}
                   <polygon
                     points={s.points}
-                    fill={dimmed ? DIMMED : group.color}
-                    stroke={selected ? PAPER : INK}
+                    fill={taken ? TAKEN_FILL : group.color}
+                    stroke={selected ? PAPER : taken ? TAKEN_INK : INK}
                     strokeWidth={selected ? 2.6 : 1.1}
                     strokeLinejoin="round"
                     className="transition-[fill,filter] duration-150 group-hover/spot:brightness-[1.08] group-focus-visible/spot:stroke-[3px]"
@@ -325,8 +363,7 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
                       dominantBaseline="central"
                       fontSize={fontSize}
                       fontWeight={700}
-                      fill={INK}
-                      opacity={dimmed ? 0.55 : 1}
+                      fill={taken ? TAKEN_INK : INK}
                       pointerEvents="none"
                     >
                       {line}
@@ -354,33 +391,63 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
               >
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
-              <p className="kicker mb-[3px] flex items-center gap-2 pr-8">
+              <p className="kicker mb-[5px] flex flex-wrap items-center gap-x-2 gap-y-1 pr-8">
                 <span
                   className="h-[13px] w-[13px] shrink-0 rounded-[3px] border"
-                  style={{ backgroundColor: spotGroup.color, borderColor: INK }}
+                  style={{
+                    backgroundColor: spotTaken ? TAKEN_FILL : spotGroup.color,
+                    borderColor: spotTaken ? TAKEN_INK : INK,
+                  }}
                   aria-hidden="true"
                 />
                 {spot.label}
+                {spotHouse && (
+                  <AvailabilityBadge
+                    free={spotHouse.is_free ? 1 : 0}
+                    total={1}
+                    label={spotHouse.is_free ? "frei" : "vergeben"}
+                  />
+                )}
               </p>
               <div className="space-y-3">
                 {typesOf(spotGroup).map((ht) => {
                   const a = freeCount(ht);
                   const soldOut = a !== null && a.free <= 0;
                   const plan = getFloorPlan(ht.slug);
+                  // genau dieses Haus buchen, sonst nur die Art
+                  const exactHouse = spotHouse?.is_free ? spotHouse : null;
+                  const houseTaken = spotHouse !== null && !spotHouse.is_free;
                   return (
                     <div key={ht.id}>
                       <p className="text-[17px] font-semibold leading-snug">{ht.name}</p>
                       <p className="text-[14px] leading-[1.5] text-muted-foreground">
                         Bis zu {ht.max_guests} Personen · {formatCurrency(ht.price_per_house)} für{" "}
                         {nightsLabel(nights)}
-                        {a && <> · {soldOut ? "ausgebucht" : `${a.free} von ${a.total} frei`}</>}
                       </p>
+                      {a && <AvailabilityBadge free={a.free} total={a.total} className="mt-1.5" />}
+                      {houseTaken && (
+                        <p className="mt-2 text-[14px] leading-[1.45]">
+                          {soldOut
+                            ? "Alle Häuser dieser Art sind vergeben. Auf der Warteliste melden wir uns, sobald eines frei wird."
+                            : `${spot.label} ist schon vergeben. Andere Häuser dieser Art sind noch frei.`}
+                        </p>
+                      )}
                       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
                         <Link
-                          href={`/anmeldung?unterkunft=${ht.slug}`}
+                          href={
+                            exactHouse && !soldOut
+                              ? `/anmeldung?unterkunft=${ht.slug}&haus=${exactHouse.house_number}`
+                              : `/anmeldung?unterkunft=${ht.slug}`
+                          }
                           className="btn-primary min-h-0 px-[13px] py-[7px] text-[15px]"
                         >
-                          {soldOut ? "Auf die Warteliste" : "Jetzt buchen"}
+                          {soldOut
+                            ? "Auf die Warteliste"
+                            : exactHouse
+                              ? `${spot.label} buchen`
+                              : houseTaken
+                                ? "Freies Haus buchen"
+                                : "Jetzt buchen"}
                           <ArrowRight className="h-4 w-4" aria-hidden="true" />
                         </Link>
                         {plan && (
@@ -393,16 +460,26 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
                   );
                 })}
               </div>
-              <p className="mt-2.5 text-[13px] leading-[1.45] text-muted-foreground">
-                <strong className="font-semibold text-foreground">Wichtig:</strong> Ihr bucht nur eine
-                Unterkunft dieser Art. Ein Anspruch auf genau dieses Haus mit dieser Nummer besteht
-                nicht, die Nummer wird zufällig vergeben.
-              </p>
+              {calloutNote && (
+                <p className="mt-2.5 text-[13px] leading-[1.45] text-muted-foreground">
+                  <strong className="font-semibold text-foreground">Wichtig:</strong> {calloutNote}
+                </p>
+              )}
             </div>
           )}
         </div>
       </div>
       <p className="text-small mt-2 wide:hidden">Den Plan könnt ihr mit dem Finger seitlich verschieben.</p>
+      {houseStatus && (
+        <p className="mt-2 flex items-center gap-2 text-[14px] text-muted-foreground">
+          <span
+            className="h-[15px] w-[15px] shrink-0 rounded-[3px] border"
+            style={{ backgroundColor: TAKEN_FILL, borderColor: TAKEN_INK }}
+            aria-hidden="true"
+          />
+          Graue Häuser sind schon vergeben.
+        </p>
+      )}
 
       <ul className="mt-4 grid gap-2.5 sm:grid-cols-2 wide:grid-cols-5">
         {groups.map((group) => {
@@ -428,11 +505,12 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
                   <span className="block text-[15px] font-semibold leading-snug">{titleOf(group)}</span>
                   <span className="block text-[13px] leading-snug text-muted-foreground">{group.where}</span>
                   {types.map((ht) => {
-                    const free = availabilityText(ht);
-                    if (!free) return null;
+                    const a = freeCount(ht);
+                    if (!a) return null;
                     return (
-                      <span key={ht.id} className="mt-1 block text-[13px] leading-snug">
-                        {types.length > 1 ? `${ht.name}: ${free}` : free}
+                      <span key={ht.id} className="mt-1.5 block text-[13px] leading-snug">
+                        {types.length > 1 && <span className="mb-0.5 block">{ht.name}</span>}
+                        <AvailabilityBadge free={a.free} total={a.total} />
                       </span>
                     );
                   })}

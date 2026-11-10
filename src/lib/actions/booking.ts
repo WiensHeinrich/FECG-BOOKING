@@ -147,6 +147,8 @@ export async function createReservation(formData: BookingFormInput) {
       p_guests: data.guests,
       p_extra_beds: data.extra_beds,
       p_rules_accepted: data.rules_accepted,
+      // nur mitschicken, wenn ein Wunschhaus gewählt wurde (Funktion aus Migration 015)
+      ...(data.house_id ? { p_house_id: data.house_id } : {}),
     });
 
   // Buchen zwei Familien im selben Moment, greifen beide nach demselben Haus und die
@@ -165,7 +167,16 @@ export async function createReservation(formData: BookingFormInput) {
     };
   }
 
-  const reservation = result as (ReservationResult & { error?: string }) | null;
+  const reservation = result as (ReservationResult & { error?: string; code?: string }) | null;
+
+  if (reservation?.code === "house_taken") {
+    // Die Seite lädt die Belegung neu, das Haus erscheint dann als vergeben
+    revalidatePath("/", "layout");
+    return {
+      error: "Das gewählte Haus wurde gerade eben vergeben. Bitte wählt ein anderes Haus.",
+      houseTaken: true,
+    };
+  }
 
   if (reservation?.error === "Kein Haus verfügbar.") {
     // Die Seite lädt die freien Plätze neu und bietet dann die Warteliste an

@@ -1,4 +1,4 @@
-import type { Event, HouseType, Availability, Document } from "@/lib/types/database";
+import type { Event, HouseType, Availability, Document, HouseStatus } from "@/lib/types/database";
 
 const MOCK_EVENT_ID = "00000000-0000-0000-0000-000000000001";
 
@@ -141,6 +141,26 @@ export const mockAvailability: Availability[] = [
   { house_type_id: "00000000-0000-0000-0000-000000000030", house_type_name: "Gästehaus G1-10", total_quantity: 10, reserved_count: 6, available_count: 4 },
   { house_type_id: "00000000-0000-0000-0000-000000000040", house_type_name: "Gästehaus G11", total_quantity: 1, reserved_count: 1, available_count: 0 },
   { house_type_id: "00000000-0000-0000-0000-000000000060", house_type_name: "Villa III (ohne Balkon)", total_quantity: 1, reserved_count: 0, available_count: 1 },
+];
+
+/** Häuser der Testdaten: echte Nummern laut Lageplan, einige davon vergeben */
+function mockHouses(typeId: string, numbers: number[], taken: number[], label: (n: number) => string): HouseStatus[] {
+  return numbers.map((n) => ({
+    house_id: `00000000-0000-0000-${typeId.slice(-4)}-${String(n).padStart(12, "0")}`,
+    house_type_id: typeId,
+    house_number: n,
+    label: label(n),
+    is_free: !taken.includes(n),
+  }));
+}
+
+export const mockHouseStatus: HouseStatus[] = [
+  ...mockHouses("00000000-0000-0000-0000-000000000010", [1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14], [1, 2, 3, 9, 13], (n) => `Haus ${n}`),
+  ...mockHouses("00000000-0000-0000-0000-000000000015", [5, 8, 15, 19, 20, 21, 22, 23, 24, 25], [5, 19, 20, 22], (n) => `Haus ${n}`),
+  ...mockHouses("00000000-0000-0000-0000-000000000020", [16, 17, 18], [16], (n) => `Haus ${n}`),
+  ...mockHouses("00000000-0000-0000-0000-000000000030", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [1, 2, 3, 4, 5, 6], (n) => `Gästehaus G${n}`),
+  ...mockHouses("00000000-0000-0000-0000-000000000040", [1], [1], () => "Gästehaus G11"),
+  ...mockHouses("00000000-0000-0000-0000-000000000060", [1], [], () => "Villa III"),
 ];
 
 export const mockDocuments: Document[] = [

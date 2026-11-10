@@ -147,6 +147,15 @@ export interface Availability {
   available_count: number
 }
 
+/** Belegung eines einzelnen Hauses, ohne Angaben zu den Gästen */
+export interface HouseStatus {
+  house_id: string
+  house_type_id: string
+  house_number: number
+  label: string
+  is_free: boolean
+}
+
 // Erweiterte Typen mit Relationen
 export interface ReservationWithDetails extends Reservation {
   house: House & { house_type: HouseType }

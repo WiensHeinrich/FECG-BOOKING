@@ -196,6 +196,7 @@ export function reservationConfirmationEmail(data: {
           ${priceRows(data.totalPrice, data.breakdown)}
           ${row("Gültig bis", expiryDate)}
         </table>
+        <p style="margin: 12px 0 0; font-size: 13px; color: #666;">Wir bemühen uns, euch genau dieses Haus zu geben. Ein Anspruch auf eine bestimmte Hausnummer besteht jedoch nicht, in Ausnahmefällen kann sich die Nummer noch ändern.</p>
       </div>
 
       <div style="${cardStyle}">

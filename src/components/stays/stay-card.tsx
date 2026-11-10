@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Check, Users } from "lucide-react";
 import type { HouseType } from "@/lib/types/database";
 import { formatCurrency } from "@/lib/utils/format";
+import { AvailabilityBadge } from "./availability-badge";
 import { cn } from "@/lib/utils";
 
 import { availabilityState } from "@/lib/utils/stay";
@@ -61,13 +62,8 @@ export function StayCard({
           <Users className="h-[17px] w-[17px]" aria-hidden="true" />
           bis zu {houseType.max_guests} Personen
         </span>
-        {state === "available" && availableCount !== null && (
-          <span className="normal-case tracking-normal text-primary">
-            {availableCount === 1 ? "1 Unterkunft frei" : `${availableCount} frei`}
-          </span>
-        )}
-        {state === "soldout" && (
-          <span className="normal-case tracking-normal text-destructive">Ausgebucht</span>
+        {state !== "unknown" && availableCount !== null && (
+          <AvailabilityBadge free={Math.max(availableCount, 0)} total={houseType.total_quantity} />
         )}
         {state === "unknown" && (
           <span className="normal-case tracking-normal">Verfügbarkeit gerade nicht abrufbar</span>
