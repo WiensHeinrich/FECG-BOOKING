@@ -28,7 +28,7 @@ export default async function WaitelistePage({
 
         <Card>
           <CardContent className="pt-6 text-center">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-base text-muted-foreground">
               Ihr Eintrag wurde gespeichert
               {position ? ` und auf Position ${position} einsortiert` : ""}.
               Sobald eine passende Unterkunft frei wird, kann sich das

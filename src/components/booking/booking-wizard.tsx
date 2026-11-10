@@ -285,14 +285,14 @@ export function BookingWizard({
               key={label}
               aria-current={active ? "step" : undefined}
               className={cn(
-                "border-b-2 pb-[13px] text-[12px] text-muted-foreground",
+                "border-b-2 pb-[13px] text-[12px] leading-snug text-muted-foreground wide:text-[14px]",
                 active ? "border-brand font-semibold text-foreground" : "border-border",
                 done && "text-foreground"
               )}
             >
               <span
                 className={cn(
-                  "mb-[7px] inline-flex h-6 w-6 items-center justify-center rounded-full bg-sage text-[11px] wide:mb-0 wide:mr-[5px]",
+                  "mb-[7px] inline-flex h-6 w-6 items-center justify-center rounded-full bg-sage text-[13px] wide:mb-0 wide:mr-[5px]",
                   active && "bg-primary text-primary-foreground"
                 )}
                 aria-hidden="true"
@@ -306,7 +306,7 @@ export function BookingWizard({
       </ol>
 
       {error && (
-        <div role="alert" className="mb-5 flex items-start gap-2 rounded-lg border border-destructive/40 bg-card px-4 py-3 text-[14px] text-destructive">
+        <div role="alert" className="mb-5 flex items-start gap-2 rounded-lg border border-destructive/40 bg-card px-4 py-3 text-[16px] text-destructive">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
           <span>{error}</span>
         </div>
@@ -329,7 +329,7 @@ export function BookingWizard({
           {/* Zusammenfassung */}
           <aside className="panel order-first wide:order-last" aria-label="Zusammenfassung">
             <p className="kicker mb-3 tracking-[0.12em]">Euer Wochenende</p>
-            <h3 className="text-[17px] font-semibold leading-[1.35]">{selectedType.name}</h3>
+            <h3 className="text-[19px] font-semibold leading-[1.35]">{selectedType.name}</h3>
             <p className="text-small mt-2">
               {dateLabel} · {guests.length} {guests.length === 1 ? "Gast" : "Gäste"}
               {extraBeds > 0 && <> · {extraBeds} {extraBeds === 1 ? "Zustellbett" : "Zustellbetten"}</>}
@@ -344,7 +344,7 @@ export function BookingWizard({
             />
 
             {isSoldOut ? (
-              <div className="mt-[18px] border-t border-border pt-[14px] text-[13px] text-muted-foreground">
+              <div className="mt-[18px] border-t border-border pt-[14px] text-[15px] text-muted-foreground">
                 Dieser Unterkunftstyp ist aktuell ausgebucht. Ihr werdet auf die Warteliste gesetzt und
                 vom Freizeitteam benachrichtigt, sobald eine Unterkunft frei wird. Es entstehen jetzt
                 keine Kosten.
@@ -352,7 +352,7 @@ export function BookingWizard({
             ) : (
               price && (
                 <>
-                  <div className="mt-[18px] grid gap-[10px] border-t border-border pt-[14px] text-[13px]">
+                  <div className="mt-[18px] grid gap-[10px] border-t border-border pt-[14px] text-[15px]">
                     <Row label={`Hauspreis · ${nightsLabel(nights)}`} value={formatCurrency(price.accommodationPrice)} />
                     {price.extraBeds > 0 && (
                       <Row
@@ -378,9 +378,9 @@ export function BookingWizard({
                   </div>
                   <div className="mt-[15px] flex items-center justify-between gap-4 border-t border-border pt-4">
                     <span>Gesamtbetrag</span>
-                    <strong className="text-[27px] font-medium tracking-[-0.7px]">{formatCurrency(price.total)}</strong>
+                    <strong className="text-[30px] font-medium tracking-[-0.7px]">{formatCurrency(price.total)}</strong>
                   </div>
-                  <p className="pt-3 text-[12px] leading-[1.7] text-muted-foreground">
+                  <p className="pt-3 text-[14px] leading-[1.7] text-muted-foreground">
                     Inklusive Kurtaxe. Der Gesamtbetrag wird vorab überwiesen, die Kurtaxe führt das
                     Freizeitteam gesammelt an das Feriendorf ab.
                     {effectiveGuests.some((g) => !g.birth_date) && (
@@ -485,7 +485,7 @@ export function BookingWizard({
                   </Field>
                 </div>
 
-                <label className="my-[14px] flex items-center gap-[9px] text-[13px]">
+                <label className="my-[14px] flex items-center gap-[9px] text-[15px]">
                   <input
                     type="checkbox"
                     className="h-[17px] w-[17px] shrink-0 accent-primary"
@@ -495,7 +495,7 @@ export function BookingWizard({
                   Ich reise selbst mit und bin Gast 1.
                 </label>
 
-                <p className="mb-2 mt-[25px] text-[17px] font-semibold">Eure Mitreisenden</p>
+                <p className="mb-2 mt-[25px] text-[19px] font-semibold">Eure Mitreisenden</p>
                 <p className="text-small">
                   {isSoldOut
                     ? "Tragt trotzdem alle Gäste ein, dann können wir euch direkt übernehmen, sobald eine Unterkunft frei wird."
@@ -514,10 +514,10 @@ export function BookingWizard({
                         onToggle={(e) => toggleGuest(index, (e.target as HTMLDetailsElement).open)}
                         className="border-t border-border py-[13px] last:border-b"
                       >
-                        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[13px] [&::-webkit-details-marker]:hidden">
+                        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[15px] [&::-webkit-details-marker]:hidden">
                           <span className="flex min-w-0 items-center gap-3">
                             <strong className="truncate">{name}</strong>
-                            {meta && <span className="text-[11px] text-muted-foreground">{meta}</span>}
+                            {meta && <span className="text-[13px] text-muted-foreground">{meta}</span>}
                           </span>
                           <span className="flex items-center gap-2">
                             {guests.length > range.min && (
@@ -533,7 +533,7 @@ export function BookingWizard({
                                 <Trash2 className="h-4 w-4" aria-hidden="true" />
                               </button>
                             )}
-                            <span className="text-[19px] leading-none text-primary" aria-hidden="true">
+                            <span className="text-[21px] leading-none text-primary" aria-hidden="true">
                               {open ? "−" : "+"}
                             </span>
                           </span>
@@ -655,7 +655,7 @@ export function BookingWizard({
                     : "Vor dem Abschluss seht ihr eure Angaben und den vollständigen Überweisungsbetrag."}
                 </p>
 
-                <ul className="my-5 list-disc space-y-1.5 pl-5 text-[14px] text-muted-foreground">
+                <ul className="my-5 list-disc space-y-1.5 pl-5 text-[16px] text-muted-foreground">
                   <li>
                     <CalendarDays className="mr-1.5 inline h-4 w-4 text-primary" aria-hidden="true" />
                     {dateLabel} · {nightsLabel(nights)}
@@ -674,7 +674,7 @@ export function BookingWizard({
                 </ul>
 
                 {!isSoldOut && (
-                  <div className="my-[18px] rounded-lg bg-sage p-[14px] text-[12px] leading-relaxed">
+                  <div className="my-[18px] rounded-lg bg-sage p-[14px] text-[14px] leading-relaxed">
                     Die Kurtaxe ist im Gesamtbetrag enthalten. Das Freizeitteam übernimmt die Abführung vor
                     Ort. Nach dem Absenden seht ihr Bankverbindung, Verwendungszweck und Zahlungsfrist. Die
                     Reservierung bleibt {reservationValidityDays} Tage gültig und wird mit dem Zahlungseingang
@@ -684,13 +684,13 @@ export function BookingWizard({
 
                 {!isSoldOut && (
                   <>
-                    <details className="rounded-lg border border-border px-4 py-3 text-[13px]">
+                    <details className="rounded-lg border border-border px-4 py-3 text-[15px]">
                       <summary className="cursor-pointer font-semibold">Teilnahmebedingungen lesen</summary>
                       <div className="mt-3 max-h-[320px] overflow-y-auto pr-2">
                         <RulesContent reservationValidityDays={reservationValidityDays} />
                       </div>
                     </details>
-                    <label className="my-[14px] flex items-start gap-[9px] text-[13px]">
+                    <label className="my-[14px] flex items-start gap-[9px] text-[15px]">
                       <input
                         type="checkbox"
                         className="mt-0.5 h-[17px] w-[17px] shrink-0 accent-primary"
@@ -700,11 +700,11 @@ export function BookingWizard({
                       />
                       <span>
                         Ich akzeptiere die{" "}
-                        <Link href="/teilnahmebedingungen" target="_blank" className="text-link text-[13px]">
+                        <Link href="/teilnahmebedingungen" target="_blank" className="text-link text-[15px]">
                           Teilnahmebedingungen
                         </Link>{" "}
                         und habe die{" "}
-                        <Link href="/datenschutz" target="_blank" className="text-link text-[13px]">
+                        <Link href="/datenschutz" target="_blank" className="text-link text-[15px]">
                           Datenschutzhinweise
                         </Link>{" "}
                         zur Kenntnis genommen.
@@ -791,7 +791,7 @@ function RadioOption({
   disabled?: boolean;
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 text-[14px]">
+    <label className="flex cursor-pointer items-center gap-2 text-[16px]">
       <input
         type="radio"
         name={name}
@@ -810,10 +810,10 @@ function ageHint(birthDate: string | undefined, startDate: string, isContact = f
   if (!birthDate) return null;
   const age = getAgeAtDate(birthDate, startDate);
   if (age === null) {
-    return <p className="text-[12px] font-medium text-destructive">Das Geburtsdatum liegt nach dem Freizeitbeginn.</p>;
+    return <p className="text-[14px] font-medium text-destructive">Das Geburtsdatum liegt nach dem Freizeitbeginn.</p>;
   }
   if (isContact && age < 18) {
-    return <p className="text-[12px] font-medium text-destructive">Die Kontaktperson muss mindestens 18 Jahre alt sein ({age} Jahre zum Freizeitbeginn).</p>;
+    return <p className="text-[14px] font-medium text-destructive">Die Kontaktperson muss mindestens 18 Jahre alt sein ({age} Jahre zum Freizeitbeginn).</p>;
   }
-  return <p className="text-[12px] text-muted-foreground">{age} Jahre zum Freizeitbeginn</p>;
+  return <p className="text-[14px] text-muted-foreground">{age} Jahre zum Freizeitbeginn</p>;
 }

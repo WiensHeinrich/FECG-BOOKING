@@ -142,7 +142,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.6;
   }
   :focus-visible {
@@ -167,41 +167,51 @@
     @apply mx-auto w-full max-w-[1120px] px-[18px] wide:px-[30px];
   }
   .kicker {
-    @apply text-[11px] font-bold uppercase tracking-[0.16em] text-primary;
+    @apply text-[13px] font-bold uppercase tracking-[0.16em] text-primary;
   }
   .display-1 {
     @apply font-serif font-normal leading-[1.1] tracking-[-1px] text-foreground;
-    font-size: clamp(37px, 5.3vw, 58px);
+    font-size: clamp(40px, 5.6vw, 62px);
   }
   .display-2 {
     @apply font-serif font-normal leading-[1.1] tracking-[-1px] text-foreground;
-    font-size: clamp(27px, 3.8vw, 37px);
+    font-size: clamp(30px, 4vw, 40px);
   }
   .page-title {
-    @apply font-serif text-[36px] font-normal leading-[1.1] tracking-[-1px] text-foreground wide:text-[43px];
+    @apply font-serif text-[38px] font-normal leading-[1.1] tracking-[-1px] text-foreground wide:text-[46px];
   }
   .panel-title {
-    @apply font-serif text-[27px] font-normal leading-[1.15] tracking-[-0.5px] text-foreground;
+    @apply font-serif text-[30px] font-normal leading-[1.15] tracking-[-0.5px] text-foreground;
+  }
+  /* Lange Wörter in Überschriften auf sehr schmalen Displays trennen statt überlaufen */
+  @media (max-width: 400px) {
+    .display-1,
+    .display-2,
+    .page-title,
+    .panel-title {
+      hyphens: manual;
+      overflow-wrap: break-word;
+    }
   }
   .text-small {
-    @apply text-[12px] leading-[1.7] text-muted-foreground;
+    @apply text-[14px] leading-[1.7] text-muted-foreground;
   }
   .text-link {
-    @apply text-[13px] font-semibold text-primary underline underline-offset-4 hover:text-primary/85;
+    @apply text-[15px] font-semibold text-primary underline underline-offset-4 hover:text-primary/85;
   }
   .panel {
     @apply rounded-2xl border border-border bg-card p-[19px] wide:p-[23px];
   }
   .btn-primary {
-    @apply inline-flex min-h-[46px] items-center justify-center gap-[9px] rounded-lg border border-primary bg-primary px-[18px] py-3 text-[14px] font-semibold text-primary-foreground transition-[filter] duration-150 hover:brightness-[0.93] disabled:pointer-events-none disabled:opacity-60;
+    @apply inline-flex min-h-[46px] items-center justify-center gap-[9px] rounded-lg border border-primary bg-primary px-[18px] py-3 text-[16px] font-semibold text-primary-foreground transition-[filter] duration-150 hover:brightness-[0.93] disabled:pointer-events-none disabled:opacity-60;
   }
   .btn-secondary {
-    @apply inline-flex min-h-[46px] items-center justify-center gap-[9px] rounded-lg border border-[#bcc7b5] bg-transparent px-[18px] py-3 text-[14px] font-semibold text-foreground transition-colors duration-150 hover:bg-card disabled:pointer-events-none disabled:opacity-60;
+    @apply inline-flex min-h-[46px] items-center justify-center gap-[9px] rounded-lg border border-[#bcc7b5] bg-transparent px-[18px] py-3 text-[16px] font-semibold text-foreground transition-colors duration-150 hover:bg-card disabled:pointer-events-none disabled:opacity-60;
   }
   .field-input {
-    @apply min-h-[44px] w-full rounded-[7px] border border-input bg-card px-3 py-2.5 text-[16px] text-foreground wide:text-[15px];
+    @apply min-h-[44px] w-full rounded-[7px] border border-input bg-card px-3 py-2.5 text-[18px] text-foreground wide:text-[17px];
   }
   .field-label {
-    @apply block text-[12px] font-semibold text-foreground;
+    @apply block text-[14px] font-semibold text-foreground;
   }
 }

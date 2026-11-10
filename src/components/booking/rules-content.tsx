@@ -5,7 +5,7 @@ interface RulesContentProps {
 /** Regeln der Gemeindefreizeit, verwendet auf /teilnahmebedingungen und im Prüfschritt der Anmeldung */
 export function RulesContent({ reservationValidityDays }: RulesContentProps) {
   return (
-    <div className="space-y-4 text-[14px] leading-relaxed text-foreground/85">
+    <div className="space-y-4 text-[16px] leading-relaxed text-foreground/85">
       <p className="font-semibold text-foreground">
         Die Teilnahmebedingungen zur Gemeindefreizeit sind für jeden Teilnehmer verbindlich. Mit der
         Anmeldung erklären sich die Teilnehmer mit den folgenden Regeln einverstanden.

@@ -76,7 +76,7 @@ export function StayComparison({
           </p>
         </div>
         {showFilter && (
-          <label className="flex shrink-0 items-center gap-[10px] text-[13px]">
+          <label className="flex shrink-0 items-center gap-[10px] text-[15px]">
             Personenzahl
             <select
               className="field-input min-h-[44px] w-auto"
@@ -97,14 +97,14 @@ export function StayComparison({
       </div>
 
       {!availability && (
-        <p className="mb-4 rounded-lg bg-sage px-4 py-3 text-[13px] text-foreground">
+        <p className="mb-4 rounded-lg bg-sage px-4 py-3 text-[15px] text-foreground">
           Die Verfügbarkeit ist gerade nicht abrufbar. Ihr könnt trotzdem vergleichen, die
           Anmeldung prüft die Verfügbarkeit beim Absenden.
         </p>
       )}
 
       {visible.length === 0 ? (
-        <p className="rounded-2xl border border-border bg-card p-6 text-[14px] text-muted-foreground">
+        <p className="rounded-2xl border border-border bg-card p-6 text-[16px] text-muted-foreground">
           Für {persons} Personen passt keine einzelne Unterkunft. Verteilt euch auf mehrere
           Unterkünfte oder wählt eine größere Personenzahl mit Zustellbetten.
         </p>
@@ -148,13 +148,13 @@ export function StayComparison({
           </div>
 
           {detail.description && (
-            <p className="mt-3 max-w-[70ch] text-[14px] leading-relaxed text-muted-foreground">
+            <p className="mt-3 max-w-[70ch] text-[16px] leading-relaxed text-muted-foreground">
               {detail.description}
             </p>
           )}
 
           {detail.features.length > 0 && (
-            <ul className="mt-4 grid gap-x-6 gap-y-1.5 text-[14px] wide:grid-cols-2">
+            <ul className="mt-4 grid gap-x-6 gap-y-1.5 text-[16px] wide:grid-cols-2">
               {detail.features.map((f) => (
                 <li key={f} className="flex items-start gap-2">
                   <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
@@ -164,7 +164,7 @@ export function StayComparison({
             </ul>
           )}
 
-          <dl className="mt-5 grid gap-x-8 gap-y-2 border-t border-border pt-4 text-[13px] wide:grid-cols-3">
+          <dl className="mt-5 grid gap-x-8 gap-y-2 border-t border-border pt-4 text-[15px] wide:grid-cols-3">
             <div>
               <dt className="text-muted-foreground">Belegung</dt>
               <dd>

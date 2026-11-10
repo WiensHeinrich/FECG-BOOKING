@@ -47,7 +47,7 @@ export function PublicCancelButton({
       <div className="rounded-md border border-red-200 bg-red-50 p-4 text-center">
         <XCircle className="mx-auto h-8 w-8 text-red-500" />
         <p className="mt-2 font-semibold text-red-800">Reservierung storniert</p>
-        <p className="mt-1 text-sm text-red-600">
+        <p className="mt-1 text-base text-red-600">
           Sie erhalten eine Bestätigung per E-Mail.
         </p>
       </div>
@@ -57,7 +57,7 @@ export function PublicCancelButton({
   if (!showForm) {
     return (
       <div className="text-center">
-        <p className="mb-2 text-xs text-muted-foreground">
+        <p className="mb-2 text-sm text-muted-foreground">
           Sie möchten Ihre Reservierung stornieren?
         </p>
         <Button
@@ -76,12 +76,12 @@ export function PublicCancelButton({
   return (
     <div className="rounded-md border border-red-200 bg-red-50/50 p-4 space-y-4">
       <h3 className="font-semibold text-red-800">Reservierung stornieren</h3>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-base text-muted-foreground">
         Bitte teilen Sie uns den Grund der Stornierung mit.
       </p>
 
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Grund der Stornierung *</Label>
+        <Label className="text-base font-medium">Grund der Stornierung *</Label>
         <div className="space-y-2">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -91,7 +91,7 @@ export function PublicCancelButton({
               checked={reason === "terminlich_verhindert"}
               onChange={(e) => setReason(e.target.value)}
             />
-            <span className="text-sm">Terminlich verhindert</span>
+            <span className="text-base">Terminlich verhindert</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -101,7 +101,7 @@ export function PublicCancelButton({
               checked={reason === "persoenliche_gruende"}
               onChange={(e) => setReason(e.target.value)}
             />
-            <span className="text-sm">Persönliche Gründe</span>
+            <span className="text-base">Persönliche Gründe</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -111,13 +111,13 @@ export function PublicCancelButton({
               checked={reason === "sonstiges"}
               onChange={(e) => setReason(e.target.value)}
             />
-            <span className="text-sm">Sonstiges</span>
+            <span className="text-base">Sonstiges</span>
           </label>
         </div>
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-sm">
+        <Label className="text-base">
           {reason === "sonstiges" ? "Grund eingeben *" : "Zusätzliche Anmerkung (optional)"}
         </Label>
         <Textarea
@@ -128,7 +128,7 @@ export function PublicCancelButton({
         />
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-base text-red-600">{error}</p>}
 
       <div className="flex gap-2">
         <Button

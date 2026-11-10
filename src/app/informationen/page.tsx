@@ -157,7 +157,7 @@ export default async function InformationenPage() {
         <div className="grid gap-6 wide:grid-cols-3 wide:gap-[25px]">
           <article className="border-b border-border pb-5 wide:border-0 wide:pb-0">
             <Clock className="mb-3 h-[22px] w-[22px] text-primary" aria-hidden="true" />
-            <h2 className="mb-[7px] text-[15px] font-semibold">Ankommen</h2>
+            <h2 className="mb-[7px] text-[17px] font-semibold">Ankommen</h2>
             <p className="text-small">
               {arrivalDay}
               <br />
@@ -166,7 +166,7 @@ export default async function InformationenPage() {
           </article>
           <article className="border-b border-border pb-5 wide:border-0 wide:pb-0">
             <MapPin className="mb-3 h-[22px] w-[22px] text-primary" aria-hidden="true" />
-            <h2 className="mb-[7px] text-[15px] font-semibold">Unser Ziel</h2>
+            <h2 className="mb-[7px] text-[17px] font-semibold">Unser Ziel</h2>
             <p className="text-small">
               {event.location}
               {event.location_address && (
@@ -189,7 +189,7 @@ export default async function InformationenPage() {
           </article>
           <article className="border-b border-border pb-5 wide:border-0 wide:pb-0">
             <Car className="mb-3 h-[22px] w-[22px] text-primary" aria-hidden="true" />
-            <h2 className="mb-[7px] text-[15px] font-semibold">Abreise</h2>
+            <h2 className="mb-[7px] text-[17px] font-semibold">Abreise</h2>
             <p className="text-small">
               {departureDay}
               <br />
@@ -201,7 +201,7 @@ export default async function InformationenPage() {
         {/* FAQ */}
         <div id="faq" className="mt-7 scroll-mt-6 border-t border-border">
           {faq.map((item) => (
-            <details key={item.q} className="group border-b border-border py-[14px] text-[14px]">
+            <details key={item.q} className="group border-b border-border py-[14px] text-[16px]">
               <summary className="cursor-pointer list-none font-semibold marker:content-none [&::-webkit-details-marker]:hidden">
                 <span className="mr-2 inline-block text-primary transition-transform group-open:rotate-90" aria-hidden="true">
                   ▸
@@ -242,7 +242,7 @@ export default async function InformationenPage() {
           <div className="panel">
             <ul className="grid gap-3 sm:grid-cols-2">
               {mitbringen.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed">
+                <li key={item} className="flex items-start gap-2.5 text-[16px] leading-relaxed">
                   <Check className="mt-[3px] h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
                   {item}
                 </li>
@@ -263,7 +263,7 @@ export default async function InformationenPage() {
       {/* Gemeinschaftseinrichtungen */}
       <section id="einrichtungen" className="site-container scroll-mt-6 border-t border-border py-[30px] wide:py-[37px]">
         <p className="kicker mb-[9px]">Im Feriendorf</p>
-        <h2 className="display-2 mb-[22px]">Gemeinschaftseinrichtungen</h2>
+        <h2 className="display-2 mb-[22px]">Gemeinschafts&shy;einrichtungen</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {einrichtungen.map((e) => (
             <article key={e.title} className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -276,8 +276,8 @@ export default async function InformationenPage() {
                 className="aspect-[2/1] w-full object-cover"
               />
               <div className="p-5">
-                <h3 className="text-[17px] font-semibold leading-[1.35]">{e.title}</h3>
-                <p className="mt-1.5 text-[13px] leading-[1.7] text-muted-foreground">{e.text}</p>
+                <h3 className="text-[19px] font-semibold leading-[1.35]">{e.title}</h3>
+                <p className="mt-1.5 text-[15px] leading-[1.7] text-muted-foreground">{e.text}</p>
               </div>
             </article>
           ))}
@@ -301,12 +301,12 @@ export default async function InformationenPage() {
                 />
               </div>
               <div className="flex flex-1 flex-col p-5">
-                <h3 className="text-[17px] font-semibold leading-[1.35]">{g.title}</h3>
-                <p className="mt-1 text-[13px] text-muted-foreground">{g.text}</p>
+                <h3 className="text-[19px] font-semibold leading-[1.35]">{g.title}</h3>
+                <p className="mt-1 text-[15px] text-muted-foreground">{g.text}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <ImagePreview src={g.image} alt={g.title} />
                   {g.download && (
-                    <a href={g.download} download className="btn-secondary min-h-0 px-3 py-1.5 text-[13px]">
+                    <a href={g.download} download className="btn-secondary min-h-0 px-3 py-1.5 text-[15px]">
                       <FileDown className="h-4 w-4" aria-hidden="true" />
                       Download
                     </a>
@@ -319,7 +319,7 @@ export default async function InformationenPage() {
 
         {documents.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-[17px] font-semibold">Weitere Dokumente</h3>
+            <h3 className="text-[19px] font-semibold">Weitere Dokumente</h3>
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               {documents.map((doc) => (
                 <li key={doc.id}>
@@ -332,10 +332,10 @@ export default async function InformationenPage() {
                     <span className="min-w-0">
                       <span className="block font-medium">{doc.title}</span>
                       {doc.description && (
-                        <span className="mt-0.5 block text-[13px] text-muted-foreground">{doc.description}</span>
+                        <span className="mt-0.5 block text-[15px] text-muted-foreground">{doc.description}</span>
                       )}
                       {doc.file_size_bytes && (
-                        <span className="mt-1 block text-[12px] text-muted-foreground">
+                        <span className="mt-1 block text-[14px] text-muted-foreground">
                           {formatFileSize(doc.file_size_bytes)}
                         </span>
                       )}
@@ -351,7 +351,7 @@ export default async function InformationenPage() {
       <div className="site-container">
         <div className="mb-[25px] flex flex-col items-start gap-[18px] rounded-2xl bg-sage p-[22px] wide:mb-[30px] wide:flex-row wide:items-center wide:justify-between wide:p-[25px]">
           <div>
-            <h2 className="font-serif text-[29px] font-normal leading-[1.15] tracking-[-0.5px]">Noch Fragen?</h2>
+            <h2 className="font-serif text-[32px] font-normal leading-[1.15] tracking-[-0.5px]">Noch Fragen?</h2>
             <p className="text-small mt-2">
               <a href={`mailto:${event.contact_email}`} className="hover:text-primary">
                 {event.contact_email}
@@ -372,10 +372,10 @@ export default async function InformationenPage() {
 function Checklist({ title, items, positive = false }: { title: string; items: string[]; positive?: boolean }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
-      <h3 className="text-[15px] font-semibold">{title}</h3>
+      <h3 className="text-[17px] font-semibold">{title}</h3>
       <ul className="mt-3 space-y-2">
         {items.map((item) => (
-          <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed">
+          <li key={item} className="flex items-start gap-2.5 text-[16px] leading-relaxed">
             {positive ? (
               <Check className="mt-[3px] h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
             ) : (

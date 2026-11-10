@@ -28,16 +28,16 @@ export function Hero({ event, nights }: { event: Event; nights: number }) {
     <section className="site-container grid items-center gap-[26px] pb-[30px] pt-[30px] wide:grid-cols-2 wide:gap-9 wide:pb-[34px] wide:pt-[43px]">
       <div>
         <p className="kicker mb-[13px]">{siteConfig.slogan}</p>
-        <h1 className="display-1 mb-5 text-[44px] max-[360px]:text-[36px] wide:text-[clamp(37px,5.3vw,58px)]">
+        <h1 className="display-1 mb-5 text-[44px] max-[360px]:text-[36px] wide:text-[clamp(40px,5.6vw,62px)]">
           Ein Wochenende.
           <br />
           Zeit füreinander.
         </h1>
-        <p className="max-w-[44ch] text-[16px] leading-[1.75] text-muted-foreground">
+        <p className="max-w-[44ch] text-[18px] leading-[1.75] text-muted-foreground">
           Raus aus dem Alltag, rein in die Gemeinschaft. Ein Wochenende für Gott, für die Familie
           und für uns als Gemeinde.
         </p>
-        <div className="my-[23px] grid gap-[10px] text-[13px]">
+        <div className="my-[23px] grid gap-[10px] text-[15px]">
           <span className="flex items-center gap-[9px]">
             <CalendarDays className="h-[17px] w-[17px] text-primary" aria-hidden="true" />
             <strong>{formatDateRange(event.start_date, event.end_date)}</strong>
@@ -67,7 +67,7 @@ export function Hero({ event, nights }: { event: Event; nights: number }) {
           sizes="(min-width: 721px) 50vw, 100vw"
           className="h-[250px] w-full rounded-[65px_15px_15px_15px] object-cover object-center wide:h-[345px] wide:rounded-[95px_18px_18px_18px]"
         />
-        <div className="absolute inset-x-[18px] bottom-[18px] flex items-center gap-[10px] rounded-[9px] bg-card px-[15px] py-[11px] text-[12px] shadow-[0_4px_20px_rgba(38,62,54,0.07)]">
+        <div className="absolute inset-x-[18px] bottom-[18px] flex items-center gap-[10px] rounded-[9px] bg-card px-[15px] py-[11px] text-[14px] shadow-[0_4px_20px_rgba(38,62,54,0.07)]">
           <TreePine className="h-[19px] w-[19px] shrink-0 text-primary" aria-hidden="true" />
           <span>
             Zusammen ankommen.
@@ -89,7 +89,7 @@ export function Benefits({ nights }: { nights: number }) {
   ];
   return (
     <div className="site-container">
-      <div className="flex flex-wrap justify-between gap-x-[22px] gap-y-3 border-y border-border py-[18px] text-[12px] text-muted-foreground">
+      <div className="flex flex-wrap justify-between gap-x-[22px] gap-y-3 border-y border-border py-[18px] text-[14px] text-muted-foreground">
         {items.map(({ icon: Icon, text }) => (
           <span key={text} className="flex items-center gap-2">
             <Icon className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -167,12 +167,12 @@ export function Experiences() {
     <section className="bg-band py-[27px] wide:py-[34px]">
       <div className="site-container grid items-center gap-[25px] wide:grid-cols-[1.1fr_1fr] wide:gap-[30px]">
         <Image
-          src="/images/gemeinschaft.webp"
-          alt="Illustration: Gemeinsames Essen vor den Holzhäusern des Feriendorfs"
-          width={720}
-          height={1081}
+          src="/images/gemeinschaft-szene.webp"
+          alt="Illustration: Gemeinsames Essen und Spielen vor den Holzhäusern des Feriendorfs"
+          width={1263}
+          height={729}
           sizes="(min-width: 721px) 52vw, 100vw"
-          className="h-[220px] w-full rounded-2xl object-cover object-[center_60%] wide:h-[290px]"
+          className="h-auto w-full rounded-2xl"
         />
         <div>
           <p className="kicker mb-[13px]">Was uns verbindet</p>
@@ -182,8 +182,8 @@ export function Experiences() {
               <article key={title} className="flex items-start gap-[13px]">
                 <Icon className="mt-[3px] h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
                 <div>
-                  <h3 className="text-[17px] font-semibold leading-[1.35]">{title}</h3>
-                  <p className="mt-1 text-[13px] text-muted-foreground">{text}</p>
+                  <h3 className="text-[19px] font-semibold leading-[1.35]">{title}</h3>
+                  <p className="mt-1 text-[15px] text-muted-foreground">{text}</p>
                 </div>
               </article>
             ))}
@@ -198,7 +198,7 @@ export function Experiences() {
 export function Verse() {
   return (
     <section className="border-b border-border px-6 py-8 text-center">
-      <blockquote className="mx-auto mb-2 max-w-[550px] font-serif text-[21px] italic leading-[1.5] text-foreground">
+      <blockquote className="mx-auto mb-2 max-w-[550px] font-serif text-[23px] italic leading-[1.5] text-foreground">
         „Wo zwei oder drei versammelt sind in meinem Namen, da bin ich mitten unter ihnen.“
       </blockquote>
       <p className="text-small">Matthäus 18,20</p>
@@ -236,7 +236,7 @@ export function Prepared({ arrival, departure }: { arrival: string; departure: s
         {items.map(({ icon: Icon, title, text, link }) => (
           <article key={title} className="border-b border-border pb-5 wide:border-0 wide:pb-0">
             <Icon className="mb-3 h-[22px] w-[22px] text-primary" aria-hidden="true" />
-            <h3 className="mb-[7px] text-[15px] font-semibold">{title}</h3>
+            <h3 className="mb-[7px] text-[17px] font-semibold">{title}</h3>
             <p className="text-small">{text}</p>
             <Link href={link.href} className="text-link mt-2 inline-block">
               {link.label}
@@ -264,7 +264,7 @@ export function ClosingCta({
     <div className="site-container pb-[25px] wide:pb-[30px]">
       <div className="flex flex-col items-start gap-[18px] rounded-2xl bg-sage p-[22px] wide:flex-row wide:items-center wide:justify-between wide:gap-6 wide:p-[25px]">
         <div>
-          <h2 className="font-serif text-[29px] font-normal leading-[1.15] tracking-[-0.5px]">{title}</h2>
+          <h2 className="font-serif text-[32px] font-normal leading-[1.15] tracking-[-0.5px]">{title}</h2>
           <p className="text-small mt-2">{text}</p>
         </div>
         <Link href={href} className="btn-primary shrink-0">

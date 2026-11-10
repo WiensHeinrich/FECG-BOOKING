@@ -49,10 +49,10 @@ export default async function UnterkuenftePage() {
             className="h-[180px] w-full rounded-xl object-cover object-[center_45%] wide:h-[205px]"
           />
           <div>
-            <h2 className="font-serif text-[28px] font-normal leading-[1.15] tracking-[-0.5px]">
+            <h2 className="font-serif text-[31px] font-normal leading-[1.15] tracking-[-0.5px]">
               Ein Dorf. Viele Möglichkeiten.
             </h2>
-            <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
+            <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
               Eigene Küche, ein Bad und kurze Wege zueinander. Bettwäsche ist inklusive. Alle
               Unterkünfte liegen im autofreien Feriendorf Eckenhof in {event.location.replace("Feriendorf Eckenhof ", "")}.
             </p>

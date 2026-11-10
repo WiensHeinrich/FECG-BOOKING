@@ -8,7 +8,7 @@ interface FooterProps {
 export function Footer({ contactEmail = siteConfig.contactEmail }: FooterProps) {
   return (
     <footer className="border-t border-border">
-      <div className="site-container flex flex-wrap items-center justify-between gap-x-5 gap-y-3 py-5 text-[12px] text-muted-foreground wide:py-6">
+      <div className="site-container flex flex-wrap items-center justify-between gap-x-5 gap-y-3 py-5 text-[14px] text-muted-foreground wide:py-6">
         <span>
           {siteConfig.church} · {siteConfig.slogan}
         </span>

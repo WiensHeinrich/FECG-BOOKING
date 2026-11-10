@@ -16,9 +16,9 @@ export default async function ImpressumPage() {
     <div>
       <PageHead kicker="Rechtliches" title="Impressum." />
       <section className="site-container py-[30px] wide:py-[37px]">
-        <div className="panel max-w-[760px] space-y-6 text-[14px] leading-relaxed">
+        <div className="panel max-w-[760px] space-y-6 text-[16px] leading-relaxed">
           <div>
-            <h2 className="text-[17px] font-semibold">Angaben gemäß § 5 DDG</h2>
+            <h2 className="text-[19px] font-semibold">Angaben gemäß § 5 DDG</h2>
             <p className="mt-2">
               {siteConfig.churchLong}
               <br />
@@ -32,7 +32,7 @@ export default async function ImpressumPage() {
           </div>
 
           <div>
-            <h2 className="text-[17px] font-semibold">Vertreten durch</h2>
+            <h2 className="text-[19px] font-semibold">Vertreten durch</h2>
             <p className="mt-2 text-muted-foreground">
               Den vertretungsberechtigten Vorstand des Vereins. Namen der Vorstandsmitglieder,
               Registergericht und Vereinsregisternummer werden vor dem Start der Anmeldung ergänzt.
@@ -40,10 +40,10 @@ export default async function ImpressumPage() {
           </div>
 
           <div>
-            <h2 className="text-[17px] font-semibold">Kontakt</h2>
+            <h2 className="text-[19px] font-semibold">Kontakt</h2>
             <p className="mt-2">
               E-Mail:{" "}
-              <a href={`mailto:${email}`} className="text-link text-[14px]">
+              <a href={`mailto:${email}`} className="text-link text-[16px]">
                 {email}
               </a>
               {event?.contact_phone && (
@@ -56,7 +56,7 @@ export default async function ImpressumPage() {
           </div>
 
           <div>
-            <h2 className="text-[17px] font-semibold">Verantwortlich für den Inhalt</h2>
+            <h2 className="text-[19px] font-semibold">Verantwortlich für den Inhalt</h2>
             <p className="mt-2">
               Das Organisationsteam der Gemeindefreizeit, erreichbar über die oben genannte
               E-Mail-Adresse.
@@ -64,7 +64,7 @@ export default async function ImpressumPage() {
           </div>
 
           <div>
-            <h2 className="text-[17px] font-semibold">Haftung für Inhalte und Links</h2>
+            <h2 className="text-[19px] font-semibold">Haftung für Inhalte und Links</h2>
             <p className="mt-2 text-muted-foreground">
               Die Inhalte dieser Seite wurden mit Sorgfalt erstellt. Für Richtigkeit, Vollständigkeit
               und Aktualität übernehmen wir keine Gewähr. Für Inhalte verlinkter externer Seiten sind

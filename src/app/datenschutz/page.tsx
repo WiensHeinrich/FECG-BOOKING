@@ -17,17 +17,17 @@ export default async function DatenschutzPage() {
     <div>
       <PageHead
         kicker="Rechtliches"
-        title="Datenschutzhinweise."
+        title={"Datenschutz­hinweise."}
         text="Welche Daten wir bei der Anmeldung zur Gemeindefreizeit verarbeiten, wofür und wie lange."
       />
       <section className="site-container py-[30px] wide:py-[37px]">
-        <div className="panel max-w-[760px] space-y-6 text-[14px] leading-relaxed">
+        <div className="panel max-w-[760px] space-y-6 text-[16px] leading-relaxed">
           <Block title="Verantwortlicher">
             <p>
               {siteConfig.churchLong}, {siteConfig.churchAddress.join(", ")}.
               <br />
               E-Mail:{" "}
-              <a href={`mailto:${email}`} className="text-link text-[14px]">
+              <a href={`mailto:${email}`} className="text-link text-[16px]">
                 {email}
               </a>
             </p>
@@ -98,7 +98,7 @@ export default async function DatenschutzPage() {
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="text-[17px] font-semibold">{title}</h2>
+      <h2 className="text-[19px] font-semibold">{title}</h2>
       <div className="mt-2 text-foreground/85">{children}</div>
     </div>
   );

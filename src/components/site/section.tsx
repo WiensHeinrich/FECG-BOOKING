@@ -50,7 +50,7 @@ export function PageHead({
     <section className="site-container pt-7 wide:pt-[35px]">
       <p className="kicker">{kicker}</p>
       <h1 className="page-title mb-[14px]">{title}</h1>
-      {text && <p className="max-w-[65ch] text-[14px] leading-relaxed text-muted-foreground">{text}</p>}
+      {text && <p className="max-w-[65ch] text-[16px] leading-relaxed text-muted-foreground">{text}</p>}
     </section>
   );
 }

@@ -56,7 +56,7 @@ export function StayCard({
       )}
       aria-current={selected ? "true" : undefined}
     >
-      <div className="flex items-center justify-between gap-2 text-[11px] uppercase tracking-[0.06em] text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-[12px] uppercase tracking-[0.06em] text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <Users className="h-[17px] w-[17px]" aria-hidden="true" />
           bis zu {houseType.max_guests} Personen
@@ -74,19 +74,19 @@ export function StayCard({
         )}
       </div>
 
-      <h3 className="text-[17px] font-semibold leading-[1.35] text-foreground">{houseType.name}</h3>
+      <h3 className="text-[19px] font-semibold leading-[1.35] text-foreground">{houseType.name}</h3>
 
       {houseType.description && (
-        <p className="flex-1 text-[14px] leading-[1.7] text-muted-foreground wide:text-[13px]">
+        <p className="flex-1 text-[16px] leading-[1.7] text-muted-foreground wide:text-[15px]">
           {houseType.description}
         </p>
       )}
 
       <div>
-        <p className="text-[27px] leading-[1.3] tracking-[-0.6px] text-foreground">
+        <p className="text-[30px] leading-[1.3] tracking-[-0.6px] text-foreground">
           {formatCurrency(houseType.price_per_house)}
         </p>
-        <p className="mt-[3px] text-[12px] leading-[1.7] text-muted-foreground">
+        <p className="mt-[3px] text-[14px] leading-[1.7] text-muted-foreground">
           pro Unterkunft · {nightsLabel(nights)} · zzgl. Kurtaxe
         </p>
       </div>
@@ -107,14 +107,14 @@ export function StayCard({
           type="button"
           onClick={onDetails}
           aria-expanded={detailsOpen}
-          className="text-center text-[12px] text-primary underline underline-offset-[3px] hover:text-primary/85"
+          className="text-center text-[14px] text-primary underline underline-offset-[3px] hover:text-primary/85"
         >
           {detailsOpen ? "Ausstattung schließen" : "Ausstattung ansehen"}
         </button>
       ) : detailsHref ? (
         <Link
           href={detailsHref}
-          className="text-center text-[12px] text-primary underline underline-offset-[3px] hover:text-primary/85"
+          className="text-center text-[14px] text-primary underline underline-offset-[3px] hover:text-primary/85"
         >
           Ausstattung ansehen
         </Link>

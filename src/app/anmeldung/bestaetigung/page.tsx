@@ -136,7 +136,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
           <CardContent className="pt-6">
             {/* Reservierungsdetails */}
             <h2 className="font-semibold">Reservierungsdetails</h2>
-            <div className="mt-4 space-y-2 text-sm">
+            <div className="mt-4 space-y-2 text-base">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Unterkunft</span>
                 <span className="font-medium">
@@ -182,7 +182,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               <User className="h-4 w-4 text-primary" />
               Kontaktperson
             </h2>
-            <div className="mt-3 space-y-1.5 rounded-md bg-primary/5 p-4 text-sm">
+            <div className="mt-3 space-y-1.5 rounded-md bg-primary/5 p-4 text-base">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Name</span>
                 <span className="font-medium">
@@ -219,19 +219,19 @@ export default async function BestaetigungPage({ searchParams }: Props) {
                   {guests.map((guest, index) => (
                     <div
                       key={index}
-                      className="rounded-md border bg-card p-3 text-sm"
+                      className="rounded-md border bg-card p-3 text-base"
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-medium">
                           {index + 1}. {guest.first_name} {guest.last_name}
                         </span>
                         {guest.is_child && (
-                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-sm font-medium text-amber-700">
                             Kind
                           </span>
                         )}
                       </div>
-                      <div className="mt-1.5 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
+                      <div className="mt-1.5 grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-muted-foreground">
                         <span>Geburtsdatum: {formatBirthDate(guest.birth_date)}</span>
                         <span>Geschlecht: {formatGender(guest.gender)}</span>
                         {guest.dietary_notes && (
@@ -250,7 +250,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
 
             {/* Überweisungsdaten */}
             <h2 className="font-semibold">Überweisungsdaten</h2>
-            <div className="mt-4 space-y-2 rounded-md bg-muted p-4 text-sm">
+            <div className="mt-4 space-y-2 rounded-md bg-muted p-4 text-base">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Empfänger</span>
                 <span>{reservation.bank_account_holder}</span>
@@ -279,7 +279,7 @@ export default async function BestaetigungPage({ searchParams }: Props) {
               </div>
             </div>
 
-            <p className="mt-4 text-xs text-muted-foreground">
+            <p className="mt-4 text-sm text-muted-foreground">
               Bitte geben Sie unbedingt den <strong>Verwendungszweck</strong> an, damit wir Ihre
               Zahlung zuordnen können.
             </p>
