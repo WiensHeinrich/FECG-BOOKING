@@ -3,7 +3,6 @@ import { getAvailability, getHouseTypes } from "@/lib/queries/houses";
 import { getNights } from "@/lib/utils/pricing";
 import { ARRIVAL_TIME, DEPARTURE_TIME } from "@/lib/config/stay-times";
 import {
-  Benefits,
   ClosingCta,
   Experiences,
   Hero,
@@ -37,7 +36,6 @@ export default async function HomePage() {
   return (
     <div>
       <Hero event={event} nights={nights} />
-      <Benefits nights={nights} />
       <StaysPreview houseTypes={houseTypes} availability={availability} nights={nights} />
       <Experiences />
       <Verse />

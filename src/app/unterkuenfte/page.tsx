@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SymbolImage } from "@/components/site/symbol-image";
+import { CoverImage } from "@/components/site/cover-image";
 import { getActiveEvent } from "@/lib/queries/events";
 import { getAvailability, getHouseTypes } from "@/lib/queries/houses";
 import { getNights, ratesFromEvent } from "@/lib/utils/pricing";
@@ -40,7 +40,7 @@ export default async function UnterkuenftePage() {
 
       <section className="site-container mt-6 wide:mt-[26px]">
         <div className="grid items-center gap-5 rounded-2xl bg-sage p-5 wide:grid-cols-2 wide:gap-7 wide:p-[30px]">
-          <SymbolImage
+          <CoverImage
             src="/images/ferienhaus.webp"
             alt="Holzveranda mit Sitzplatz und Blick ins Grüne."
             sizes="(min-width: 721px) 50vw, 100vw"
@@ -48,7 +48,7 @@ export default async function UnterkuenftePage() {
             imageClassName="object-[50%_75%]"
           />
           <div>
-            <h2 className="font-serif text-[31px] font-normal leading-[1.15] tracking-[-0.5px]">
+            <h2 className="cta-title">
               Ein Dorf. Viele Möglichkeiten.
             </h2>
             <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">

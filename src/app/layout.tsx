@@ -1,10 +1,25 @@
 import type { Metadata } from "next";
+import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/lib/config/site";
 import { getActiveEvent } from "@/lib/queries/events";
+
+// Schriften werden beim Build geladen und von der eigenen Domain ausgeliefert (keine Anfrage an Google)
+const headingFont = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500"],
+  style: ["normal", "italic"],
+  variable: "--font-heading",
+  display: "swap",
+});
+const bodyFont = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -44,7 +59,7 @@ export default async function RootLayout({
   const title = event?.title ?? siteConfig.name;
 
   return (
-    <html lang="de">
+    <html lang="de" className={`${headingFont.variable} ${bodyFont.variable}`}>
       <body className="font-sans antialiased">
         <div className="flex min-h-screen flex-col">
           <Header title={title} />

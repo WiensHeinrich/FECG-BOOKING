@@ -1,20 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  CalendarDays,
-  Car,
-  Flame,
-  HelpCircle,
-  Luggage,
-  MapPin,
-  Moon,
-  Music,
-  TreePine,
-  Trees,
-  Heart,
-  Footprints,
-} from "lucide-react";
+import { ArrowRight, CalendarDays, Car, HelpCircle, Luggage, MapPin, UsersRound } from "lucide-react";
+import { format } from "date-fns";
+import { de } from "date-fns/locale";
 import type { Availability, Event, HouseType } from "@/lib/types/database";
 import { formatDateRange } from "@/lib/utils/format";
 import { SectionHead } from "@/components/site/section";
@@ -22,83 +10,77 @@ import { StayCard } from "@/components/stays/stay-card";
 import { nightsLabel } from "@/lib/utils/stay";
 import { siteConfig } from "@/lib/config/site";
 
-/** 7.1 Geteilter Einstieg */
+/** 7.1 Einstieg: Überschrift, großes Bild, Eckdaten darunter */
 export function Hero({ event, nights }: { event: Event; nights: number }) {
+  const weekday = (date: string) => format(new Date(date), "EEEE", { locale: de });
+  const isEckenhof = event.location.includes("Eckenhof");
+  const facts = [
+    {
+      icon: CalendarDays,
+      title: formatDateRange(event.start_date, event.end_date),
+      text: `${weekday(event.start_date)} bis ${weekday(event.end_date)} · ${nightsLabel(nights)}`,
+    },
+    {
+      icon: MapPin,
+      title: isEckenhof ? "Feriendorf Eckenhof" : event.location,
+      text: isEckenhof ? "Schramberg-Sulgen · Schwarzwald" : "",
+    },
+    {
+      icon: UsersRound,
+      title: "Alle Generationen",
+      text: "Als Gemeinde gemeinsam unterwegs",
+    },
+  ];
+
   return (
-    <section className="site-container grid items-center gap-[26px] pb-[30px] pt-[30px] wide:grid-cols-2 wide:gap-9 wide:pb-[34px] wide:pt-[43px]">
-      <div>
-        <p className="kicker mb-[13px]">{siteConfig.slogan}</p>
-        <h1 className="display-1 mb-5 text-[44px] max-[360px]:text-[36px] wide:text-[clamp(40px,5.6vw,62px)]">
-          Ein Wochenende.
-          <br />
-          Zeit füreinander.
-        </h1>
-        <p className="max-w-[44ch] text-[18px] leading-[1.75] text-muted-foreground">
-          Raus aus dem Alltag, rein in die Gemeinschaft. Ein Wochenende für Gott, für die Familie
-          und für uns als Gemeinde.
-        </p>
-        <div className="my-[23px] grid gap-[10px] text-[15px]">
-          <span className="flex items-center gap-[9px]">
-            <CalendarDays className="h-[17px] w-[17px] text-primary" aria-hidden="true" />
-            <strong>{formatDateRange(event.start_date, event.end_date)}</strong>
-            <span className="text-muted-foreground">· {nightsLabel(nights)}</span>
-          </span>
-          <span className="flex items-center gap-[9px]">
-            <MapPin className="h-[17px] w-[17px] text-primary" aria-hidden="true" />
-            {event.location}
-          </span>
+    <section>
+      <div className="site-container grid gap-[20px] pb-[26px] pt-[30px] wide:grid-cols-[1.2fr_1fr] wide:items-end wide:gap-10 wide:pb-[34px] wide:pt-[46px]">
+        <div>
+          <p className="kicker mb-[14px]">{siteConfig.slogan}</p>
+          <h1 className="display-1">
+            Ein Wochenende.
+            <br />
+            <em className="text-[#86632e]">Zeit füreinander.</em>
+          </h1>
         </div>
-        <Link href="/unterkuenfte" className="btn-primary">
-          Eure Unterkunft finden
-          <ArrowRight className="h-[17px] w-[17px]" aria-hidden="true" />
-        </Link>
-        <p className="text-small mt-3">
-          {event.title} der {siteConfig.church}
-        </p>
+        <div className="wide:pb-[6px]">
+          <p className="max-w-[40ch] text-[18px] leading-[1.75] text-muted-foreground">
+            Raus aus dem Alltag, rein in die Gemeinschaft. Ein Wochenende für Gott, für die Familie
+            und für uns als Gemeinde.
+          </p>
+          <Link href="/unterkuenfte" className="btn-primary mt-5">
+            Eure Unterkunft finden
+            <ArrowRight className="h-[17px] w-[17px]" aria-hidden="true" />
+          </Link>
+          <p className="text-small mt-3">
+            {event.title} der {siteConfig.church}
+          </p>
+        </div>
       </div>
 
-      {/* Die Hinweisfläche hängt unter der Bildkante, damit sie die Familie im Bild nicht verdeckt */}
-      <div className="relative mb-[44px]">
+      <div className="site-container">
         <Image
           src="/images/anreise.webp"
           alt="Eine Familie geht von hinten gesehen auf einem Wiesenweg am Waldrand."
           width={1536}
           height={1024}
           priority
-          sizes="(min-width: 721px) 50vw, 100vw"
-          className="h-[250px] w-full rounded-[65px_15px_15px_15px] object-cover object-[66%_60%] wide:h-[345px] wide:rounded-[95px_18px_18px_18px]"
+          sizes="(min-width: 1120px) 1060px, 100vw"
+          className="h-[300px] w-full rounded-[4px_4px_42px_4px] object-cover object-[65%_70%] wide:h-[400px] wide:rounded-[4px_4px_52px_4px] wide:object-[50%_75%] min-[1100px]:h-[440px]"
         />
-        <div className="absolute -bottom-[44px] left-[14px] flex max-w-[calc(100%-28px)] items-center gap-[10px] rounded-[9px] bg-card px-[15px] py-[11px] text-[14px] shadow-[0_4px_20px_rgba(38,62,54,0.12)] wide:left-[18px]">
-          <TreePine className="h-[19px] w-[19px] shrink-0 text-primary" aria-hidden="true" />
-          <span>
-            Zusammen ankommen.
-            <br />
-            <strong>Mitten im Schwarzwald.</strong>
-          </span>
+        <div className="grid gap-[18px] border-b border-border py-6 wide:grid-cols-[1fr_1.1fr_1fr] wide:gap-6">
+          {facts.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="flex items-start gap-3">
+              <Icon className="mt-[5px] h-[19px] w-[19px] shrink-0 text-primary" aria-hidden="true" />
+              <div>
+                <strong className="block text-[18px] font-medium leading-[1.5]">{title}</strong>
+                {text && <span className="block text-[16px] text-muted-foreground">{text}</span>}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
-  );
-}
-
-/** 7.2 Faktenstreifen */
-export function Benefits({ nights }: { nights: number }) {
-  const items = [
-    { icon: Moon, text: `${nightsLabel(nights).replace(/^\w/, (c) => c.toUpperCase())} gemeinsam unterwegs` },
-    { icon: Footprints, text: "Autofreies Feriendorf" },
-    { icon: Heart, text: "Raum für Glauben und Begegnung" },
-  ];
-  return (
-    <div className="site-container">
-      <div className="flex flex-wrap justify-between gap-x-[22px] gap-y-3 border-y border-border py-[18px] text-[14px] text-muted-foreground">
-        {items.map(({ icon: Icon, text }) => (
-          <span key={text} className="flex items-center gap-2">
-            <Icon className="h-4 w-4 text-primary" aria-hidden="true" />
-            {text}
-          </span>
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -152,46 +134,61 @@ export function StaysPreview({
 export function Experiences() {
   const items = [
     {
-      icon: Music,
       title: "Glauben gemeinsam leben",
       text: "Gottesdienste, Lobpreis und Zeit für das, was uns trägt.",
+      image: "/images/lobpreis.webp",
+      alt: "Eine Gruppe von hinten beim gemeinsamen Musizieren mit einer akustischen Gitarre.",
     },
     {
-      icon: Trees,
       title: "Draußen durchatmen",
       text: "Den Schwarzwald entdecken und den Alltag hinter sich lassen.",
+      image: "/images/wanderung.webp",
+      alt: "Eine Gruppe mehrerer Generationen wandert von hinten gesehen durch den Wald.",
     },
     {
-      icon: Flame,
       title: "Einfach zusammen sein",
       text: "Gespräche, Lagerfeuer und Begegnungen über alle Generationen hinweg.",
+      image: "/images/lagerfeuer.webp",
+      alt: "Eine Familie sitzt von hinten gesehen gemeinsam an einem Lagerfeuer.",
     },
   ];
   return (
-    <section className="bg-band py-[27px] wide:py-[34px]">
-      <div className="site-container grid items-center gap-[25px] wide:grid-cols-[1.1fr_1fr] wide:gap-[30px]">
-        <Image
-          src="/images/gemeinschaft-szene.webp"
-          alt="Blick über die Schultern einer Gruppe beim gemeinsamen Essen im Grünen."
-          width={1536}
-          height={1024}
-          sizes="(min-width: 721px) 52vw, 100vw"
-          className="aspect-[3/2] max-h-[320px] w-full rounded-2xl object-cover object-top"
-        />
-        <div>
-          <p className="kicker mb-[13px]">Was uns verbindet</p>
-          <h2 className="display-2">Zeit, die gut tut.</h2>
-          <div className="mt-[23px] grid gap-[17px]">
-            {items.map(({ icon: Icon, title, text }) => (
-              <article key={title} className="flex items-start gap-[13px]">
-                <Icon className="mt-[3px] h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
-                <div>
-                  <h3 className="text-[19px] font-semibold leading-[1.35]">{title}</h3>
-                  <p className="mt-1 text-[15px] text-muted-foreground">{text}</p>
-                </div>
-              </article>
-            ))}
+    <section className="bg-band py-[30px] wide:py-[40px]">
+      <div className="site-container">
+        <div className="grid items-center gap-[22px] wide:grid-cols-[1.1fr_1fr] wide:gap-[34px]">
+          <Image
+            src="/images/gemeinschaft-szene.webp"
+            alt="Blick über die Schultern einer Gruppe beim gemeinsamen Essen im Grünen."
+            width={1536}
+            height={1024}
+            sizes="(min-width: 721px) 52vw, 100vw"
+            className="aspect-[3/2] max-h-[320px] w-full rounded-2xl object-cover object-top"
+          />
+          <div>
+            <p className="kicker mb-[13px]">Was uns verbindet</p>
+            <h2 className="display-2">Zeit, die gut tut.</h2>
+            <p className="mt-4 max-w-[44ch] text-muted-foreground">
+              Den Alltag für ein paar Tage hinter sich lassen. Zeit haben für ein gutes Gespräch, für
+              gemeinsame Wege und für das, was uns im Glauben verbindet.
+            </p>
           </div>
+        </div>
+
+        <div className="mt-[30px] grid gap-[26px] wide:mt-[36px] wide:grid-cols-3 wide:gap-5">
+          {items.map(({ title, text, image, alt }) => (
+            <article key={title}>
+              <Image
+                src={image}
+                alt={alt}
+                width={1200}
+                height={800}
+                sizes="(min-width: 721px) 33vw, 100vw"
+                className="aspect-[3/2] w-full rounded-2xl object-cover"
+              />
+              <h3 className="mt-[14px] text-[19px] font-semibold leading-[1.35]">{title}</h3>
+              <p className="mt-1 text-[15px] text-muted-foreground">{text}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -202,7 +199,7 @@ export function Experiences() {
 export function Verse() {
   return (
     <section className="border-b border-border px-6 py-8 text-center">
-      <blockquote className="mx-auto mb-2 max-w-[550px] font-serif text-[23px] italic leading-[1.5] text-foreground">
+      <blockquote className="mx-auto mb-2 max-w-[650px] font-serif text-[clamp(28px,3.8vw,38px)] font-medium leading-[1.3] tracking-[-0.01em] text-foreground">
         „Wo zwei oder drei versammelt sind in meinem Namen, da bin ich mitten unter ihnen.“
       </blockquote>
       <p className="text-small">Matthäus 18,20</p>
@@ -268,7 +265,7 @@ export function ClosingCta({
     <div className="site-container pb-[25px] wide:pb-[30px]">
       <div className="flex flex-col items-start gap-[18px] rounded-2xl bg-sage p-[22px] wide:flex-row wide:items-center wide:justify-between wide:gap-6 wide:p-[25px]">
         <div>
-          <h2 className="font-serif text-[32px] font-normal leading-[1.15] tracking-[-0.5px]">{title}</h2>
+          <h2 className="cta-title">{title}</h2>
           <p className="text-small mt-2">{text}</p>
         </div>
         <Link href={href} className="btn-primary shrink-0">

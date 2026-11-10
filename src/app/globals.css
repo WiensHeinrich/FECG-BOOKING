@@ -7,8 +7,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: Arial, Helvetica, "Liberation Sans", sans-serif;
-  --font-serif: Georgia, "Times New Roman", "DejaVu Serif", serif;
+  --font-sans: var(--font-body), Arial, Helvetica, "Liberation Sans", sans-serif;
+  --font-serif: var(--font-heading), Georgia, "Times New Roman", "DejaVu Serif", serif;
   --font-mono: ui-monospace, "Courier New", monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -169,19 +169,29 @@
   .kicker {
     @apply text-[13px] font-bold uppercase tracking-[0.16em] text-primary;
   }
+  /* Cormorant Garamond läuft kleiner als Georgia, deshalb größere Schriftgrade */
   .display-1 {
-    @apply font-serif font-normal leading-[1.1] tracking-[-1px] text-foreground;
-    font-size: clamp(40px, 5.6vw, 62px);
+    @apply font-serif font-medium leading-[1.06] tracking-[-0.025em] text-foreground;
+    font-size: clamp(40px, 11.7vw, 55px);
+  }
+  @media (min-width: 45.0625rem) {
+    .display-1 {
+      font-size: clamp(46px, 6.4vw, 76px);
+    }
   }
   .display-2 {
-    @apply font-serif font-normal leading-[1.1] tracking-[-1px] text-foreground;
-    font-size: clamp(30px, 4vw, 40px);
+    @apply font-serif font-medium leading-[1.08] tracking-[-0.025em] text-foreground;
+    font-size: clamp(36px, 4.8vw, 52px);
   }
   .page-title {
-    @apply font-serif text-[38px] font-normal leading-[1.1] tracking-[-1px] text-foreground wide:text-[46px];
+    @apply font-serif text-[44px] font-medium leading-[1.08] tracking-[-0.025em] text-foreground wide:text-[56px];
   }
   .panel-title {
-    @apply font-serif text-[30px] font-normal leading-[1.15] tracking-[-0.5px] text-foreground;
+    @apply font-serif text-[35px] font-medium leading-[1.12] tracking-[-0.02em] text-foreground;
+  }
+  /* Überschrift in Abschlussflächen */
+  .cta-title {
+    @apply font-serif text-[38px] font-medium leading-[1.1] tracking-[-0.02em] text-foreground wide:text-[42px];
   }
   /* Lange Wörter in Überschriften auf sehr schmalen Displays trennen statt überlaufen */
   @media (max-width: 400px) {

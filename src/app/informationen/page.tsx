@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { ImagePreview } from "@/components/ui/image-preview";
 import { PageHead } from "@/components/site/section";
-import { SymbolImage } from "@/components/site/symbol-image";
+import { CoverImage } from "@/components/site/cover-image";
 import { getActiveEvent } from "@/lib/queries/events";
 import { getPublishedDocuments } from "@/lib/queries/documents";
 import { formatCurrency, formatFileSize } from "@/lib/utils/format";
@@ -248,7 +248,7 @@ export default async function InformationenPage() {
         <p className="kicker mb-[9px]">In jeder Unterkunft</p>
         <h2 className="display-2 mb-[22px]">Ausstattung der Unterkünfte</h2>
         <div className="grid gap-5 wide:grid-cols-[1fr_1.15fr] wide:items-start">
-          <SymbolImage
+          <CoverImage
             src="/images/kueche.webp"
             alt="Filterkaffeemaschine, Geschirr und Besteck auf einer Holzarbeitsfläche."
             sizes="(min-width: 721px) 45vw, 100vw"
@@ -295,7 +295,7 @@ export default async function InformationenPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           {einrichtungen.map((e) => (
             <article key={e.title} className="overflow-hidden rounded-2xl border border-border bg-card">
-              <SymbolImage
+              <CoverImage
                 src={e.image}
                 alt={e.alt}
                 sizes="(min-width: 640px) 50vw, 100vw"
@@ -378,7 +378,7 @@ export default async function InformationenPage() {
       <div className="site-container">
         <div className="mb-[25px] flex flex-col items-start gap-[18px] rounded-2xl bg-sage p-[22px] wide:mb-[30px] wide:flex-row wide:items-center wide:justify-between wide:p-[25px]">
           <div>
-            <h2 className="font-serif text-[32px] font-normal leading-[1.15] tracking-[-0.5px]">Noch Fragen?</h2>
+            <h2 className="cta-title">Noch Fragen?</h2>
             <p className="text-small mt-2">
               <a href={`mailto:${event.contact_email}`} className="hover:text-primary">
                 {event.contact_email}
