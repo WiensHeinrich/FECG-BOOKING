@@ -105,6 +105,8 @@ export interface Guest {
   is_child: boolean
   gender: 'maennlich' | 'weiblich' | null
   dietary_notes: string | null
+  /** Bereiche, in denen der Gast mithilft (Migration 016) */
+  help_areas?: string[] | null
   sort_order: number
   created_at: string
 }

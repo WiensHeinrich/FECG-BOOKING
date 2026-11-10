@@ -19,6 +19,7 @@ import type { GuestData } from "@/lib/validations/booking";
 import { StayComparison } from "@/components/stays/stay-comparison";
 import { HOUSE_WISH_NOTE, nightsLabel } from "@/lib/utils/stay";
 import { AvailabilityBadge } from "@/components/stays/availability-badge";
+import { HELP_ANY, HELP_AREAS, HELP_MIN_AGE, helpAreaLabels, type HelpAreaKey } from "@/lib/config/help-areas";
 import { RulesContent } from "./rules-content";
 import { cn } from "@/lib/utils";
 
@@ -50,6 +51,7 @@ const emptyGuest: GuestData = {
   is_child: false,
   gender: undefined,
   dietary_notes: "",
+  help_areas: [],
   sort_order: 0,
 };
 
@@ -145,6 +147,12 @@ export function BookingWizard({
   const effectiveGuests: GuestData[] =
     contactIsGuest && guests.length > 0 ? [contactGuest, ...guests.slice(1)] : guests;
 
+  /** Gäste, die mindestens einen Bereich zum Mithelfen gewählt haben (Kinder unter 14 zählen nicht) */
+  const helpers = effectiveGuests.filter((g) => {
+    const age = getAgeAtDate(g.birth_date, eventStartDate);
+    return (age === null || age >= HELP_MIN_AGE) && (g.help_areas ?? []).length > 0;
+  });
+
   // Die Kurtaxe hängt vom Alter ab. Solange beim Ausfüllen Geburtsdaten fehlen, zählen nur die
   // Gäste mit Geburtsdatum, der Rest wird als "folgt" ausgewiesen (statt alle als Erwachsene zu rechnen).
   // Die Kontaktperson ist volljährig und zählt auch ohne Geburtsdatum als Erwachsene.
@@ -199,6 +207,25 @@ export function BookingWizard({
       prev.map((g, i) =>
         i === index ? { ...g, birth_date: value, is_child: age !== null && age < CHILD_AGE_LIMIT } : g
       )
+    );
+  }
+
+  /** Kinder unter 14 Jahren wählen keinen Bereich */
+  function canHelp(g: GuestData) {
+    const age = getAgeAtDate(g.birth_date, eventStartDate);
+    return age === null || age >= HELP_MIN_AGE;
+  }
+
+  function toggleHelp(index: number, key: HelpAreaKey) {
+    setGuests((prev) =>
+      prev.map((g, i) => {
+        if (i !== index) return g;
+        const current = g.help_areas ?? [];
+        if (current.includes(key)) return { ...g, help_areas: current.filter((k) => k !== key) };
+        // "Egal" und feste Bereiche schließen sich aus
+        const next = key === HELP_ANY ? [key] : [...current.filter((k) => k !== HELP_ANY), key];
+        return { ...g, help_areas: next };
+      })
     );
   }
 
@@ -268,6 +295,13 @@ export function BookingWizard({
       setError(`Bitte prüft das Geburtsdatum von ${badBirth.first_name || "einem Gast"}.`);
       return;
     }
+    if (!isSoldOut && helpers.length === 0) {
+      setError(
+        "Bitte wählt bei mindestens einer Person einen Bereich, in dem ihr mithelfen könnt. Ihr findet die Auswahl bei jedem Gast ab 14 Jahren."
+      );
+      setTimeout(scrollToTop, 50);
+      return;
+    }
     goTo(3);
   }
 
@@ -278,7 +312,11 @@ export function BookingWizard({
       setError("Bitte akzeptiert die Teilnahmebedingungen.");
       return;
     }
-    const guestPayload = effectiveGuests.map((g, i) => ({ ...g, sort_order: i }));
+    const guestPayload = effectiveGuests.map((g, i) => ({
+      ...g,
+      help_areas: canHelp(g) ? (g.help_areas ?? []) : [],
+      sort_order: i,
+    }));
     startTransition(async () => {
       const result = isSoldOut
         ? await joinWaitlist({
@@ -287,7 +325,7 @@ export function BookingWizard({
             contact_first_name: contact.first_name,
             contact_last_name: contact.last_name,
             contact_email: contact.email,
-            contact_phone: contact.phone || undefined,
+            contact_phone: contact.phone,
             contact_gender: (contact.gender as "maennlich" | "weiblich") || undefined,
             guest_count: guests.length,
             guests: guestPayload,
@@ -299,7 +337,7 @@ export function BookingWizard({
             contact_first_name: contact.first_name,
             contact_last_name: contact.last_name,
             contact_email: contact.email,
-            contact_phone: contact.phone || undefined,
+            contact_phone: contact.phone,
             contact_gender: (contact.gender as "maennlich" | "weiblich") || undefined,
             contact_birth_date: contact.birth_date || undefined,
             contact_dietary_notes: contact.dietary_notes || undefined,
@@ -550,7 +588,7 @@ export function BookingWizard({
                       required
                     />
                   </Field>
-                  <Field id="contact_phone" label="Telefon (optional)">
+                  <Field id="contact_phone" label="Handy- oder Telefonnummer *">
                     <input
                       id="contact_phone"
                       className="field-input"
@@ -558,7 +596,9 @@ export function BookingWizard({
                       autoComplete="tel"
                       value={contact.phone}
                       onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))}
+                      minLength={5}
                       maxLength={50}
+                      required
                     />
                   </Field>
                   <fieldset>
@@ -608,6 +648,11 @@ export function BookingWizard({
                     ? "Tragt trotzdem alle Gäste ein, dann können wir euch direkt übernehmen, sobald eine Unterkunft frei wird."
                     : `Alle Personen, die im ${selectedType.name} übernachten: mindestens ${range.min}, höchstens ${range.max}. Das Geburtsdatum brauchen wir für die Kurtaxe.`}
                 </p>
+                <div className="mt-3 rounded-lg bg-sage p-[13px] text-[15px] leading-[1.55]">
+                  <strong className="font-semibold">Mithelfen:</strong> Die Freizeit lebt davon, dass alle
+                  mit anpacken. Wählt bei jedem Gast ab {HELP_MIN_AGE} Jahren, wo er oder sie mithelfen
+                  kann. {isSoldOut ? "" : "Mindestens ein Bereich pro Haus ist Pflicht."}
+                </div>
 
                 <div className="mt-3">
                   {effectiveGuests.map((guest, index) => {
@@ -704,6 +749,37 @@ export function BookingWizard({
                               Die Angaben werden von der Kontaktperson übernommen. Zum Bearbeiten das Häkchen oben entfernen.
                             </p>
                           )}
+                          {canHelp(guest) && (
+                            <fieldset className="wide:col-span-2" data-help-index={index}>
+                              <legend className="field-label mb-2">
+                                Wo kann {guest.first_name.trim() || `Gast ${index + 1}`} mithelfen?
+                              </legend>
+                              <div className="flex flex-wrap gap-2">
+                                {HELP_AREAS.map((area) => {
+                                  const checked = (guest.help_areas ?? []).includes(area.key);
+                                  return (
+                                    <label
+                                      key={area.key}
+                                      className={cn(
+                                        "cursor-pointer rounded-full border px-3 py-[6px] text-[14px] leading-[1.35] transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
+                                        checked
+                                          ? "border-primary bg-primary text-primary-foreground"
+                                          : "border-border bg-card hover:border-[#bcc7b5]"
+                                      )}
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        className="sr-only"
+                                        checked={checked}
+                                        onChange={() => toggleHelp(index, area.key)}
+                                      />
+                                      {area.label}
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            </fieldset>
+                          )}
                         </div>
                       </details>
                     );
@@ -778,6 +854,14 @@ export function BookingWizard({
                     {effectiveGuests.map((g, i) => guestSummary(g, i).name).join(", ")}
                   </li>
                   {extraBeds > 0 && <li>{extraBeds} {extraBeds === 1 ? "Zustellbett" : "Zustellbetten"}</li>}
+                  {helpers.length > 0 && (
+                    <li>
+                      Mithilfe:{" "}
+                      {helpers
+                        .map((g) => `${g.first_name} (${helpAreaLabels(g.help_areas)})`)
+                        .join(", ")}
+                    </li>
+                  )}
                   <li>
                     Kontakt: {contact.first_name} {contact.last_name}, {contact.email}
                     {contact.phone && <>, {contact.phone}</>}

@@ -10,6 +10,7 @@ import {
   Home,
   Settings,
   FileText,
+  HandHelping,
   LogOut,
   Menu,
 } from "lucide-react";
@@ -27,6 +28,7 @@ const navItems = [
   { href: "/admin/reservierungen", label: "Reservierungen", icon: CalendarCheck },
   { href: "/admin/warteliste", label: "Warteliste", icon: ListOrdered },
   { href: "/admin/haeuser", label: "Hausbelegung", icon: Home },
+  { href: "/admin/mithilfe", label: "Mithilfe", icon: HandHelping },
   { href: "/admin/einstellungen", label: "Einstellungen", icon: Settings },
   { href: "/admin/dokumente", label: "Dokumente", icon: FileText },
 ];

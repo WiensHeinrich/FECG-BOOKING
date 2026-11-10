@@ -17,6 +17,7 @@ const guestSchema = z.object({
   is_child: z.boolean().default(false),
   gender: z.enum(["maennlich", "weiblich"]).optional(),
   dietary_notes: z.string().optional(),
+  help_areas: z.array(z.string().max(40)).max(20).optional(),
   sort_order: z.number().default(0),
 });
 
@@ -26,7 +27,7 @@ const waitlistSchema = z.object({
   contact_first_name: z.string().min(1),
   contact_last_name: z.string().min(1),
   contact_email: z.email(),
-  contact_phone: z.string().optional(),
+  contact_phone: z.string().trim().min(5).max(50),
   contact_gender: z.enum(["maennlich", "weiblich"]).optional(),
   guest_count: z.number().min(1).max(50),
   guests: z.array(guestSchema).optional(),
@@ -38,7 +39,8 @@ export async function joinWaitlist(formData: WaitlistFormData) {
   const parsed = waitlistSchema.safeParse(formData);
 
   if (!parsed.success) {
-    return { error: "Ungültige Eingaben." };
+    const phoneMissing = parsed.error.issues.some((i) => i.path[0] === "contact_phone");
+    return { error: phoneMissing ? "Bitte gebt eine Telefonnummer an." : "Ungültige Eingaben." };
   }
 
   if (

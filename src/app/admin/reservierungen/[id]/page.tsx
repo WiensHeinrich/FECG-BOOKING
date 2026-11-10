@@ -1,3 +1,4 @@
+import { helpAreaLabels } from "@/lib/config/help-areas";
 import { getReservation } from "@/lib/queries/admin";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -113,6 +114,11 @@ export default async function ReservationDetailPage({
                         <span className="ml-2 text-muted-foreground">
                           {formatDate(g.birth_date)}
                         </span>
+                      )}
+                      {g.help_areas && g.help_areas.length > 0 && (
+                        <p className="text-xs text-muted-foreground">
+                          Hilft mit: {helpAreaLabels(g.help_areas)}
+                        </p>
                       )}
                     </div>
                     <div className="flex gap-1">

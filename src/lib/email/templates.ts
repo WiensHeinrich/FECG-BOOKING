@@ -1,3 +1,5 @@
+import { helpAreaLabels } from "@/lib/config/help-areas";
+
 // E-Mail Templates als HTML-Strings
 // Einfach und robust - kein React-Email nötig
 
@@ -131,6 +133,7 @@ export interface GuestEmailData {
   is_child?: boolean;
   gender?: string | null;
   dietary_notes?: string | null;
+  help_areas?: readonly string[] | null;
 }
 
 function renderGuestList(guests: GuestEmailData[]) {
@@ -147,7 +150,12 @@ function renderGuestList(guests: GuestEmailData[]) {
           ${g.is_child ? ' <span style="background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 3px; font-size: 11px;">Kind</span>' : ""}
           <div style="margin-top: 4px; font-size: 13px; color: #666;">
             Geb.: ${formatBirthDate(g.birth_date)} · Geschlecht: ${formatGender(g.gender)}${g.dietary_notes ? ` · Hinweise: ${esc(g.dietary_notes)}` : ""}
-          </div>
+          </div>${
+            g.help_areas && g.help_areas.length > 0
+              ? `
+          <div style="margin-top: 2px; font-size: 13px; color: #666;">Hilft mit: ${esc(helpAreaLabels(g.help_areas))}</div>`
+              : ""
+          }
         </div>`
         )
         .join("")}

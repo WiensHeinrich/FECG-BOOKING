@@ -64,6 +64,7 @@ async function sendReservationEmails(data: BookingFormData, result: ReservationR
     is_child: g.is_child,
     gender: g.gender || null,
     dietary_notes: g.dietary_notes || null,
+    help_areas: g.help_areas,
   }));
 
   const breakdown: PriceBreakdown = {

@@ -442,9 +442,14 @@ export async function convertWaitlistToReservation(waitlistEntryId: string) {
   // 5. Gäste aus guests_json übernehmen
   const guestsJson = (entry as unknown as { guests_json: unknown[] }).guests_json;
   if (guestsJson && Array.isArray(guestsJson) && guestsJson.length > 0) {
+    // Mithilfe nur mitschicken, wenn sie angegeben wurde (Spalte aus Migration 016)
+    const withHelp = guestsJson.some(
+      (rawG) => Array.isArray((rawG as Record<string, unknown>).help_areas)
+    );
     const guestRows = guestsJson.map((rawG: unknown, i: number) => {
       const g = rawG as Record<string, unknown>;
       return ({
+      ...(withHelp ? { help_areas: Array.isArray(g.help_areas) ? g.help_areas : [] } : {}),
       reservation_id: reservationId,
       first_name: (g.first_name as string) || "",
       last_name: (g.last_name as string) || "",
