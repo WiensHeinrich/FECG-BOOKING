@@ -18,55 +18,57 @@ export const metadata: Metadata = {
     "Anreise, Abreise, Zahlung, Ausstattung der Unterkünfte, Packliste, Gemeinschaftseinrichtungen und Grundrisse für die Gemeindefreizeit im Feriendorf Eckenhof Schramberg.",
 };
 
+// Angaben laut "Häufig gestellte Fragen Gruppen", Belegungsvereinbarung und Grundrissen des Feriendorfs
 const vorhanden = [
-  "Kaffeemaschine (Filtertüten bitte mitbringen)",
-  "Wasserkocher",
-  "Kühlschrank (ohne Gefrierfach)",
-  "Grundgeschirr und Besteck",
+  "Kaffeemaschine und Wasserkocher (Filtertüten Größe 4 bitte mitbringen)",
+  "Kühlschrank ohne Gefrierfach",
+  "Geschirr, Besteck und Kochutensilien",
+  "Gasherd in den Ferienhäusern, 2-Platten-Herd im Gästehaus",
   "Bettwäsche inklusive",
-  "Kinderbett und Hochstuhl auf Anfrage",
-  "WLAN im ganzen Dorf",
-  "Heizung",
+  "Kinderbett und Kinderstuhl (Bedarf bitte bei der Anmeldung angeben)",
+  "Fernseher in den Wohnungen im Gästehaus",
+  "WLAN im ganzen Feriendorf",
+  "Toaster zum Ausleihen an der Rezeption",
 ];
 
 const nichtVorhanden = [
-  "Backofen (nur in Typ C)",
-  "Spülmaschine (nur in Typ C)",
+  "Backofen und Spülmaschine (nur in den Ferienhäusern Typ C)",
   "Gefrierfach",
-  "Elektrogrill (Gemeinschaftsgrill vorhanden)",
-  "Fernseher im Haus (TV-Raum im Hauptgebäude)",
+  "Fernseher in den Ferienhäusern (TV-Raum im Haupthaus)",
+  "Handtücher und Seife",
+  "Elektrogrill: Auf Terrasse und Balkon darf nur elektrisch gegrillt werden, für alle gibt es den überdachten Grillplatz",
 ];
 
 const mitbringen = [
-  "Spülmittel und Spültabs",
-  "Spültücher und Putzlappen",
+  "Handtücher und Seife",
+  "Geschirrtücher und Putzlappen",
+  "Spülmittel, für Typ C auch Spültabs",
   "Müllbeutel",
   "Toilettenpapier",
-  "Filtertüten für die Kaffeemaschine",
-  "Handtücher",
+  "Filtertüten Größe 4 für die Kaffeemaschine",
   "Sandspielzeug für den Sandkasten",
-  "Eigenes Datenvolumen, das WLAN kann begrenzt sein",
+  "Eigenes Datenvolumen, falls ihr arbeiten oder Filme schauen wollt",
 ];
 
 const einrichtungen = [
   {
     title: "Großer Grillplatz",
-    text: "Überdachter Gemeinschaftsgrill für alle Gäste. Ideal für gemeinsame Abende.",
+    text: "Überdachter Grillplatz auf dem Gelände, der allen Gästen offensteht. Ideal für gemeinsame Abende.",
     image: "/images/grill.webp",
   },
   {
     title: "Waschraum",
-    text: "Münzbetriebene Waschmaschine und Trockner (3,50 € pro Ladung). Ein Bügeleisen ist vorhanden.",
+    text: "Münzwaschmaschine und Trockner im Haupthaus. Waschmünzen gibt es für 3,50 € an der Rezeption, Waschmittel ist vorhanden. Bügelbrett und Bügeleisen stehen bereit.",
     image: "/images/waschraum.webp",
   },
   {
     title: "Spielplatz und Spieleverleih",
-    text: "Kinderspielplatz mit Sandkasten. Bälle, Badminton und mehr können an der Rezeption ausgeliehen werden.",
+    text: "Kinderspielplatz mit Sandkasten. Bälle (gegen Pfand), Federball und Gesellschaftsspiele könnt ihr an der Rezeption ausleihen.",
     image: "/images/spielplatz.webp",
   },
   {
     title: "WLAN und TV-Raum",
-    text: "WLAN im gesamten Dorf. Der TV-Raum im Hauptgebäude ist mit dem Schlüssel von der Rezeption nutzbar.",
+    text: "WLAN im gesamten Feriendorf. Der TV-Raum im Haupthaus ist mit dem Schlüssel von der Rezeption nutzbar.",
     image: "/images/wlan-tv-raum.webp",
   },
 ];
@@ -79,26 +81,32 @@ const grundrisse = [
     download: "/docs/uebersichtsplan-eckenhof.jpg",
   },
   {
-    title: "Ferienhaus Typ A und B",
-    text: "Raumaufteilung für bis zu 6 Personen",
-    image: "/images/grundriss-typ-ab.webp",
+    title: "Ferienhaus Typ A",
+    text: "Häuser 1 bis 4, 6, 7 und 9 bis 14: Elternschlafzimmer und zwei Stockbettzimmer",
+    image: "/images/grundriss-typ-a.webp",
     download: "/docs/grundriss-typ-a.pdf",
   },
   {
+    title: "Ferienhaus Typ B",
+    text: "Häuser 5, 8, 15 und 19 bis 25: drei Doppelbettzimmer",
+    image: "/images/grundriss-typ-b.webp",
+    download: "/docs/grundriss-typ-b.pdf",
+  },
+  {
     title: "Ferienhaus Typ C",
-    text: "Raumaufteilung für 8 bis 10 Personen",
+    text: "Häuser 16 bis 18: fünf Schlafzimmer für bis zu 10 Personen",
     image: "/images/grundriss-typ-c.webp",
     download: "/docs/grundriss-typ-c.pdf",
   },
   {
-    title: "Gästehaus G1 bis G11",
-    text: "Raumaufteilung der Gästehäuser",
+    title: "Wohnungen im Gästehaus",
+    text: "Elternschlafzimmer, Dreibettzimmer und Wohnzimmer mit Küchenzeile",
     image: "/images/grundriss-gaestehaus.webp",
     download: "/docs/grundriss-gaestehaus.pdf",
   },
   {
-    title: "Villa II und III",
-    text: "Raumaufteilung der Villen",
+    title: "Villa III",
+    text: "Zweites Obergeschoss der Villa, die Wohnung Villa 3 liegt rechts im Plan",
     image: "/images/grundriss-villa-2-3.webp",
     download: null,
   },
@@ -124,15 +132,19 @@ export default async function InformationenPage() {
   const faq = [
     {
       q: "Was müssen wir mitbringen?",
-      a: "Handtücher, Toilettenpapier, Spülmittel, Spültücher, Müllbeutel und Filtertüten für die Kaffeemaschine. Bettwäsche ist inklusive. Die vollständige Packliste steht weiter unten.",
+      a: "Handtücher, Seife, Geschirrtücher, Putzlappen, Spülmittel, Müllbeutel, Toilettenpapier und Filtertüten Größe 4 für die Kaffeemaschine. Bettwäsche ist inklusive. Die vollständige Packliste steht weiter unten.",
     },
     {
       q: "Wie bezahlen wir unsere Unterkunft?",
-      a: `Hauspreis und Kurtaxe werden zusammen vorab überwiesen. Nach der Reservierung seht ihr Gesamtbetrag, Bankverbindung und Verwendungszweck auf der Bestätigungsseite und per E-Mail. Die Reservierung bleibt ${event.reservation_validity_days} Tage gültig und wird mit dem Zahlungseingang verbindlich. Die Kurtaxe (${formatCurrency(rates.adultRate)} pro Person und Tag ab ${rates.adultMinAge} Jahren, ${formatCurrency(rates.childRate)} von ${rates.childMinAge} bis ${rates.adultMinAge - 1} Jahren) führt das Freizeitteam gesammelt an das Feriendorf ab.`,
+      a: `Hauspreis und Kurtaxe werden zusammen vorab überwiesen. Im Hauspreis sind die Endreinigung und der Anteil an Großküche und Gemeinschaftsräumen enthalten. Nach der Reservierung seht ihr Gesamtbetrag, Bankverbindung und Verwendungszweck auf der Bestätigungsseite und per E-Mail. Die Reservierung bleibt ${event.reservation_validity_days} Tage gültig und wird mit dem Zahlungseingang verbindlich. Die Kurtaxe (${formatCurrency(rates.adultRate)} pro Person und Tag ab ${rates.adultMinAge} Jahren, ${formatCurrency(rates.childRate)} von ${rates.childMinAge} bis ${rates.adultMinAge - 1} Jahren) führt das Freizeitteam gesammelt an das Feriendorf ab.`,
     },
     {
       q: "Wie funktioniert die Anreise ins autofreie Dorf?",
-      a: "Parkplätze befinden sich in der Nähe des Feriendorfs. Fahrzeuge dürfen nicht ins Dorf. Für den Gepäcktransport stehen Bollerwagen zur Verfügung.",
+      a: `Für das Navi: ${event.location_address ?? "Dr.-Helmut-Junghans-Straße 50, 78713 Schramberg-Sulgen"}. Das Feriendorf ist ausgeschildert. Parkplätze befinden sich in der Nähe, Fahrzeuge dürfen nicht ins Dorf. Für das Gepäck stehen Ziehwagen bereit.`,
+    },
+    {
+      q: "Können wir mit der Bahn anreisen?",
+      a: "Ja. Am besten über den Bahnhof Rottweil, von dort fährt der Bus nach Schramberg-Sulgen. Die Haltestelle Sulgen Feriendorf liegt direkt am Dorf, von der Haltestelle Schramberger Straße sind es etwa 10 Minuten zu Fuß. Plant die Verbindung bitte vorher über die Fahrplanauskunft der Bahn.",
     },
     {
       q: "Was ist mit der Verpflegung und dem genauen Programm?",
@@ -141,6 +153,14 @@ export default async function InformationenPage() {
     {
       q: "Können wir mit mehr Personen als Betten anreisen?",
       a: `Pro Unterkunft könnt ihr bis zu ${rates.maxExtraBeds} Zustellbetten für ${formatCurrency(rates.extraBedPricePerDay)} pro Bett und Tag dazubuchen. Ein Doppelbett kann auch von zwei Personen genutzt werden, dann ist kein Zustellbett nötig.`,
+    },
+    {
+      q: "Dürfen wir unseren Hund mitbringen?",
+      a: "Nein. Hunde sind im Feriendorf aus hygienischen Gründen nicht gestattet.",
+    },
+    {
+      q: "Was ist bei der Abreise zu beachten?",
+      a: `Die Unterkünfte bitte ${DEPARTURE_TIME_LONG} räumen und ordentlich hinterlassen. Die abgezogene Bettwäsche bringt ihr zu den Wäschecontainern an der Schwarzwaldstube.`,
     },
   ];
 

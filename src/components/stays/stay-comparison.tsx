@@ -72,7 +72,8 @@ export function StayComparison({
         <div>
           <h2 className="display-2">{title}</h2>
           <p className="text-small mt-[10px]">
-            Hauspreise für {nightsLabel(nights)}, zuzüglich Kurtaxe. Die Auswahl nehmt ihr direkt mit in die Anmeldung.
+            Hauspreise für {nightsLabel(nights)} inklusive Endreinigung und Anteil an Großküche und
+            Gemeinschaftsräumen, zuzüglich Kurtaxe. Die Auswahl nehmt ihr direkt mit in die Anmeldung.
           </p>
         </div>
         {showFilter && (

@@ -111,7 +111,10 @@ export function StaysPreview({
   availability: Availability[] | null;
   nights: number;
 }) {
-  const preview = houseTypes.slice(0, 3);
+  // Je Größe nur ein Beispiel, damit die Vorschau die Bandbreite zeigt (z. B. 6, 10 und 5 Personen)
+  const preview = houseTypes
+    .filter((ht, i) => houseTypes.findIndex((o) => o.max_guests === ht.max_guests) === i)
+    .slice(0, 3);
   if (preview.length === 0) return null;
 
   return (
