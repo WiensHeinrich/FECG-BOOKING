@@ -4,7 +4,7 @@ import { useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertCircle, ArrowRight, CalendarDays, Loader2, Plus, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowRight, CalendarDays, Loader2, Plus, Trash2, Users } from "lucide-react";
 import { createReservation } from "@/lib/actions/booking";
 import { joinWaitlist } from "@/lib/actions/waitlist";
 import { formatCurrency, formatDateRange } from "@/lib/utils/format";
@@ -226,6 +226,22 @@ export function BookingWizard({
         const next = key === HELP_ANY ? [key] : [...current.filter((k) => k !== HELP_ANY), key];
         return { ...g, help_areas: next };
       })
+    );
+  }
+
+  // Familienname der Kontaktperson bei allen Mitreisenden eintragen, deren Nachname noch leer ist
+  const familyName = contact.last_name.trim();
+  const firstOtherGuest = contactIsGuest ? 1 : 0;
+  const guestsWithoutLastName = guests.filter(
+    (g, i) => i >= firstOtherGuest && !g.last_name.trim()
+  ).length;
+
+  function applyFamilyName() {
+    if (!familyName) return;
+    setGuests((prev) =>
+      prev.map((g, i) =>
+        i >= firstOtherGuest && !g.last_name.trim() ? { ...g, last_name: familyName } : g
+      )
     );
   }
 
@@ -653,6 +669,17 @@ export function BookingWizard({
                   mit anpacken. Wählt bei jedem Gast ab {HELP_MIN_AGE} Jahren, wo er oder sie mithelfen
                   kann. {isSoldOut ? "" : "Mindestens ein Bereich pro Haus ist Pflicht."}
                 </div>
+                {familyName && guestsWithoutLastName > 0 && (
+                  <button
+                    type="button"
+                    className="btn-secondary mt-3 min-h-0 px-[14px] py-[8px] text-[15px]"
+                    onClick={applyFamilyName}
+                    data-family-name=""
+                  >
+                    <Users className="h-[17px] w-[17px]" aria-hidden="true" />
+                    Nachname „{familyName}“ bei {guestsWithoutLastName === 1 ? "der weiteren Person" : "allen Mitreisenden"} eintragen
+                  </button>
+                )}
 
                 <div className="mt-3">
                   {effectiveGuests.map((guest, index) => {
