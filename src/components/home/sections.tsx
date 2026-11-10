@@ -57,17 +57,18 @@ export function Hero({ event, nights }: { event: Event; nights: number }) {
         </p>
       </div>
 
-      <div className="relative">
+      {/* Die Hinweisfläche hängt unter der Bildkante, damit sie die Familie im Bild nicht verdeckt */}
+      <div className="relative mb-[44px]">
         <Image
           src="/images/anreise.webp"
-          alt="Illustration: Ankunft mit dem Bus vor einer Holzhütte im Schwarzwald"
-          width={1600}
-          height={776}
+          alt="Eine Familie geht von hinten gesehen auf einem Wiesenweg am Waldrand."
+          width={1536}
+          height={1024}
           priority
           sizes="(min-width: 721px) 50vw, 100vw"
-          className="h-[250px] w-full rounded-[65px_15px_15px_15px] object-cover object-center wide:h-[345px] wide:rounded-[95px_18px_18px_18px]"
+          className="h-[250px] w-full rounded-[65px_15px_15px_15px] object-cover object-[66%_60%] wide:h-[345px] wide:rounded-[95px_18px_18px_18px]"
         />
-        <div className="absolute inset-x-[18px] bottom-[18px] flex items-center gap-[10px] rounded-[9px] bg-card px-[15px] py-[11px] text-[14px] shadow-[0_4px_20px_rgba(38,62,54,0.07)]">
+        <div className="absolute -bottom-[44px] left-[14px] flex max-w-[calc(100%-28px)] items-center gap-[10px] rounded-[9px] bg-card px-[15px] py-[11px] text-[14px] shadow-[0_4px_20px_rgba(38,62,54,0.12)] wide:left-[18px]">
           <TreePine className="h-[19px] w-[19px] shrink-0 text-primary" aria-hidden="true" />
           <span>
             Zusammen ankommen.
@@ -171,11 +172,11 @@ export function Experiences() {
       <div className="site-container grid items-center gap-[25px] wide:grid-cols-[1.1fr_1fr] wide:gap-[30px]">
         <Image
           src="/images/gemeinschaft-szene.webp"
-          alt="Illustration: Gemeinsames Essen und Spielen vor den Holzhäusern des Feriendorfs"
-          width={1263}
-          height={729}
+          alt="Blick über die Schultern einer Gruppe beim gemeinsamen Essen im Grünen."
+          width={1536}
+          height={1024}
           sizes="(min-width: 721px) 52vw, 100vw"
-          className="h-auto w-full rounded-2xl"
+          className="aspect-[3/2] max-h-[320px] w-full rounded-2xl object-cover object-top"
         />
         <div>
           <p className="kicker mb-[13px]">Was uns verbindet</p>

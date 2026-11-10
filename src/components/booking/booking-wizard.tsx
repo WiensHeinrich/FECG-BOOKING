@@ -337,10 +337,10 @@ export function BookingWizard({
             <Image
               src="/images/ferienhaus.webp"
               alt=""
-              width={1000}
-              height={1501}
+              width={1536}
+              height={1024}
               sizes="(min-width: 721px) 30vw, 0px"
-              className="my-[13px] hidden h-[120px] w-full rounded-[9px] object-cover object-[center_45%] wide:block"
+              className="my-[13px] hidden h-[120px] w-full rounded-[9px] object-cover object-[50%_75%] wide:block"
             />
 
             {isSoldOut ? (

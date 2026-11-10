@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { ImagePreview } from "@/components/ui/image-preview";
 import { PageHead } from "@/components/site/section";
+import { SymbolImage } from "@/components/site/symbol-image";
 import { getActiveEvent } from "@/lib/queries/events";
 import { getPublishedDocuments } from "@/lib/queries/documents";
 import { formatCurrency, formatFileSize } from "@/lib/utils/format";
@@ -55,21 +56,29 @@ const einrichtungen = [
     title: "Großer Grillplatz",
     text: "Überdachter Grillplatz auf dem Gelände, der allen Gästen offensteht. Ideal für gemeinsame Abende.",
     image: "/images/grill.webp",
+    alt: "Zwei Personen von hinten beim gemeinsamen Grillen im Grünen.",
+    position: "object-[50%_20%]",
   },
   {
     title: "Waschraum",
     text: "Münzwaschmaschine und Trockner im Haupthaus. Waschmünzen gibt es für 3,50 € an der Rezeption, Waschmittel ist vorhanden. Bügelbrett und Bügeleisen stehen bereit.",
     image: "/images/waschraum.webp",
+    alt: "Waschmaschine und Wäschekorb mit gefalteten Handtüchern.",
+    position: "object-[65%_60%]",
   },
   {
     title: "Spielplatz und Spieleverleih",
     text: "Kinderspielplatz mit Sandkasten. Bälle (gegen Pfand), Federball und Gesellschaftsspiele könnt ihr an der Rezeption ausleihen.",
     image: "/images/spielplatz.webp",
+    alt: "Kinder und Erwachsene von hinten an einem Spielplatz im Grünen.",
+    position: "object-[50%_68%]",
   },
   {
     title: "WLAN und TV-Raum",
     text: "WLAN im gesamten Feriendorf. Der TV-Raum im Haupthaus ist mit dem Schlüssel von der Rezeption nutzbar.",
     image: "/images/wlan-tv-raum.webp",
+    alt: "Laptop auf einem Holztisch in einer ruhigen Sitzecke.",
+    position: "object-[55%_60%]",
   },
 ];
 
@@ -239,13 +248,12 @@ export default async function InformationenPage() {
         <p className="kicker mb-[9px]">In jeder Unterkunft</p>
         <h2 className="display-2 mb-[22px]">Ausstattung der Unterkünfte</h2>
         <div className="grid gap-5 wide:grid-cols-[1fr_1.15fr] wide:items-start">
-          <Image
+          <SymbolImage
             src="/images/kueche.webp"
-            alt="Illustration: Küche im Ferienhaus"
-            width={1200}
-            height={581}
+            alt="Filterkaffeemaschine, Geschirr und Besteck auf einer Holzarbeitsfläche."
             sizes="(min-width: 721px) 45vw, 100vw"
-            className="h-[220px] w-full rounded-2xl object-cover wide:h-full wide:max-h-[420px]"
+            className="h-[220px] rounded-2xl wide:h-[420px]"
+            imageClassName="object-[25%_55%]"
           />
           <div className="grid gap-4 sm:grid-cols-2 wide:grid-cols-1">
             <Checklist title="Vorhanden" items={vorhanden} positive />
@@ -271,11 +279,11 @@ export default async function InformationenPage() {
           </div>
           <Image
             src="/images/mitbringen.webp"
-            alt="Illustration: Küche mit Vorräten"
-            width={1200}
-            height={581}
+            alt="Handtücher, Spültuch, Spülmittel und Kaffeefilter liegen zum Einpacken bereit."
+            width={1280}
+            height={853}
             sizes="(min-width: 721px) 40vw, 100vw"
-            className="h-[200px] w-full rounded-2xl object-cover wide:h-[260px]"
+            className="h-[200px] w-full rounded-2xl object-cover object-[50%_70%] wide:h-[260px]"
           />
         </div>
       </section>
@@ -287,13 +295,12 @@ export default async function InformationenPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           {einrichtungen.map((e) => (
             <article key={e.title} className="overflow-hidden rounded-2xl border border-border bg-card">
-              <Image
+              <SymbolImage
                 src={e.image}
-                alt={e.title}
-                width={1000}
-                height={481}
+                alt={e.alt}
                 sizes="(min-width: 640px) 50vw, 100vw"
-                className="aspect-[2/1] w-full object-cover"
+                className="aspect-[2/1]"
+                imageClassName={e.position}
               />
               <div className="p-5">
                 <h3 className="text-[19px] font-semibold leading-[1.35]">{e.title}</h3>
