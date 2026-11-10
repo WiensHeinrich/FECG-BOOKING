@@ -128,6 +128,11 @@ export default async function BestaetigungPage({ searchParams }: Props) {
                 Eure Reservierung wurde erstellt. Bitte überweist den Gesamtbetrag
                 aus Hauspreis und Kurtaxe bis spätestens zum angegebenen Datum.
               </p>
+              <p className="mx-auto mt-3 max-w-[52ch] rounded-lg bg-sage px-4 py-3 text-[15px] leading-[1.55]">
+                Die Bestätigung haben wir an <strong>{reservation.contact_email}</strong> geschickt.
+                Nichts angekommen? Schaut bitte auch im Spam-Ordner nach und markiert die Mail dort
+                als „Kein Spam“.
+              </p>
             </>
           )}
         </div>
