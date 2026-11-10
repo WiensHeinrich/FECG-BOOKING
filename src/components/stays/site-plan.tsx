@@ -9,7 +9,10 @@ import { getFloorPlan } from "@/lib/config/floor-plans";
 import type { Availability, HouseType } from "@/lib/types/database";
 import { cn } from "@/lib/utils";
 
-/** Maße des Planbilds, alle Koordinaten unten beziehen sich darauf */
+/**
+ * Maße des Übersichtsplans, alle Koordinaten unten beziehen sich darauf.
+ * Im Planbild (lageplan-eckenhof.webp) sind die braunen Häuser entfernt, sie werden hier farbig gezeichnet.
+ */
 const PLAN_WIDTH = 847;
 const PLAN_HEIGHT = 717;
 const INK = "#263e36";
@@ -57,64 +60,48 @@ interface Spot {
   fontSize?: number;
 }
 
-/** Schiebt die Ecken etwas nach außen, damit das braune Haus im Bild vollständig überdeckt ist */
-function grow(points: string, cx: number, cy: number, by: number) {
-  return points
-    .split(" ")
-    .map((p) => {
-      const [x, y] = p.split(",").map(Number);
-      const d = Math.hypot(x - cx, y - cy) || 1;
-      return `${(x + ((x - cx) / d) * by).toFixed(1)},${(y + ((y - cy) / d) * by).toFixed(1)}`;
-    })
-    .join(" ");
-}
-
 const house = (n: number, group: GroupKey, points: string, cx: number, cy: number): Spot => ({
   id: String(n),
   label: `Haus ${n}`,
   group,
-  points: grow(points, cx, cy, 1.8),
+  points,
   cx,
   cy,
   text: [String(n)],
 });
 
 const SPOTS: Spot[] = [
-  house(1, "a", "292.8,509.5 310.2,517.8 297.5,543.2 280.8,535.8", 295.4, 526.2),
-  house(2, "a", "314.2,515.2 331.2,524 319.8,548.8 301.2,540.8", 316.3, 532.2),
-  house(3, "a", "333.5,522.8 351,530 338,555.8 321.2,548", 336.2, 539.2),
-  house(4, "a", "351.5,530.5 371.5,539.5 360,562.5 340,553", 356.2, 546.2),
-  house(5, "b", "373.8,536.8 399.8,549.8 386.2,574.5 361.2,562", 380.4, 555.4),
-  house(6, "a", "458,520.8 474.5,528 462.2,554.2 444.8,546", 459.4, 537.2),
-  house(7, "a", "473.2,534.5 490.2,541.8 478,568 460.8,560", 475.3, 551.1),
-  house(8, "b", "489.8,546.5 513,559.5 500.8,584.2 477.2,572.8", 495.4, 565.9),
-  house(9, "a", "447.8,424.8 466.5,432.2 453.5,458.2 436.8,450", 451.3, 441.1),
-  house(10, "a", "431.5,410 449,418.8 438,443.5 419.8,435.8", 434.3, 427.1),
-  house(11, "a", "414.8,396.8 432,405.2 419.8,430 402.8,421.2", 417.4, 413.1),
-  house(12, "a", "398.2,384.8 415.2,392.2 403.2,418 385.2,408.5", 400.4, 401.3),
-  house(13, "a", "368.5,353.8 386.2,362.2 373.8,388 356,380", 371.2, 371.2),
-  house(14, "a", "350,341.5 368.5,350.5 357,376.2 337.5,367", 353.1, 358.7),
-  house(15, "b", "327.5,324.2 350.2,336 338.2,360.8 314.8,348.5", 332.5, 342.7),
-  house(16, "c", "304.8,182.8 325.8,194.8 316,215 293.5,204.5", 309.8, 199.3),
-  house(17, "c", "333,204.2 353.2,213.8 343.2,237 321.8,225.5", 337.8, 220.4),
-  house(18, "c", "361.5,228 383,239 371.5,260.2 351.5,250.2", 366.9, 244.3),
-  house(19, "b", "390.8,271.8 419,284.5 406.8,309.8 380,297", 399.1, 290.6),
-  house(20, "b", "415.8,242.8 442.8,256.5 431.2,281.5 402.8,268", 423, 262.5),
-  house(21, "b", "437.5,214.2 464,226.8 453.2,252.8 425.2,239.2", 445, 233.5),
-  house(22, "b", "503.5,348 526.2,357.8 515.8,379.8 494.5,369", 509.8, 363.6),
-  house(23, "b", "538.2,360 559,370.5 547.8,392.2 526.8,381.5", 542.8, 376.3),
-  house(24, "b", "574.2,369.8 595,380.8 585,401.5 563,392.2", 578.7, 386.1),
-  house(25, "b", "568.8,434.2 590.8,444 580,466.2 559.5,456.8", 574.7, 450.3),
+  house(1, "a", "293.5,508.8 311.3,518.4 297.6,543.9 279.8,534.3", 295.5, 526.4),
+  house(2, "a", "314.3,514.6 332.3,524.3 318.5,550 300.5,540.3", 316.4, 532.3),
+  house(3, "a", "334.3,521.6 352.3,531.3 338.5,557 320.5,547.3", 336.4, 539.3),
+  house(4, "a", "354.2,528.7 372.3,538.4 358.5,564 340.4,554.3", 356.4, 546.4),
+  house(5, "b", "374.5,535.6 400.3,549.5 386.4,575.3 360.6,561.4", 380.5, 555.5),
+  house(6, "a", "457.5,519.7 475.1,529.1 461.4,554.8 443.8,545.4", 459.5, 537.3),
+  house(7, "a", "473.2,533.5 491.3,543.2 477.6,568.9 459.5,559.2", 475.4, 551.2),
+  house(8, "b", "490.2,546.7 514.6,559.7 500.9,585.4 476.5,572.4", 495.6, 566),
+  house(9, "a", "449.2,423.7 467.1,433.3 453.4,458.8 435.5,449.2", 451.3, 441.2),
+  house(10, "a", "432.3,409.6 450.4,419.3 436.6,445 418.5,435.3", 434.5, 427.3),
+  house(11, "a", "415.2,395.7 433.4,405.5 419.7,430.9 401.5,421.2", 417.5, 413.3),
+  house(12, "a", "398.6,383.9 416.1,393.3 402.3,418.9 384.9,409.5", 400.5, 401.4),
+  house(13, "a", "369.3,353.7 387.2,363.3 373.4,389 355.5,379.4", 371.4, 371.3),
+  house(14, "a", "350.4,340.7 369.9,351.2 356.1,376.9 336.6,366.4", 353.2, 358.8),
+  house(15, "b", "327.7,323.7 351.3,336.4 337.6,362 314,349.4", 332.7, 342.9),
+  house(16, "c", "304.9,182.7 326.8,194.5 315,216.3 293.1,204.5", 309.9, 199.5),
+  house(17, "c", "333,203.6 354.8,215.4 343,237.4 321.2,225.6", 338, 220.5),
+  house(18, "c", "361.9,227.7 383.8,239.5 372,261.3 350.2,249.5", 367, 244.5),
+  house(19, "b", "391.8,270.7 419.9,285.8 406.6,310.7 378.5,295.6", 399.2, 290.7),
+  house(20, "b", "415.9,242.8 443.8,257.7 430.5,282.5 402.6,267.6", 423.2, 262.6),
+  house(21, "b", "437.8,213.7 465.9,228.7 452.5,253.5 424.5,238.5", 445.2, 233.6),
+  house(22, "b", "504.6,346.8 526.7,358.5 515.2,380.3 493.1,368.7", 509.9, 363.6),
+  house(23, "b", "537.8,359.7 559.6,371.2 548,393.2 526.2,381.7", 542.9, 376.4),
+  house(24, "b", "573.6,369.5 595.7,381.1 584.2,403 562,391.4", 578.9, 386.3),
+  house(25, "b", "569.6,433.7 591.7,445.4 580,467.3 557.9,455.5", 574.8, 450.5),
   {
     id: "gaestehaus",
     label: "Gästehaus",
     group: "g",
-    points: grow(
-      "351.8,629 343.8,662.8 357.8,667.8 350,701.8 375,709 380.8,708 384,698.5 416,706 424.8,678.2 420.8,673 427,643.8 400.2,636.5 395.2,646.8 385,643.5 382.8,636",
-      386,
-      669,
-      1.6
-    ),
+    points:
+      "351.9,629.1 343.9,662.9 357.9,667.9 350.1,701.9 375.1,709.1 380.9,708.1 384.1,698.6 416.1,706.1 424.9,678.4 420.9,673.1 427.1,643.9 400.4,636.6 395.4,646.9 385.1,643.6 382.9,636.1",
     cx: 386,
     cy: 671,
     text: ["Gästehaus", "G1 bis G11"],
@@ -131,6 +118,18 @@ const SPOTS: Spot[] = [
     fontSize: 11.5,
   },
 ];
+
+/** Umschließendes Rechteck eines Umrisses in Plankoordinaten */
+function boundsOf(points: string) {
+  const xs: number[] = [];
+  const ys: number[] = [];
+  for (const p of points.split(" ")) {
+    const [x, y] = p.split(",").map(Number);
+    xs.push(x);
+    ys.push(y);
+  }
+  return { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
+}
 
 interface SitePlanProps {
   houseTypes: HouseType[];
@@ -152,13 +151,23 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
     }
   }, []);
 
+  // Fenster am Haus schließen: Escape oder Klick irgendwo daneben
   useEffect(() => {
     if (!activeSpot) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setActiveSpot(null);
     };
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Element | null;
+      if (target?.closest("[data-plan-callout], [data-plan-spot]")) return;
+      setActiveSpot(null);
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
   }, [activeSpot]);
 
   const typesOf = (group: Group) =>
@@ -197,6 +206,61 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
     setFilterGroup((prev) => (prev === key ? null : key));
   }
 
+  /**
+   * Setzt das Fenster neben das angewählte Haus, und zwar dorthin, wo es möglichst wenige
+   * andere Häuser verdeckt und (auf dem Handy) im sichtbaren Teil des Plans liegt.
+   */
+  function placeCallout(el: HTMLDivElement | null) {
+    const scroller = scrollRef.current;
+    const plan = el?.offsetParent as HTMLElement | null;
+    if (!el || !spot || !scroller || !plan) return;
+    const W = plan.clientWidth;
+    const H = plan.clientHeight;
+    const k = W / PLAN_WIDTH;
+    const w = el.offsetWidth;
+    const h = el.offsetHeight;
+    const gap = 10;
+    const edge = 8;
+    const b = boundsOf(spot.points);
+    const own = { x0: b.x0 * k, x1: b.x1 * k, y0: b.y0 * k, y1: b.y1 * k };
+    const hx = spot.cx * k;
+    const hy = spot.cy * k;
+    const candidates: [number, number][] = [
+      [own.x1 + gap, hy - h / 2],
+      [own.x0 - gap - w, hy - h / 2],
+      [hx - w / 2, own.y1 + gap],
+      [hx - w / 2, own.y0 - gap - h],
+      [own.x1 + gap, own.y0],
+      [own.x1 + gap, own.y1 - h],
+      [own.x0 - gap - w, own.y0],
+      [own.x0 - gap - w, own.y1 - h],
+      [own.x0, own.y1 + gap],
+      [own.x1 - w, own.y1 + gap],
+      [own.x0, own.y0 - gap - h],
+      [own.x1 - w, own.y0 - gap - h],
+    ];
+    let best: { x: number; y: number; score: number } | null = null;
+    for (const [cx, cy] of candidates) {
+      const x = Math.min(Math.max(cx, edge), W - w - edge);
+      const y = Math.min(Math.max(cy, edge), H - h - edge);
+      let score = 0;
+      // verdeckt das eigene Haus
+      if (x < own.x1 && x + w > own.x0 && y < own.y1 && y + h > own.y0) score += 100;
+      // liegt außerhalb des gerade sichtbaren Ausschnitts
+      if (x < scroller.scrollLeft || x + w > scroller.scrollLeft + scroller.clientWidth) score += 50;
+      for (const other of spots) {
+        if (other.id === spot.id) continue;
+        const ox = other.cx * k;
+        const oy = other.cy * k;
+        if (ox > x - 4 && ox < x + w + 4 && oy > y - 4 && oy < y + h + 4) score += 1;
+      }
+      if (!best || score < best.score) best = { x, y, score };
+    }
+    if (!best) return;
+    el.style.left = `${(best.x / W) * 100}%`;
+    el.style.top = `${(best.y / H) * 100}%`;
+  }
+
   // Das angewählte Haus zuletzt zeichnen, damit sein Rand über den Nachbarn liegt
   const ordered = [...spots].sort((a, b) => Number(a.id === activeSpot) - Number(b.id === activeSpot));
 
@@ -211,7 +275,7 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
             aria-label="Lageplan des Feriendorfs Eckenhof mit den Häusern 1 bis 25, dem Gästehaus und dem Haupthaus mit Villa. Die Häuser lassen sich anwählen."
           >
             <image
-              href="/docs/uebersichtsplan-eckenhof.jpg"
+              href="/images/lageplan-eckenhof.webp"
               width={PLAN_WIDTH}
               height={PLAN_HEIGHT}
               preserveAspectRatio="xMidYMid meet"
@@ -228,6 +292,7 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
                   key={s.id}
                   role="button"
                   tabIndex={0}
+                  data-plan-spot=""
                   aria-pressed={selected}
                   aria-label={`${s.label}: ${titleOf(group)}`}
                   onClick={() => selectSpot(s)}
@@ -274,16 +339,12 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
 
           {spot && spotGroup && (
             <div
+              key={spot.id}
+              ref={placeCallout}
               role="dialog"
+              data-plan-callout=""
               aria-label={`${spot.label}: ${titleOf(spotGroup)}`}
-              className="absolute z-10 w-[262px] rounded-xl border border-border bg-card p-[14px] shadow-[0_10px_30px_rgba(38,62,54,.28)]"
-              style={{
-                left: `clamp(139px, ${(spot.cx / PLAN_WIDTH) * 100}%, calc(100% - 139px))`,
-                ...(spot.cy / PLAN_HEIGHT > 0.52
-                  ? { bottom: `calc(${100 - (spot.cy / PLAN_HEIGHT) * 100}% + 26px)` }
-                  : { top: `calc(${(spot.cy / PLAN_HEIGHT) * 100}% + 26px)` }),
-                transform: "translateX(-50%)",
-              }}
+              className="absolute left-2 top-2 z-10 w-[262px] rounded-xl border border-border bg-card p-[14px] shadow-[0_10px_30px_rgba(38,62,54,.28)]"
             >
               <button
                 type="button"
@@ -333,7 +394,9 @@ export function SitePlan({ houseTypes, availability, nights }: SitePlanProps) {
                 })}
               </div>
               <p className="mt-2.5 text-[13px] leading-[1.45] text-muted-foreground">
-                Ihr bucht eine Unterkunft dieser Art, die Nummer wird automatisch vergeben.
+                <strong className="font-semibold text-foreground">Wichtig:</strong> Ihr bucht nur eine
+                Unterkunft dieser Art. Ein Anspruch auf genau dieses Haus mit dieser Nummer besteht
+                nicht, die Nummer wird zufällig vergeben.
               </p>
             </div>
           )}
