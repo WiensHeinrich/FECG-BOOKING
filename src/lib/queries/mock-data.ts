@@ -44,7 +44,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Zweigeschossiges Ferienhaus für bis zu 6 Personen. Im Erdgeschoss Wohn-Essbereich mit Küchenzeile, ein Stockbettzimmer, Dusche und WC. Im Dachgeschoss das Elternschlafzimmer, ein weiteres Stockbettzimmer und ein WC. Mit Terrasse.",
     max_guests: 6,
-    price_per_house: 361,
+    price_per_house: 365,
     price_per_person: null,
     total_quantity: 12,
     features: ["Elternschlafzimmer mit Doppelbett", "2 Stockbettzimmer", "Küchenzeile mit Gasherd", "Dusche und 2 WC", "Terrasse mit Liegen", "Kleinkinderbett", "Kaffeemaschine und Wasserkocher", "Kühlschrank ohne Gefrierfach", "Bettwäsche inklusive", "WLAN"],
@@ -60,7 +60,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Zweigeschossiges Ferienhaus für bis zu 6 Personen mit drei Doppelbettzimmern. Im Erdgeschoss Wohn-Essbereich mit Küchenzeile, ein Doppelbettzimmer, Dusche und WC. Im Dachgeschoss zwei Doppelbettzimmer. Mit Terrasse. Die Häuser 19 bis 25 haben zusätzlich ein WC im Obergeschoss.",
     max_guests: 6,
-    price_per_house: 361,
+    price_per_house: 365,
     price_per_person: null,
     total_quantity: 10,
     features: ["3 Doppelbettzimmer", "Küchenzeile mit Gasherd", "Dusche und WC", "Terrasse mit Liegen", "Kleinkinderbett", "Kaffeemaschine und Wasserkocher", "Kühlschrank ohne Gefrierfach", "Bettwäsche inklusive", "WLAN"],
@@ -76,7 +76,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Großes zweigeschossiges Ferienhaus für bis zu 10 Personen mit fünf Schlafzimmern. Im Erdgeschoss Wohn-Essbereich mit Küchenzeile, zwei Doppelbettzimmer, ein Stockbettzimmer, Dusche und WC. Das Erdgeschoss ist rollstuhlgerecht. Im Dachgeschoss zwei weitere Doppelbettzimmer und zwei Bäder. Mit Terrasse.",
     max_guests: 10,
-    price_per_house: 459,
+    price_per_house: 460,
     price_per_person: null,
     total_quantity: 3,
     features: ["4 Doppelbettzimmer", "1 Stockbettzimmer", "3 Bäder", "Küchenzeile mit Gasherd, Backofen und Spülmaschine", "Erdgeschoss rollstuhlgerecht", "Terrasse mit Liegen", "Kleinkinderbett", "Kaffeemaschine und Wasserkocher", "Kühlschrank ohne Gefrierfach", "Bettwäsche inklusive", "WLAN"],
@@ -92,7 +92,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Ferienwohnung im Gästehaus für bis zu 5 Personen: Elternschlafzimmer und Dreibettzimmer, jedes mit eigenem Bad, dazu ein Wohnzimmer mit Küchenzeile und Fernseher. Die Wohnungen im Erdgeschoss haben eine Terrasse, die in den Obergeschossen einen Balkon. Die Wohnungen 3 bis 6 sind rollstuhlgeeignet.",
     max_guests: 5,
-    price_per_house: 329,
+    price_per_house: 330,
     price_per_person: null,
     total_quantity: 10,
     features: ["Elternschlafzimmer", "Dreibettzimmer", "2 Bäder", "Wohnzimmer mit Küchenzeile (2-Platten-Herd)", "Terrasse oder Balkon", "Fernseher", "Kinderbett möglich", "Kaffeemaschine und Wasserkocher", "Kühlschrank ohne Gefrierfach", "Bettwäsche inklusive", "WLAN"],
@@ -108,7 +108,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Wohnung im Gästehaus für bis zu 4 Personen mit Vierbettzimmer, eigenem Bad und Küche.",
     max_guests: 4,
-    price_per_house: 241,
+    price_per_house: 245,
     price_per_person: null,
     total_quantity: 1,
     features: ["Vierbettzimmer", "Eigenes Bad", "Küche", "Fernseher", "Kaffeemaschine und Wasserkocher", "Kühlschrank ohne Gefrierfach", "Bettwäsche inklusive", "WLAN"],
@@ -124,7 +124,7 @@ export const mockHouseTypes: HouseType[] = [
     description:
       "Drei-Zimmer-Wohnung im zweiten Obergeschoss der denkmalgeschützten Villa Junghans für bis zu 6 Personen, mit zwei Bädern und großem Wohn-Essraum. Ohne Balkon.",
     max_guests: 6,
-    price_per_house: 343,
+    price_per_house: 345,
     price_per_person: null,
     total_quantity: 1,
     features: ["3 Zimmer mit 6 Betten", "2 Bäder", "Großer Wohn-Essraum mit Küche", "Ohne Balkon", "Kaffeemaschine und Wasserkocher", "Kühlschrank ohne Gefrierfach", "Bettwäsche inklusive", "WLAN"],
