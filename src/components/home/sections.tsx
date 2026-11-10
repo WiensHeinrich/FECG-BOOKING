@@ -130,9 +130,16 @@ export function StaysPreview({
   );
 }
 
-/** 7.4 Erlebnisabschnitt */
+/** 7.4 Erlebnisabschnitt: vier Reihen, Bild und Text wechseln die Seite */
 export function Experiences() {
   const items = [
+    {
+      kicker: "Was uns verbindet",
+      title: "Zeit, die gut tut.",
+      text: "Den Alltag für ein paar Tage hinter sich lassen. Zeit haben für ein gutes Gespräch, für gemeinsame Wege und für das, was uns im Glauben verbindet.",
+      image: "/images/gemeinschaft-szene.webp",
+      alt: "Blick über die Schultern einer Gruppe beim gemeinsamen Essen im Grünen.",
+    },
     {
       title: "Glauben gemeinsam leben",
       text: "Gottesdienste, Lobpreis und Zeit für das, was uns trägt.",
@@ -152,44 +159,37 @@ export function Experiences() {
       alt: "Eine Familie sitzt von hinten gesehen gemeinsam an einem Lagerfeuer.",
     },
   ];
-  return (
-    <section className="bg-band py-[30px] wide:py-[40px]">
-      <div className="site-container">
-        <div className="grid items-center gap-[22px] wide:grid-cols-[1.1fr_1fr] wide:gap-[34px]">
-          <Image
-            src="/images/gemeinschaft-szene.webp"
-            alt="Blick über die Schultern einer Gruppe beim gemeinsamen Essen im Grünen."
-            width={1536}
-            height={1024}
-            sizes="(min-width: 721px) 52vw, 100vw"
-            className="aspect-[3/2] max-h-[320px] w-full rounded-2xl object-cover object-top"
-          />
-          <div>
-            <p className="kicker mb-[13px]">Was uns verbindet</p>
-            <h2 className="display-2">Zeit, die gut tut.</h2>
-            <p className="mt-4 max-w-[44ch] text-muted-foreground">
-              Den Alltag für ein paar Tage hinter sich lassen. Zeit haben für ein gutes Gespräch, für
-              gemeinsame Wege und für das, was uns im Glauben verbindet.
-            </p>
-          </div>
-        </div>
+  const titleClass = "font-serif text-[34px] font-medium leading-[1.1] tracking-[-0.02em] wide:text-[42px]";
 
-        <div className="mt-[30px] grid gap-[26px] wide:mt-[36px] wide:grid-cols-3 wide:gap-5">
-          {items.map(({ title, text, image, alt }) => (
-            <article key={title}>
+  return (
+    <section className="bg-band py-[34px] wide:py-[52px]">
+      <div className="site-container grid gap-[38px] wide:gap-[52px]">
+        {items.map(({ kicker, title, text, image, alt }, i) => {
+          const imageRight = i % 2 === 1;
+          return (
+            <article key={title} className="grid items-center gap-[18px] wide:grid-cols-2 wide:gap-[48px]">
               <Image
                 src={image}
                 alt={alt}
                 width={1200}
                 height={800}
-                sizes="(min-width: 721px) 33vw, 100vw"
-                className="aspect-[3/2] w-full rounded-2xl object-cover"
+                sizes="(min-width: 721px) 50vw, 100vw"
+                className={
+                  imageRight
+                    ? "aspect-[3/2] w-full rounded-[16px_16px_16px_48px] object-cover wide:order-2"
+                    : "aspect-[3/2] w-full rounded-[16px_16px_48px_16px] object-cover"
+                }
               />
-              <h3 className="mt-[14px] text-[19px] font-semibold leading-[1.35]">{title}</h3>
-              <p className="mt-1 text-[15px] text-muted-foreground">{text}</p>
+              <div className={imageRight ? "wide:order-1" : undefined}>
+                {kicker && <p className="kicker mb-[11px]">{kicker}</p>}
+                {i === 0 ? <h2 className={titleClass}>{title}</h2> : <h3 className={titleClass}>{title}</h3>}
+                <p className="mt-[12px] max-w-[42ch] text-[17px] leading-[1.7] text-muted-foreground wide:mt-[14px] wide:text-[18px]">
+                  {text}
+                </p>
+              </div>
             </article>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </section>
   );
