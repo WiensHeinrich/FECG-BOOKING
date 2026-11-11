@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [
       {
-        url: "/og.jpg",
+        url: "/og-v3.jpg",
         width: 1200,
         height: 630,
         alt: "Gemeinsam draußen: Eine Familie von hinten auf einem Wiesenweg vor einer Waldlandschaft.",

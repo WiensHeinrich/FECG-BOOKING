@@ -54,7 +54,7 @@ const einrichtungen = [
   {
     title: "Großer Grillplatz",
     text: "Überdachter Grillplatz auf dem Gelände, der allen Gästen offensteht. Ideal für gemeinsame Abende.",
-    image: "/images/grill.webp",
+    image: "/images/grill-v3.webp",
     alt: "Zwei Personen von hinten beim gemeinsamen Grillen im Grünen.",
     position: "object-[50%_5%]",
   },
@@ -68,7 +68,7 @@ const einrichtungen = [
   {
     title: "Spielplatz und Spieleverleih",
     text: "Kinderspielplatz mit Sandkasten. Bälle (gegen Pfand), Federball und Gesellschaftsspiele könnt ihr an der Rezeption ausleihen.",
-    image: "/images/spielplatz.webp",
+    image: "/images/spielplatz-v3.webp",
     alt: "Kinder und Erwachsene von hinten an einem Spielplatz im Grünen.",
     position: "object-[50%_68%]",
   },

@@ -60,7 +60,7 @@ export function Hero({ event, nights }: { event: Event; nights: number }) {
 
       <div className="site-container">
         <Image
-          src="/images/anreise.webp"
+          src="/images/anreise-v3.webp"
           alt="Eine Familie geht von hinten gesehen auf einem Wiesenweg am Waldrand."
           width={1280}
           height={853}
@@ -137,25 +137,25 @@ export function Experiences() {
       kicker: "Was uns verbindet",
       title: "Zeit, die gut tut.",
       text: "Den Alltag für ein paar Tage hinter sich lassen. Zeit haben für ein gutes Gespräch, für gemeinsame Wege und für das, was uns im Glauben verbindet.",
-      image: "/images/gemeinschaft-szene.webp",
+      image: "/images/gemeinschaft-szene-v3.webp",
       alt: "Blick über die Schultern einer Gruppe beim gemeinsamen Essen im Grünen.",
     },
     {
       title: "Glauben gemeinsam leben",
       text: "Gottesdienste, Lobpreis und Zeit für das, was uns trägt.",
-      image: "/images/lobpreis.webp",
+      image: "/images/lobpreis-v3.webp",
       alt: "Eine Gruppe von hinten beim gemeinsamen Musizieren mit einer akustischen Gitarre.",
     },
     {
       title: "Draußen durchatmen",
       text: "Den Schwarzwald entdecken und den Alltag hinter sich lassen.",
-      image: "/images/wanderung.webp",
+      image: "/images/wanderung-v3.webp",
       alt: "Eine Gruppe mehrerer Generationen wandert von hinten gesehen durch den Wald.",
     },
     {
       title: "Einfach zusammen sein",
       text: "Gespräche, Lagerfeuer und Begegnungen über alle Generationen hinweg.",
-      image: "/images/lagerfeuer.webp",
+      image: "/images/lagerfeuer-v3.webp",
       alt: "Eine Familie sitzt von hinten gesehen gemeinsam an einem Lagerfeuer.",
     },
   ];
