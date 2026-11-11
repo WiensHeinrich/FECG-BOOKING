@@ -937,7 +937,7 @@ export function BookingWizard({
                       {range.min} Personen gebucht werden.{" "}
                       {smallerOptions.length > 0
                         ? `Für ${smallerGroup} Personen passt besser:`
-                        : "Schaut bitte, ob eine kleinere Unterkunft passt, oder tut euch mit einer weiteren Familie zusammen."}
+                        : "Schaut bitte, ob eine kleinere Unterkunft passt, oder tut euch mit anderen zusammen."}
                     </p>
                     {smallerOptions.length > 0 && (
                       <ul className="mt-3 grid gap-2">

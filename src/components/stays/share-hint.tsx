@@ -3,7 +3,7 @@ import { Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Hinweis, dass sich zwei Familien eine Unterkunft teilen können.
+ * Hinweis, dass sich mehrere Familien jede Unterkunft teilen können.
  * Steht auf der Startseite, bei den Unterkünften, am Lageplan und in der Anmeldung.
  */
 export function ShareHint({ children, className }: { children?: ReactNode; className?: string }) {
@@ -17,10 +17,9 @@ export function ShareHint({ children, className }: { children?: ReactNode; class
     >
       <Users className="mt-[3px] h-[20px] w-[20px] shrink-0 text-primary" aria-hidden="true" />
       <p>
-        <strong className="font-semibold">Zu zweit ein Haus teilen:</strong> Jede Unterkunft könnt ihr
-        euch mit einer zweiten Familie teilen und gemeinsam buchen. Zum Beispiel zwei Familien mit je
-        einem Kind in einem Haus für sechs Personen, oder zwei Familien mit je zwei Kindern, zusammen
-        acht Personen. Eine Familie meldet alle an und überweist den Betrag.
+        <strong className="font-semibold">Unterkunft teilen:</strong> Jede Unterkunft könnt ihr euch
+        mit anderen teilen und gemeinsam buchen, egal ob zwei Familien oder mehr. Entscheidend ist nur,
+        dass die Personenzahl zur Unterkunft passt. Eine Person meldet alle an und überweist den Betrag.
         {children && <> {children}</>}
       </p>
     </div>
