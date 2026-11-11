@@ -125,6 +125,13 @@ const SPOTS: Spot[] = [
   },
 ];
 
+/** Beschriftung des Knopfes im Fenster am Haus */
+function bookLabel(soldOut: boolean, exactHouse: boolean, houseTaken: boolean, label: string) {
+  if (soldOut) return "Auf die Warteliste";
+  if (exactHouse) return `${label} buchen`;
+  return houseTaken ? "Freies Haus buchen" : "Jetzt buchen";
+}
+
 /** Umschließendes Rechteck eines Umrisses in Plankoordinaten */
 function boundsOf(points: string) {
   const xs: number[] = [];
@@ -145,9 +152,21 @@ interface SitePlanProps {
   nights: number;
   /** Zustellbetten je Unterkunft, daraus ergibt sich die Höchstbelegung */
   maxExtraBeds: number;
+  /**
+   * In der Anmeldung: Auswahl per Rückruf statt Link. house ist das gewählte freie Haus,
+   * null bedeutet nur die Unterkunftsart (oder Warteliste).
+   */
+  onBook?: (houseType: HouseType, house: HouseStatus | null) => void;
 }
 
-export function SitePlan({ houseTypes, availability, houseStatus, nights, maxExtraBeds }: SitePlanProps) {
+export function SitePlan({
+  houseTypes,
+  availability,
+  houseStatus,
+  nights,
+  maxExtraBeds,
+  onBook,
+}: SitePlanProps) {
   /** über die Farbliste hervorgehobene Art, alle anderen Häuser werden blass */
   const [filterGroup, setFilterGroup] = useState<GroupKey | null>(null);
   const [activeSpot, setActiveSpot] = useState<string | null>(null);
@@ -449,23 +468,31 @@ export function SitePlan({ houseTypes, availability, houseStatus, nights, maxExt
                         </p>
                       )}
                       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                        <Link
-                          href={
-                            exactHouse && !soldOut
-                              ? `/anmeldung?unterkunft=${ht.slug}&haus=${exactHouse.house_number}`
-                              : `/anmeldung?unterkunft=${ht.slug}`
-                          }
-                          className="btn-primary min-h-0 px-[13px] py-[7px] text-[15px]"
-                        >
-                          {soldOut
-                            ? "Auf die Warteliste"
-                            : exactHouse
-                              ? `${spot.label} buchen`
-                              : houseTaken
-                                ? "Freies Haus buchen"
-                                : "Jetzt buchen"}
-                          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                        </Link>
+                        {onBook ? (
+                          <button
+                            type="button"
+                            className="btn-primary min-h-0 px-[13px] py-[7px] text-[15px]"
+                            onClick={() => {
+                              setActiveSpot(null);
+                              onBook(ht, exactHouse && !soldOut ? exactHouse : null);
+                            }}
+                          >
+                            {bookLabel(soldOut, exactHouse !== null, houseTaken, spot.label)}
+                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                          </button>
+                        ) : (
+                          <Link
+                            href={
+                              exactHouse && !soldOut
+                                ? `/anmeldung?unterkunft=${ht.slug}&haus=${exactHouse.house_number}`
+                                : `/anmeldung?unterkunft=${ht.slug}`
+                            }
+                            className="btn-primary min-h-0 px-[13px] py-[7px] text-[15px]"
+                          >
+                            {bookLabel(soldOut, exactHouse !== null, houseTaken, spot.label)}
+                            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                          </Link>
+                        )}
                         {plan && (
                           <a href={plan} target="_blank" rel="noopener noreferrer" className="text-link text-[14px]">
                             Grundriss

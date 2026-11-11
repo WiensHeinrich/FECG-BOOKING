@@ -66,8 +66,9 @@ export function Header({ title = siteConfig.name }: HeaderProps) {
             );
           })}
         </nav>
+        {/* Führt wie "Eure Unterkunft finden" zur Unterkunftsseite. Wer dort schon ist, kommt in die Anmeldung. */}
         <Link
-          href="/anmeldung"
+          href={pathname.startsWith("/unterkuenfte") ? "/anmeldung" : "/unterkuenfte"}
           className="btn-primary order-2 min-h-0 px-3 py-2.5 text-[14px] wide:order-3 wide:min-h-[46px] wide:px-[18px] wide:py-3 wide:text-[16px]"
         >
           Zur Anmeldung

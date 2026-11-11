@@ -18,6 +18,7 @@ import type { Availability, HouseStatus, HouseType } from "@/lib/types/database"
 import type { GuestData } from "@/lib/validations/booking";
 import { StayComparison } from "@/components/stays/stay-comparison";
 import { ShareHint } from "@/components/stays/share-hint";
+import { SitePlan } from "@/components/stays/site-plan";
 import { HOUSE_WISH_NOTE, nightsLabel } from "@/lib/utils/stay";
 import { AvailabilityBadge } from "@/components/stays/availability-badge";
 import { HELP_ANY, HELP_AREAS, HELP_MIN_AGE, helpAreaLabels, type HelpAreaKey } from "@/lib/config/help-areas";
@@ -245,6 +246,12 @@ export function BookingWizard({
       while (next.length < target) next.push({ ...emptyGuest, sort_order: next.length });
       return next.map((g, i) => ({ ...g, sort_order: i }));
     });
+  }
+
+  /** Auswahl aus dem Lageplan im ersten Schritt: Unterkunft und (wenn frei) genau dieses Haus */
+  function bookFromPlan(houseType: HouseType, house: HouseStatus | null) {
+    selectHouseType(houseType);
+    setSelectedHouseId(house?.is_free ? house.house_id : null);
   }
 
   function updateGuest(index: number, field: keyof GuestData, value: string | boolean) {
@@ -530,15 +537,34 @@ export function BookingWizard({
       )}
 
       {step === 1 && (
-        <StayComparison
-          houseTypes={houseTypes}
-          availability={availability}
-          rates={rates}
-          nights={nights}
-          selectedId={selectedTypeId}
-          onSelect={selectHouseType}
-          title="Welche Unterkunft passt zu euch?"
-        />
+        <>
+          <StayComparison
+            houseTypes={houseTypes}
+            availability={availability}
+            rates={rates}
+            nights={nights}
+            selectedId={selectedTypeId}
+            onSelect={selectHouseType}
+            title="Welche Unterkunft passt zu euch?"
+          />
+          <section id="lageplan" className="mt-[34px] scroll-mt-6 border-t border-border pt-[30px]">
+            <p className="kicker mb-[9px]">Lageplan</p>
+            <h2 className="display-2 mb-[9px]">Oder wählt euer Haus direkt im Plan.</h2>
+            <p className="mb-[22px] max-w-[62ch] text-muted-foreground">
+              {houseStatus
+                ? "Tippt ein Haus an und bucht genau dieses Haus. So könnt ihr auch neben befreundeten Familien wohnen. Graue Häuser sind schon vergeben."
+                : "Tippt ein Haus an, um zu sehen, welche Unterkunft es ist, und geht direkt weiter zur Anmeldung."}
+            </p>
+            <SitePlan
+              houseTypes={houseTypes}
+              availability={availability}
+              houseStatus={houseStatus}
+              nights={nights}
+              maxExtraBeds={rates.maxExtraBeds}
+              onBook={bookFromPlan}
+            />
+          </section>
+        </>
       )}
 
       {step !== 1 && selectedType && (
