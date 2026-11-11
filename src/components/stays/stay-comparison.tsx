@@ -111,12 +111,17 @@ export function StayComparison({
 
       {showFilter && (
         <ShareHint className="mb-[18px]">
-          Über die Personenzahl seht ihr, welche Unterkunft für euch passt.{" "}
-          {maxPersons >= 8 && (
-            <button type="button" className="text-link text-[15px]" onClick={() => setPersons(8)}>
-              Unterkünfte für 8 Personen zeigen
-            </button>
-          )}
+          Über die Personenzahl seht ihr, welche Unterkunft für euch passt:{" "}
+          {[6, 8]
+            .filter((n) => n <= maxPersons)
+            .map((n, i) => (
+              <span key={n}>
+                {i > 0 && " · "}
+                <button type="button" className="text-link text-[15px]" onClick={() => setPersons(n)}>
+                  für {n} Personen zeigen
+                </button>
+              </span>
+            ))}
         </ShareHint>
       )}
 

@@ -17,10 +17,11 @@ export function ShareHint({ children, className }: { children?: ReactNode; class
     >
       <Users className="mt-[3px] h-[20px] w-[20px] shrink-0 text-primary" aria-hidden="true" />
       <p>
-        <strong className="font-semibold">Zu zweit ein Haus teilen:</strong> Zwei Familien können sich
-        zusammentun und gemeinsam eine Unterkunft buchen, zum Beispiel Familie X mit zwei Kindern und
-        Familie Y mit zwei Kindern, zusammen acht Personen. Eine Familie meldet alle an und überweist
-        den Betrag.{children && <> {children}</>}
+        <strong className="font-semibold">Zu zweit ein Haus teilen:</strong> Jede Unterkunft könnt ihr
+        euch mit einer zweiten Familie teilen und gemeinsam buchen. Zum Beispiel zwei Familien mit je
+        einem Kind in einem Haus für sechs Personen, oder zwei Familien mit je zwei Kindern, zusammen
+        acht Personen. Eine Familie meldet alle an und überweist den Betrag.
+        {children && <> {children}</>}
       </p>
     </div>
   );
