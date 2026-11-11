@@ -56,7 +56,7 @@ const einrichtungen = [
     text: "Überdachter Grillplatz auf dem Gelände, der allen Gästen offensteht. Ideal für gemeinsame Abende.",
     image: "/images/grill.webp",
     alt: "Zwei Personen von hinten beim gemeinsamen Grillen im Grünen.",
-    position: "object-[50%_20%]",
+    position: "object-[50%_5%]",
   },
   {
     title: "Waschraum",

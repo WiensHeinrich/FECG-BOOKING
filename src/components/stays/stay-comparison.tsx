@@ -53,6 +53,17 @@ export function StayComparison({
     return persons >= min && persons <= max;
   });
 
+  /** Bei gewählter Personenzahl sagen, ob Betten frei bleiben oder Zustellbetten gebraucht werden */
+  const fitNote = (ht: HouseType): string | null => {
+    if (persons === "all") return null;
+    const extra = persons - ht.max_guests;
+    if (extra > 0) {
+      return `Für ${persons} Personen mit ${extra} ${extra === 1 ? "Zustellbett" : "Zustellbetten"} (${formatCurrency(rates.extraBedPricePerDay)} pro Bett und Tag)`;
+    }
+    if (extra < 0) return `Für ${persons} Personen, ein Bett bleibt frei`;
+    return `Passt genau für ${persons} Personen`;
+  };
+
   const availableFor = (id: string): number | null => {
     if (!availability) return null;
     return availability.find((a) => a.house_type_id === id)?.available_count ?? 0;
@@ -97,6 +108,20 @@ export function StayComparison({
         )}
       </div>
 
+      {showFilter && (
+        <div className="mb-[18px] rounded-xl border border-border bg-card px-4 py-[14px] text-[15px] leading-[1.6] wide:px-5" data-share-hint="">
+          <strong className="font-semibold">Zu zweit ein Haus teilen:</strong> Zwei Familien können sich
+          zusammentun und gemeinsam eine Unterkunft buchen, zum Beispiel Familie X mit zwei Kindern und
+          Familie Y mit zwei Kindern, zusammen acht Personen. Über die Personenzahl seht ihr, welche
+          Unterkunft für euch passt. Eine Familie meldet alle an und überweist den Betrag.{" "}
+          {maxPersons >= 8 && (
+            <button type="button" className="text-link text-[15px]" onClick={() => setPersons(8)}>
+              Unterkünfte für 8 Personen zeigen
+            </button>
+          )}
+        </div>
+      )}
+
       {!availability && (
         <p className="mb-4 rounded-lg bg-sage px-4 py-3 text-[15px] text-foreground">
           Die Verfügbarkeit ist gerade nicht abrufbar. Ihr könnt trotzdem vergleichen, die
@@ -122,6 +147,7 @@ export function StayComparison({
               selectHref={onSelect ? undefined : selectHref(ht)}
               onDetails={() => setDetailId(detailId === ht.id ? null : ht.id)}
               detailsOpen={detailId === ht.id}
+              fitNote={fitNote(ht)}
             />
           ))}
         </div>

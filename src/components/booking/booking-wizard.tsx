@@ -204,6 +204,48 @@ export function BookingWizard({
     goTo(2);
   }
 
+  /**
+   * Die Gruppe ist kleiner als die Mindestbelegung: Unterkünfte, die für eine Person weniger passen.
+   * Freie Unterkünfte zuerst.
+   */
+  const smallerGroup = range.min - 1;
+  const smallerOptions =
+    selectedType && !isSoldOut && smallerGroup >= 1
+      ? houseTypes
+          .filter((ht) => {
+            if (ht.id === selectedType.id) return false;
+            const r = guestRange(ht, rates.maxExtraBeds);
+            return smallerGroup >= r.min && smallerGroup <= r.max;
+          })
+          .map((ht) => ({
+            houseType: ht,
+            free: availability
+              ? (availability.find((a) => a.house_type_id === ht.id)?.available_count ?? 0)
+              : null,
+          }))
+          .filter((o) => o.free === null || o.free > 0)
+      : [];
+
+  /** Auf eine andere Unterkunft wechseln und die Gästeliste auf die gewünschte Größe bringen */
+  function switchHouseType(houseType: HouseType, wanted: number) {
+    if (houseType.id !== selectedTypeId) setSelectedHouseId(null);
+    setSelectedTypeId(houseType.id);
+    setExtraBeds(0);
+    setError(null);
+    const { min, max } = guestRange(houseType, rates.maxExtraBeds);
+    const target = Math.min(Math.max(wanted, min), max);
+    setGuests((prev) => {
+      const next = [...prev];
+      // zuerst leere Gäste von hinten entfernen, ausgefüllte bleiben erhalten
+      for (let i = next.length - 1; i >= 1 && next.length > target; i--) {
+        if (!next[i].first_name.trim()) next.splice(i, 1);
+      }
+      next.length = Math.min(next.length, target);
+      while (next.length < target) next.push({ ...emptyGuest, sort_order: next.length });
+      return next.map((g, i) => ({ ...g, sort_order: i }));
+    });
+  }
+
   function updateGuest(index: number, field: keyof GuestData, value: string | boolean) {
     setGuests((prev) => prev.map((g, i) => (i === index ? { ...g, [field]: value } : g)));
   }
@@ -725,7 +767,7 @@ export function BookingWizard({
                 <p className="text-small">
                   {isSoldOut
                     ? "Tragt trotzdem alle Gäste ein, dann können wir euch direkt übernehmen, sobald eine Unterkunft frei wird."
-                    : `Alle Personen, die im ${selectedType.name} übernachten: mindestens ${range.min}, höchstens ${range.max}. Das Geburtsdatum brauchen wir für die Kurtaxe.`}
+                    : `Alle Personen, die im ${selectedType.name} übernachten: mindestens ${range.min}, höchstens ${range.max}. Das Geburtsdatum brauchen wir für die Kurtaxe. Ihr teilt euch die Unterkunft mit einer zweiten Familie? Dann tragt einfach alle Personen hier ein.`}
                 </p>
                 <div className="mt-3 rounded-lg bg-sage p-[13px] text-[15px] leading-[1.55]">
                   <strong className="font-semibold">Mithelfen:</strong> Die Freizeit lebt davon, dass alle
@@ -881,6 +923,46 @@ export function BookingWizard({
                     <Plus className="h-[17px] w-[17px]" aria-hidden="true" />
                     Weiteren Gast hinzufügen
                   </button>
+                )}
+
+                {!isSoldOut && guests.length <= range.min && (
+                  <div className="mt-4 rounded-lg border border-border bg-card p-4 text-[15px] leading-[1.55]" data-smaller-hint="">
+                    <p>
+                      <strong className="font-semibold">Ihr seid weniger als {range.min} Personen?</strong>{" "}
+                      {selectedType.name} hat {selectedType.max_guests} Betten und kann mit mindestens{" "}
+                      {range.min} Personen gebucht werden.{" "}
+                      {smallerOptions.length > 0
+                        ? `Für ${smallerGroup} Personen passt besser:`
+                        : "Schaut bitte, ob eine kleinere Unterkunft passt, oder tut euch mit einer weiteren Familie zusammen."}
+                    </p>
+                    {smallerOptions.length > 0 && (
+                      <ul className="mt-3 grid gap-2">
+                        {smallerOptions.map(({ houseType: ht, free }) => {
+                          const extra = smallerGroup - ht.max_guests;
+                          return (
+                            <li key={ht.id}>
+                              <button
+                                type="button"
+                                className="flex w-full cursor-pointer flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-lg border border-border bg-background px-3 py-[9px] text-left hover:border-primary"
+                                onClick={() => switchHouseType(ht, smallerGroup)}
+                              >
+                                <span>
+                                  <span className="font-semibold">{ht.name}</span>
+                                  <span className="block text-[14px] text-muted-foreground">
+                                    {ht.max_guests} Betten
+                                    {extra > 0 && <>, mit {extra} {extra === 1 ? "Zustellbett" : "Zustellbetten"}</>} ·{" "}
+                                    {formatCurrency(ht.price_per_house)}
+                                    {free !== null && <> · {free} frei</>}
+                                  </span>
+                                </span>
+                                <span className="text-link text-[15px]">Wechseln</span>
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  </div>
                 )}
 
                 {!isSoldOut && rates.maxExtraBeds > 0 && (

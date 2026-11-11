@@ -22,6 +22,8 @@ interface StayCardProps {
   onDetails?: () => void;
   detailsHref?: string;
   detailsOpen?: boolean;
+  /** Hinweis zur gewählten Personenzahl, zum Beispiel "Für 8 Personen mit 2 Zustellbetten" */
+  fitNote?: string | null;
 }
 
 export function StayCard({
@@ -34,6 +36,7 @@ export function StayCard({
   onDetails,
   detailsHref,
   detailsOpen = false,
+  fitNote = null,
 }: StayCardProps) {
   const state = availabilityState(availableCount);
   const soldOut = state === "soldout";
@@ -71,6 +74,9 @@ export function StayCard({
       </div>
 
       <h3 className="text-[19px] font-semibold leading-[1.35] text-foreground">{houseType.name}</h3>
+      {fitNote && (
+        <p className="-mt-[6px] rounded-md bg-sage px-[10px] py-[6px] text-[14px] leading-[1.45]">{fitNote}</p>
+      )}
 
       {houseType.description && (
         <p className="flex-1 text-[16px] leading-[1.7] text-muted-foreground wide:text-[15px]">
