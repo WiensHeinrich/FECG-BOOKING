@@ -1,3 +1,4 @@
+import { ShareHint } from "@/components/stays/share-hint";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, Car, HelpCircle, Luggage, MapPin, UsersRound } from "lucide-react";
@@ -126,6 +127,11 @@ export function StaysPreview({
           />
         ))}
       </div>
+      <ShareHint className="mt-4">
+        <Link href="/unterkuenfte" className="text-link text-[15px]">
+          Passende Unterkunft finden
+        </Link>
+      </ShareHint>
     </section>
   );
 }

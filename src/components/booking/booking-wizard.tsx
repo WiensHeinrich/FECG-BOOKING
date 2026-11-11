@@ -17,6 +17,7 @@ import {
 import type { Availability, HouseStatus, HouseType } from "@/lib/types/database";
 import type { GuestData } from "@/lib/validations/booking";
 import { StayComparison } from "@/components/stays/stay-comparison";
+import { ShareHint } from "@/components/stays/share-hint";
 import { HOUSE_WISH_NOTE, nightsLabel } from "@/lib/utils/stay";
 import { AvailabilityBadge } from "@/components/stays/availability-badge";
 import { HELP_ANY, HELP_AREAS, HELP_MIN_AGE, helpAreaLabels, type HelpAreaKey } from "@/lib/config/help-areas";
@@ -767,8 +768,11 @@ export function BookingWizard({
                 <p className="text-small">
                   {isSoldOut
                     ? "Tragt trotzdem alle Gäste ein, dann können wir euch direkt übernehmen, sobald eine Unterkunft frei wird."
-                    : `Alle Personen, die im ${selectedType.name} übernachten: mindestens ${range.min}, höchstens ${range.max}. Das Geburtsdatum brauchen wir für die Kurtaxe. Ihr teilt euch die Unterkunft mit einer zweiten Familie? Dann tragt einfach alle Personen hier ein.`}
+                    : `Alle Personen, die im ${selectedType.name} übernachten: mindestens ${range.min}, höchstens ${range.max}. Das Geburtsdatum brauchen wir für die Kurtaxe.`}
                 </p>
+                {!isSoldOut && (
+                  <ShareHint className="mt-3">Tragt dazu einfach alle Personen hier ein.</ShareHint>
+                )}
                 <div className="mt-3 rounded-lg bg-sage p-[13px] text-[15px] leading-[1.55]">
                   <strong className="font-semibold">Mithelfen:</strong> Die Freizeit lebt davon, dass alle
                   mit anpacken. Wählt bei jedem Gast ab {HELP_MIN_AGE} Jahren, wo er oder sie mithelfen

@@ -25,3 +25,16 @@ export function availabilityLevel(free: number, total: number): AvailabilityLeve
 /** Hinweis zur festen Hauswahl, steht im Lageplan, in der Anmeldung und in der Bestätigung */
 export const HOUSE_WISH_NOTE =
   "Wir bemühen uns, euch genau das gewählte Haus zu geben. Ein Anspruch auf eine bestimmte Hausnummer besteht jedoch nicht, in Ausnahmefällen kann sich die Nummer noch ändern.";
+
+/**
+ * Belegungsregel: gebucht werden kann mit höchstens einer Person weniger als Betten,
+ * nach oben kommen die Zustellbetten dazu.
+ */
+export function occupancyRange(maxGuests: number, maxExtraBeds: number) {
+  return { min: Math.max(maxGuests - 1, 1), max: maxGuests + maxExtraBeds };
+}
+
+/** "Haus" für die Ferienhäuser, "Wohnung" für Gästehaus und Villa */
+export function stayNoun(slug: string): string {
+  return slug.startsWith("ferienhaus") ? "Haus" : "Wohnung";
+}

@@ -1,3 +1,4 @@
+import { ShareHint } from "@/components/stays/share-hint";
 import type { Metadata } from "next";
 import { CoverImage } from "@/components/site/cover-image";
 import { getActiveEvent } from "@/lib/queries/events";
@@ -79,11 +80,15 @@ export default async function UnterkuenftePage() {
             : "Tippt ein Haus im Plan an: Ihr seht sofort, welche Unterkunft es ist, und könnt sie direkt buchen."}{" "}
           Über die Farben unter dem Plan lassen sich alle Häuser einer Art hervorheben.
         </p>
+        <ShareHint className="mb-[18px]">
+          Im Plan seht ihr auch, welche Häuser nebeneinander liegen.
+        </ShareHint>
         <SitePlan
           houseTypes={houseTypes}
           availability={availability}
           houseStatus={houseStatus}
           nights={nights}
+          maxExtraBeds={rates.maxExtraBeds}
         />
       </section>
     </div>

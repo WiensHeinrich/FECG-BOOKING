@@ -8,6 +8,7 @@ import { formatCurrency } from "@/lib/utils/format";
 import { getFloorPlan } from "@/lib/config/floor-plans";
 import type { PricingRates } from "@/lib/utils/pricing";
 import { StayCard } from "./stay-card";
+import { ShareHint } from "./share-hint";
 import { availabilityState, nightsLabel } from "@/lib/utils/stay";
 
 interface StayComparisonProps {
@@ -109,17 +110,14 @@ export function StayComparison({
       </div>
 
       {showFilter && (
-        <div className="mb-[18px] rounded-xl border border-border bg-card px-4 py-[14px] text-[15px] leading-[1.6] wide:px-5" data-share-hint="">
-          <strong className="font-semibold">Zu zweit ein Haus teilen:</strong> Zwei Familien können sich
-          zusammentun und gemeinsam eine Unterkunft buchen, zum Beispiel Familie X mit zwei Kindern und
-          Familie Y mit zwei Kindern, zusammen acht Personen. Über die Personenzahl seht ihr, welche
-          Unterkunft für euch passt. Eine Familie meldet alle an und überweist den Betrag.{" "}
+        <ShareHint className="mb-[18px]">
+          Über die Personenzahl seht ihr, welche Unterkunft für euch passt.{" "}
           {maxPersons >= 8 && (
             <button type="button" className="text-link text-[15px]" onClick={() => setPersons(8)}>
               Unterkünfte für 8 Personen zeigen
             </button>
           )}
-        </div>
+        </ShareHint>
       )}
 
       {!availability && (

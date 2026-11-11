@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, X } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/format";
-import { HOUSE_WISH_NOTE, nightsLabel } from "@/lib/utils/stay";
+import { HOUSE_WISH_NOTE, nightsLabel, occupancyRange, stayNoun } from "@/lib/utils/stay";
 import { getFloorPlan } from "@/lib/config/floor-plans";
 import type { Availability, HouseStatus, HouseType } from "@/lib/types/database";
 import { AvailabilityBadge } from "./availability-badge";
@@ -143,9 +143,11 @@ interface SitePlanProps {
   /** Belegung je Haus, null = feste Hauswahl nicht verfügbar */
   houseStatus: HouseStatus[] | null;
   nights: number;
+  /** Zustellbetten je Unterkunft, daraus ergibt sich die Höchstbelegung */
+  maxExtraBeds: number;
 }
 
-export function SitePlan({ houseTypes, availability, houseStatus, nights }: SitePlanProps) {
+export function SitePlan({ houseTypes, availability, houseStatus, nights, maxExtraBeds }: SitePlanProps) {
   /** über die Farbliste hervorgehobene Art, alle anderen Häuser werden blass */
   const [filterGroup, setFilterGroup] = useState<GroupKey | null>(null);
   const [activeSpot, setActiveSpot] = useState<string | null>(null);
@@ -321,6 +323,16 @@ export function SitePlan({ houseTypes, availability, houseStatus, nights }: Site
               const dimmed = filterGroup !== null && filterGroup !== s.group;
               const taken = isTaken(s) === true;
               const stateLabel = isTaken(s) === null ? "" : taken ? ", vergeben" : ", frei";
+              // Text beim Überfahren mit der Maus: Unterkunft, Stand und Belegung
+              const spotTypes = typesOf(group);
+              const occupancy = (ht: HouseType) => {
+                const r = occupancyRange(ht.max_guests, maxExtraBeds);
+                return `${stayNoun(ht.slug)} für ${ht.max_guests} Personen (mindestens ${r.min}, höchstens ${r.max})`;
+              };
+              const tooltip =
+                spotTypes.length === 1
+                  ? `${s.label}: ${spotTypes[0].name}${stateLabel}. ${occupancy(spotTypes[0])}`
+                  : `${s.label}. ${spotTypes.map((ht) => `${ht.name}: ${occupancy(ht)}`).join(". ")}`;
               const fontSize = s.fontSize ?? 12.5;
               const lineHeight = fontSize * 1.15;
               const firstLine = s.cy - ((s.text.length - 1) * lineHeight) / 2;
@@ -342,7 +354,7 @@ export function SitePlan({ houseTypes, availability, houseStatus, nights }: Site
                   }}
                   className="group/spot cursor-pointer outline-none"
                 >
-                  <title>{`${s.label}: ${titleOf(group)}${stateLabel}`}</title>
+                  <title>{tooltip}</title>
                   {selected && (
                     <polygon points={s.points} fill="none" stroke={INK} strokeWidth={6.5} strokeLinejoin="round" />
                   )}
@@ -421,8 +433,12 @@ export function SitePlan({ houseTypes, availability, houseStatus, nights }: Site
                     <div key={ht.id}>
                       <p className="text-[17px] font-semibold leading-snug">{ht.name}</p>
                       <p className="text-[14px] leading-[1.5] text-muted-foreground">
-                        Bis zu {ht.max_guests} Personen · {formatCurrency(ht.price_per_house)} für{" "}
-                        {nightsLabel(nights)}
+                        {stayNoun(ht.slug)} für {ht.max_guests} Personen · {formatCurrency(ht.price_per_house)}{" "}
+                        für {nightsLabel(nights)}
+                      </p>
+                      <p className="text-[13px] leading-[1.5] text-muted-foreground">
+                        Buchbar mit mindestens {occupancyRange(ht.max_guests, maxExtraBeds).min} und
+                        höchstens {occupancyRange(ht.max_guests, maxExtraBeds).max} Personen
                       </p>
                       {a && <AvailabilityBadge free={a.free} total={a.total} className="mt-1.5" />}
                       {houseTaken && (
@@ -506,11 +522,17 @@ export function SitePlan({ houseTypes, availability, houseStatus, nights }: Site
                   <span className="block text-[13px] leading-snug text-muted-foreground">{group.where}</span>
                   {types.map((ht) => {
                     const a = freeCount(ht);
-                    if (!a) return null;
+                    const r = occupancyRange(ht.max_guests, maxExtraBeds);
                     return (
-                      <span key={ht.id} className="mt-1.5 block text-[13px] leading-snug">
-                        {types.length > 1 && <span className="mb-0.5 block">{ht.name}</span>}
-                        <AvailabilityBadge free={a.free} total={a.total} />
+                      <span key={ht.id} className="mt-2 block text-[13px] leading-snug" data-occupancy="">
+                        {types.length > 1 && <span className="block font-semibold">{ht.name}</span>}
+                        <span className="block">
+                          {stayNoun(ht.slug)} für {ht.max_guests} Personen
+                        </span>
+                        <span className="mb-1 block text-muted-foreground">
+                          mindestens {r.min}, höchstens {r.max} Personen
+                        </span>
+                        {a && <AvailabilityBadge free={a.free} total={a.total} />}
                       </span>
                     );
                   })}
