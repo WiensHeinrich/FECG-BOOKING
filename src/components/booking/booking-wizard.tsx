@@ -21,6 +21,7 @@ import { HOUSE_WISH_NOTE, nightsLabel } from "@/lib/utils/stay";
 import { AvailabilityBadge } from "@/components/stays/availability-badge";
 import { HELP_ANY, HELP_AREAS, HELP_MIN_AGE, helpAreaLabels, type HelpAreaKey } from "@/lib/config/help-areas";
 import { RulesContent } from "./rules-content";
+import { ProblemDialog, type FormProblem } from "./problem-dialog";
 import { cn } from "@/lib/utils";
 
 interface BookingWizardProps {
@@ -107,6 +108,12 @@ export function BookingWizard({
       : null
   );
   const [isPending, startTransition] = useTransition();
+  /** fehlende Angaben, die das Hinweisfenster auflistet */
+  const [problems, setProblems] = useState<FormProblem[] | null>(null);
+  /** einzelner Hinweis im Fenster, zum Beispiel nach dem Absenden */
+  const [notice, setNotice] = useState<string | null>(null);
+  /** Feld, das nach dem Schließen des Fensters den Fokus bekommt */
+  const jumpTarget = useRef<HTMLElement | null>(null);
   const router = useRouter();
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -276,49 +283,93 @@ export function BookingWizard({
     return { name: name || `Gast ${index + 1}`, meta: parts.join(" · ") };
   }
 
-  /** Schritt 2 prüfen: native Pflichtfelder plus fachliche Regeln */
+  /** Schritt 2 prüfen: Alles, was fehlt, wird gesammelt und in einem Fenster aufgelistet */
   function reviewStep() {
     setError(null);
     const form = formRef.current;
     if (!selectedType || !form) return;
 
-    // Zugeklappte Gäste mit fehlenden Angaben zuerst öffnen, damit der Browser das Feld anzeigen kann
-    const invalid = Array.from(form.querySelectorAll<HTMLElement>(":invalid"));
-    if (invalid.length > 0) {
-      const toOpen = new Set(openGuests);
-      for (const el of invalid) {
-        const idx = el.closest<HTMLElement>("[data-guest-index]")?.dataset.guestIndex;
-        if (idx !== undefined) toOpen.add(Number(idx));
+    const found: FormProblem[] = [];
+    const toOpen = new Set(openGuests);
+    const seenRadios = new Set<string>();
+    const controls = Array.from(
+      form.querySelectorAll<FormControl>("input:invalid, select:invalid, textarea:invalid")
+    );
+    for (const el of controls) {
+      // eine Auswahlgruppe (Geschlecht) nur einmal melden
+      if (el instanceof HTMLInputElement && el.type === "radio") {
+        if (seenRadios.has(el.name)) continue;
+        seenRadios.add(el.name);
       }
-      setOpenGuests(toOpen);
-      setTimeout(() => form.reportValidity(), 60);
-      return;
+      const guestIndex = el.closest<HTMLElement>("[data-guest-index]")?.dataset.guestIndex;
+      let section = "Kontaktperson";
+      if (guestIndex !== undefined) {
+        const i = Number(guestIndex);
+        toOpen.add(i);
+        const g = effectiveGuests[i];
+        const fullName = g ? [g.first_name, g.last_name].filter(Boolean).join(" ").trim() : "";
+        section = fullName ? `Gast ${i + 1} (${fullName})` : `Gast ${i + 1}`;
+      }
+      found.push({ section, text: problemText(el), el });
+    }
+
+    // Der Browser lässt Adressen ohne Endung durch ("name@firma"), die Buchung würde später scheitern
+    const emailEl = form.querySelector<HTMLInputElement>("#contact_email");
+    if (emailEl && emailEl.validity.valid && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(contact.email.trim())) {
+      found.unshift({
+        section: "Kontaktperson",
+        text: "E-Mail: bitte eine gültige Adresse eingeben",
+        el: emailEl,
+      });
     }
 
     if (contact.birth_date) {
       const contactAge = getAgeAtDate(contact.birth_date, eventStartDate);
       if (contactAge !== null && contactAge < 18) {
-        setError("Die Kontaktperson muss mindestens 18 Jahre alt sein.");
-        return;
+        found.push({
+          section: "Kontaktperson",
+          text: "Die Kontaktperson muss mindestens 18 Jahre alt sein",
+          el: form.querySelector<HTMLElement>("#contact_birth_date"),
+        });
       }
     }
     if (guests.length < range.min) {
-      setError(`Bitte tragt mindestens ${range.min} Gäste ein. ${selectedType.name} ist für ${selectedType.max_guests} Personen ausgelegt.`);
-      return;
-    }
-    const badBirth = effectiveGuests.find((g) => g.birth_date && getAgeAtDate(g.birth_date, eventStartDate) === null);
-    if (badBirth) {
-      setError(`Bitte prüft das Geburtsdatum von ${badBirth.first_name || "einem Gast"}.`);
-      return;
+      found.push({
+        section: "Mitreisende",
+        text: `Bitte tragt mindestens ${range.min} Gäste ein. ${selectedType.name} ist für ${selectedType.max_guests} Personen ausgelegt.`,
+      });
     }
     if (!isSoldOut && helpers.length === 0) {
-      setError(
-        "Bitte wählt bei mindestens einer Person einen Bereich, in dem ihr mithelfen könnt. Ihr findet die Auswahl bei jedem Gast ab 14 Jahren."
-      );
-      setTimeout(scrollToTop, 50);
+      found.push({
+        section: "Mithilfe",
+        text: `Bitte wählt bei mindestens einer Person ab ${HELP_MIN_AGE} Jahren einen Bereich zum Mithelfen`,
+        el: form.querySelector<HTMLElement>("[data-help-index] input"),
+      });
+    }
+
+    if (found.length > 0) {
+      // Zugeklappte Gäste mit fehlenden Angaben öffnen, damit der Sprung zum Feld funktioniert
+      setOpenGuests(toOpen);
+      setProblems(found);
       return;
     }
     goTo(3);
+  }
+
+  /** Aus dem Hinweisfenster zu einem Feld springen */
+  function jumpTo(problem: FormProblem) {
+    jumpTarget.current = problem.el ?? null;
+    setProblems(null);
+  }
+
+  /** Nach dem Schließen des Fensters: Feld in die Mitte holen und den Cursor hineinsetzen */
+  function afterDialogClosed(event: Event) {
+    const el = jumpTarget.current;
+    jumpTarget.current = null;
+    if (!el || !el.isConnected) return;
+    event.preventDefault();
+    el.scrollIntoView({ block: "center", behavior: "smooth" });
+    el.focus({ preventScroll: true });
   }
 
   function submit() {
@@ -364,15 +415,16 @@ export function BookingWizard({
       if (result?.error) {
         if ("houseTaken" in result && result.houseTaken) {
           // Wunschhaus inzwischen vergeben: Auswahl zurücksetzen und Belegung neu laden
-          setError(
-            `${selectedHouse?.label ?? "Das gewählte Haus"} wurde gerade eben vergeben. Wählt unter „Wunschhaus“ ein anderes Haus oder lasst euch eines zuteilen.`
-          );
+          const taken = `${selectedHouse?.label ?? "Das gewählte Haus"} wurde gerade eben vergeben. Wählt unter „Wunschhaus“ ein anderes Haus oder lasst euch eines zuteilen.`;
+          setError(taken);
+          setNotice(taken);
           setSelectedHouseId(null);
           router.refresh();
           setTimeout(scrollToTop, 50);
           return;
         }
         setError(result.error);
+        setNotice(result.error);
         // Unterkunft inzwischen vergeben: freie Plätze neu laden, dann erscheint die Warteliste
         if ("soldOut" in result && result.soldOut) router.refresh();
         setTimeout(scrollToTop, 50);
@@ -415,6 +467,17 @@ export function BookingWizard({
           );
         })}
       </ol>
+
+      <ProblemDialog
+        problems={problems}
+        message={notice}
+        onClose={() => {
+          setProblems(null);
+          setNotice(null);
+        }}
+        onJump={jumpTo}
+        onClosed={afterDialogClosed}
+      />
 
       {error && (
         <div role="alert" className="mb-5 flex items-start gap-2 rounded-lg border border-destructive/40 bg-card px-4 py-3 text-[16px] text-destructive">
@@ -1039,4 +1102,29 @@ function ageHint(birthDate: string | undefined, startDate: string, isContact = f
     return <p className="text-[14px] font-medium text-destructive">Die Kontaktperson muss mindestens 18 Jahre alt sein ({age} Jahre zum Freizeitbeginn).</p>;
   }
   return <p className="text-[14px] text-muted-foreground">{age} Jahre zum Freizeitbeginn</p>;
+}
+
+type FormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+/** Beschriftung eines Feldes ohne Sternchen, bei Auswahlgruppen die Überschrift der Gruppe */
+function fieldLabel(el: FormControl): string {
+  const isRadio = el instanceof HTMLInputElement && el.type === "radio";
+  const raw = isRadio
+    ? el.closest("fieldset")?.querySelector("legend")?.textContent
+    : el.id
+      ? el.form?.querySelector(`label[for="${el.id}"]`)?.textContent
+      : null;
+  return (raw ?? "Angabe").replace(/\s*\*\s*$/, "").trim();
+}
+
+/** Verständlicher Satz dazu, was an einem Feld nicht stimmt */
+function problemText(el: FormControl): string {
+  const label = fieldLabel(el);
+  const v = el.validity;
+  if (v.badInput) return `${label} ist unvollständig`;
+  if (v.valueMissing) return `${label} fehlt`;
+  if (v.typeMismatch) return `${label}: bitte eine gültige Adresse eingeben`;
+  if (v.tooShort) return `${label} ist zu kurz`;
+  if (v.rangeOverflow) return `${label} liegt nach dem Beginn der Freizeit`;
+  return `${label}: bitte prüfen`;
 }
