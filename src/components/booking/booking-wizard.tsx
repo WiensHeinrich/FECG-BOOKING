@@ -167,7 +167,7 @@ export function BookingWizard({
   /** Gäste, die mindestens einen Bereich zum Mithelfen gewählt haben (Kinder unter 14 zählen nicht) */
   const helpers = effectiveGuests.filter((g) => {
     const age = getAgeAtDate(g.birth_date, eventStartDate);
-    return (age === null || age >= HELP_MIN_AGE) && (g.help_areas ?? []).length > 0;
+    return age !== null && age >= HELP_MIN_AGE && (g.help_areas ?? []).length > 0;
   });
 
   // Die Kurtaxe hängt vom Alter ab. Solange beim Ausfüllen Geburtsdaten fehlen, zählen nur die
@@ -275,10 +275,13 @@ export function BookingWizard({
     );
   }
 
-  /** Kinder unter 14 Jahren wählen keinen Bereich */
+  /**
+   * Die Auswahl erscheint erst, wenn das Geburtsdatum eingetragen ist und der Gast mindestens 14 ist.
+   * Ohne Geburtsdatum bleibt sie verborgen, das Geburtsdatum ist ohnehin Pflicht.
+   */
   function canHelp(g: GuestData) {
     const age = getAgeAtDate(g.birth_date, eventStartDate);
-    return age === null || age >= HELP_MIN_AGE;
+    return age !== null && age >= HELP_MIN_AGE;
   }
 
   function toggleHelp(index: number, key: HelpAreaKey) {
@@ -823,7 +826,7 @@ export function BookingWizard({
                   mit anpacken. Wählt bei jedem Gast ab {HELP_MIN_AGE} Jahren{" "}
                   {isSoldOut ? "die Bereiche" : `mindestens ${HELP_MIN_COUNT} Bereiche`}, in denen er oder sie
                   mithelfen kann, oder „Egal, teilt mich ein“. So kann das Freizeitteam am Ende
-                  gut einteilen.
+                  gut einteilen. Die Auswahl erscheint, sobald das Geburtsdatum eingetragen ist.
                 </div>
                 {familyName && guestsWithoutLastName > 0 && (
                   <button
@@ -936,11 +939,17 @@ export function BookingWizard({
                             <fieldset className="wide:col-span-2" data-help-index={index}>
                               <legend className="field-label mb-2">
                                 Wo kann {guest.first_name.trim() || `Gast ${index + 1}`} mithelfen?
+                                {!isSoldOut && " *"}
+                                {!isSoldOut && (
+                                  <span data-help-required="" className="ml-2 text-[13px] font-normal text-muted-foreground">
+                                    Pflichtangabe ab {HELP_MIN_AGE} Jahren,
+                                  </span>
+                                )}
                                 {!isSoldOut && (
                                   <span
                                     data-help-count=""
                                     className={cn(
-                                      "ml-2 text-[13px] font-normal",
+                                      "ml-1 text-[13px] font-normal",
                                       helpChoiceComplete(guest.help_areas) ? "text-[#17633c]" : "text-muted-foreground"
                                     )}
                                   >
