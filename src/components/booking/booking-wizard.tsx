@@ -21,7 +21,15 @@ import { ShareHint } from "@/components/stays/share-hint";
 import { SitePlan } from "@/components/stays/site-plan";
 import { HOUSE_WISH_NOTE, nightsLabel } from "@/lib/utils/stay";
 import { AvailabilityBadge } from "@/components/stays/availability-badge";
-import { HELP_ANY, HELP_AREAS, HELP_MIN_AGE, helpAreaLabels, type HelpAreaKey } from "@/lib/config/help-areas";
+import {
+  HELP_ANY,
+  HELP_AREAS,
+  HELP_MIN_AGE,
+  HELP_MIN_COUNT,
+  helpAreaLabels,
+  helpChoiceComplete,
+  type HelpAreaKey,
+} from "@/lib/config/help-areas";
 import { RulesContent } from "./rules-content";
 import { ProblemDialog, type FormProblem } from "./problem-dialog";
 import { cn } from "@/lib/utils";
@@ -389,11 +397,22 @@ export function BookingWizard({
         text: `Bitte tragt mindestens ${range.min} Gäste ein. ${selectedType.name} ist für ${selectedType.max_guests} Personen ausgelegt.`,
       });
     }
-    if (!isSoldOut && helpers.length === 0) {
-      found.push({
-        section: "Mithilfe",
-        text: `Bitte wählt bei mindestens einer Person ab ${HELP_MIN_AGE} Jahren einen Bereich zum Mithelfen`,
-        el: form.querySelector<HTMLElement>("[data-help-index] input"),
+    // Mithilfe: jeder Gast ab 14 wählt mindestens vier Bereiche oder "Egal, teilt mich ein"
+    if (!isSoldOut) {
+      effectiveGuests.forEach((g, i) => {
+        if (!canHelp(g) || helpChoiceComplete(g.help_areas)) return;
+        const chosen = (g.help_areas ?? []).length;
+        const missing = HELP_MIN_COUNT - chosen;
+        const fullName = [g.first_name, g.last_name].filter(Boolean).join(" ").trim();
+        toOpen.add(i);
+        found.push({
+          section: fullName ? `Gast ${i + 1} (${fullName})` : `Gast ${i + 1}`,
+          text:
+            chosen === 0
+              ? `Mithilfe: bitte mindestens ${HELP_MIN_COUNT} Bereiche wählen oder „Egal, teilt mich ein“`
+              : `Mithilfe: noch ${missing} ${missing === 1 ? "Bereich" : "Bereiche"} wählen (mindestens ${HELP_MIN_COUNT}) oder „Egal, teilt mich ein“`,
+          el: form.querySelector<HTMLElement>(`[data-help-index="${i}"] input`),
+        });
       });
     }
 
@@ -801,8 +820,10 @@ export function BookingWizard({
                 )}
                 <div className="mt-3 rounded-lg bg-sage p-[13px] text-[15px] leading-[1.55]">
                   <strong className="font-semibold">Mithelfen:</strong> Die Freizeit lebt davon, dass alle
-                  mit anpacken. Wählt bei jedem Gast ab {HELP_MIN_AGE} Jahren, wo er oder sie mithelfen
-                  kann. {isSoldOut ? "" : "Mindestens ein Bereich pro Haus ist Pflicht."}
+                  mit anpacken. Wählt bei jedem Gast ab {HELP_MIN_AGE} Jahren{" "}
+                  {isSoldOut ? "die Bereiche" : `mindestens ${HELP_MIN_COUNT} Bereiche`}, in denen er oder sie
+                  mithelfen kann, oder „Egal, teilt mich ein“. So kann das Freizeitteam am Ende
+                  gut einteilen.
                 </div>
                 {familyName && guestsWithoutLastName > 0 && (
                   <button
@@ -915,6 +936,19 @@ export function BookingWizard({
                             <fieldset className="wide:col-span-2" data-help-index={index}>
                               <legend className="field-label mb-2">
                                 Wo kann {guest.first_name.trim() || `Gast ${index + 1}`} mithelfen?
+                                {!isSoldOut && (
+                                  <span
+                                    data-help-count=""
+                                    className={cn(
+                                      "ml-2 text-[13px] font-normal",
+                                      helpChoiceComplete(guest.help_areas) ? "text-[#17633c]" : "text-muted-foreground"
+                                    )}
+                                  >
+                                    {helpChoiceComplete(guest.help_areas)
+                                      ? "Auswahl reicht aus"
+                                      : `mindestens ${HELP_MIN_COUNT} wählen, ${(guest.help_areas ?? []).length} gewählt`}
+                                  </span>
+                                )}
                               </legend>
                               <div className="flex flex-wrap gap-2">
                                 {HELP_AREAS.map((area) => {

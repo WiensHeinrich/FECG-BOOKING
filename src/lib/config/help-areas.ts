@@ -23,8 +23,20 @@ export const HELP_AREA_KEYS = HELP_AREAS.map((a) => a.key) as [HelpAreaKey, ...H
 /** Wer keinen festen Bereich wählt */
 export const HELP_ANY: HelpAreaKey = "egal";
 
-/** Ab diesem Alter (am ersten Tag der Freizeit) kann ein Gast Bereiche wählen */
+/** Ab diesem Alter (am ersten Tag der Freizeit) wählt ein Gast Bereiche */
 export const HELP_MIN_AGE = 14;
+
+/**
+ * So viele Bereiche muss jeder Gast ab HELP_MIN_AGE mindestens wählen, damit das Freizeitteam
+ * am Ende selbst einteilen kann. "Egal, teilt mich ein" genügt allein.
+ */
+export const HELP_MIN_COUNT = 4;
+
+/** true, wenn die Auswahl eines Gastes ausreicht */
+export function helpChoiceComplete(keys: readonly string[] | null | undefined): boolean {
+  const list = keys ?? [];
+  return list.includes(HELP_ANY) || list.length >= HELP_MIN_COUNT;
+}
 
 export function helpAreaLabel(key: string): string {
   return HELP_AREAS.find((a) => a.key === key)?.label ?? key;

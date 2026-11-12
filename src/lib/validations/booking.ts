@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { HELP_AREA_KEYS } from "@/lib/config/help-areas";
+import { HELP_AREA_KEYS, HELP_MIN_COUNT, helpChoiceComplete } from "@/lib/config/help-areas";
 
 const isoDate = z
   .string()
@@ -39,7 +39,14 @@ export const bookingFormSchema = z.object({
 }).refine((data) => data.guests.some((g) => g.help_areas.length > 0), {
   message: "Bitte wählt mindestens einen Bereich, in dem ihr mithelfen könnt",
   path: ["guests"],
-});
+}).refine(
+  // Kinder unter 14 schicken eine leere Auswahl, die Altersprüfung macht das Formular
+  (data) => data.guests.every((g) => g.help_areas.length === 0 || helpChoiceComplete(g.help_areas)),
+  {
+    message: `Bitte wählt bei jeder Person mindestens ${HELP_MIN_COUNT} Bereiche zum Mithelfen`,
+    path: ["guests"],
+  }
+);
 
 export type BookingFormData = z.infer<typeof bookingFormSchema>;
 export type BookingFormInput = z.input<typeof bookingFormSchema>;
